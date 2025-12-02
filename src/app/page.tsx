@@ -8,16 +8,16 @@ import { ChevronsDown, ChevronsLeft, ChevronsRight } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 
+// --- 2. IMPORTS DE COMPONENTES ---
 import Footer from "@/components/footer";
-// --- 2. IMPORTS DE COMPONENTES MENORES (FILHOS) ---
-// Estes continuam a ser componentes pois são partes internas das seções
 import HeaderDesktop from "@/components/HeaderDesktop";
-import RightHeroSection from "@/components/HeroSection2"; // Confirma o caminho
+import RightHeroSection from "@/components/HeroSection2";
 import HeroSection5 from "@/components/HeroSection5";
 import ImageTrail from "@/components/ImageTrail";
+// Import do Componente de Aviso Mobile
+import MobileWarning from "@/components/MobileWarning";
 import ModelSection from "@/components/ModelSection";
 import PartnersSection from "@/components/PartnersSection";
-// --- 3. IMPORTS DAS OUTRAS SEÇÕES (QUE CONTINUAM COMPONENTES) ---
 import VideoSection from "@/components/VideoSection";
 
 // Registra o plugin globalmente
@@ -25,13 +25,12 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
   // =====================================================================
-  //  LÓGICA DA PARTE 1: HERO SECTION (Antigo HeroSection)
+  //  LÓGICA DA PARTE 1: HERO SECTION
   // =====================================================================
   const heroSectionRef = useRef<HTMLElement>(null);
   const heroContainerRef = useRef<HTMLDivElement>(null);
   const [heroVisible, setHeroVisible] = useState<boolean>(true);
 
-  // Lógica de Visibilidade (IntersectionObserver)
   useEffect(() => {
     const target = heroSectionRef.current;
     if (!target) return;
@@ -49,7 +48,6 @@ export default function Home() {
     return () => observer.disconnect();
   }, []);
 
-  // Animação GSAP (Entrada Hero)
   useLayoutEffect(() => {
     if (!heroVisible || !heroContainerRef.current) return;
 
@@ -77,12 +75,12 @@ export default function Home() {
   }, [heroVisible]);
 
   // =====================================================================
-  //  LÓGICA DA PARTE 2: SOLAR SECTION (Antigo SolarSection)
+  //  LÓGICA DA PARTE 2: SOLAR SECTION (Correção de Scroll)
   // =====================================================================
   const solarContainerRef = useRef<HTMLDivElement>(null);
   const solarWrapperRef = useRef<HTMLDivElement>(null);
 
-  // Configuração do Lenis (Smooth Scroll)
+  // Configuração do Lenis
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
@@ -99,7 +97,7 @@ export default function Home() {
     };
 
     gsap.ticker.add(ticker);
-    gsap.ticker.lagSmoothing(0);
+    // Removemos lagSmoothing(0) para evitar pulos em carregamentos pesados
 
     return () => {
       gsap.ticker.remove(ticker);
@@ -107,7 +105,7 @@ export default function Home() {
     };
   }, []);
 
-  // Animação GSAP (Scroll Horizontal e Cards)
+  // Animação GSAP
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       const q = gsap.utils.selector(solarContainerRef);
@@ -116,7 +114,7 @@ export default function Home() {
 
       if (!wrapper) return;
 
-      // --- SCROLL HORIZONTAL ---
+      // Cálculo preciso da largura
       const getScrollAmount = () => {
         const wrapperWidth = wrapper.scrollWidth;
         return -(wrapperWidth - window.innerWidth);
@@ -151,36 +149,28 @@ export default function Home() {
         ease: "power3.out",
       });
 
-      // --- CARDS (Animação Limpa) ---
+      // --- CARDS ---
       (cards as HTMLElement[]).forEach((card, index) => {
         const img = card.querySelector(".img");
         const texts = card.querySelector(".texts");
         const textChildren = texts ? texts.children : [];
 
-        let triggerConfig: ScrollTrigger.Vars;
+        // CORREÇÃO AQUI: Mudámos de 'let' para 'const'
+        const triggerConfig: ScrollTrigger.Vars = {
+          trigger: index === 0 ? solarContainerRef.current : card,
+          start: index === 0 ? "top center" : "left 80%",
+          end: "center center",
+          scrub: 0.5,
+        };
 
-        if (index === 0) {
-          triggerConfig = {
-            trigger: solarContainerRef.current,
-            start: "top center",
-            end: "top top",
-            scrub: 1,
-          };
-        } else {
-          triggerConfig = {
-            trigger: card,
-            containerAnimation: tween,
-            start: "left 75%",
-            end: "center center",
-            scrub: 1,
-          };
+        if (index !== 0) {
+          triggerConfig.containerAnimation = tween;
         }
 
         const tl = gsap.timeline({ scrollTrigger: triggerConfig });
 
         tl.to(card, { autoAlpha: 1, duration: 0.1 });
 
-        // Animação da imagem
         tl.fromTo(
           img,
           { opacity: 0 },
@@ -192,7 +182,6 @@ export default function Home() {
           "<",
         );
 
-        // Animação do Texto
         if (texts) {
           tl.fromTo(
             texts,
@@ -218,14 +207,14 @@ export default function Home() {
         }
       });
 
-      // --- PINNING ---
+      // --- PINNING OTIMIZADO ---
       ScrollTrigger.create({
         trigger: solarContainerRef.current,
         start: "top top",
-        end: "+=4000",
+        end: () => `+=${wrapper.scrollWidth - window.innerWidth + 100}`,
         pin: true,
         animation: tween,
-        scrub: 1,
+        scrub: 0.5,
         invalidateOnRefresh: true,
         anticipatePin: 1,
       });
@@ -235,7 +224,7 @@ export default function Home() {
   }, []);
 
   // =====================================================================
-  //  LÓGICA DA PARTE 3: HERO SECTION 3 (Antigo HeroSection3)
+  //  LÓGICA DA PARTE 3: HERO SECTION 3
   // =====================================================================
   const hero3ContainerRef = useRef<HTMLElement>(null);
 
@@ -287,7 +276,7 @@ export default function Home() {
     return () => ctx.revert();
   }, []);
 
-  // Lógica para mudar a cor do header (Sticky Header Effect)
+  // Sticky Header Effect
   useEffect(() => {
     const el = hero3ContainerRef.current;
     if (!el || typeof window === "undefined") return;
@@ -318,7 +307,19 @@ export default function Home() {
   // =====================================================================
   return (
     <main className="scroll-smooth text-white">
-      <div className="w-full overflow-x-clip">
+      {/* ------------------------------------------------ */}
+      {/* 1. VISÃO MOBILE (Aviso bloqueia o resto)         */}
+      {/* block lg:hidden -> Aparece no Mobile, Some no PC */}
+      {/* ------------------------------------------------ */}
+      <div className="block lg:hidden">
+        <MobileWarning />
+      </div>
+
+      {/* ------------------------------------------------ */}
+      {/* 2. VISÃO DESKTOP (Site completo)                 */}
+      {/* hidden lg:block -> Some no Mobile, Aparece no PC */}
+      {/* ------------------------------------------------ */}
+      <div className="hidden w-full overflow-x-clip lg:block">
         {/* --- INÍCIO DA PARTE 1 (HeroSection) --- */}
         <section
           ref={heroSectionRef}
