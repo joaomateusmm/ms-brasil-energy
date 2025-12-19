@@ -18,6 +18,7 @@ import ImageTrail from "@/components/ImageTrail";
 import MobileWarning from "@/components/MobileWarning";
 import ModelSection from "@/components/ModelSection";
 import PartnersSection from "@/components/PartnersSection";
+import Simulator from "@/components/Simulator";
 import VideoSection from "@/components/VideoSection";
 
 // Registra o plugin globalmente
@@ -342,8 +343,8 @@ export default function Home() {
                       className="group flex w-[190px] cursor-pointer items-center justify-center gap-2 rounded-full border-2 border-white/10 bg-white/5 px-5 py-3 text-white/90 shadow-md backdrop-blur-xs duration-200 hover:bg-white/10"
                       aria-label="Explorar site"
                     >
-                      <ChevronsDown className="h-5 w-5 transform text-white/90 duration-300 group-hover:-rotate-90" />
-                      Explorar Site
+                      <ChevronsDown className="h-5 w-5 -rotate-90 transform text-white/90 duration-300 group-hover:rotate-0" />
+                      Fazer Simulação
                     </a>
                   </div>
 
@@ -355,8 +356,10 @@ export default function Home() {
 
                   {/* Parágrafo Descritivo */}
                   <p className="hero-anim -mt-3 mb-3 text-2xl text-white opacity-0">
-                    Ajude o planeta e gaste menos no final do mês,
-                    <br /> o melhor dos 2 mundos. Conheça sobre nós.
+                    Simulador{" "}
+                    <span className="text-yellow-300">Solar Energy.</span> Faça
+                    sua simulação gratuita e descubra<br></br> como economizar
+                    na sua conta de luz com energia solar.
                   </p>
 
                   {/* Formulário */}
@@ -390,6 +393,12 @@ export default function Home() {
           )}
         </section>
         {/* --- FIM DA PARTE 1 --- */}
+
+        {/* Inicio do Simulator */}
+
+        <section className="h-screen bg-[#F4F4F4]">
+          <Simulator />
+        </section>
 
         {/* --- INÍCIO DA PARTE 2 (SolarSection) --- */}
         <section id="solar">
