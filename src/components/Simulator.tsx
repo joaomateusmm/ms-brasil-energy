@@ -121,14 +121,14 @@ export default function Simulator() {
 
       <div
         ref={subTextRef}
-        className="absolute top-[6%] z-20 text-center text-lg font-medium tracking-[0.2em] text-[rgba(0,0,0,0.8)]"
+        className="absolute top-[3%] z-20 text-center text-lg font-medium tracking-[0.2em] text-[rgba(0,0,0,0.8)]"
       >
         De energia solar: Solar Energy
       </div>
 
       <h1
         ref={textRef}
-        className="font-clash-display pointer-events-none relative z-0 -mt-[52vh] text-[18vw] leading-none font-medium tracking-tighter text-[rgba(0,0,0,0.8)] select-none"
+        className="font-clash-display pointer-events-none relative z-0 -mt-[60vh] text-[15vw] leading-none font-medium tracking-tighter text-[rgba(0,0,0,0.8)] select-none"
       >
         Simulador
       </h1>

@@ -32,6 +32,9 @@ export default function Home() {
   const heroContainerRef = useRef<HTMLDivElement>(null);
   const [heroVisible, setHeroVisible] = useState<boolean>(true);
 
+  // REF PARA O LENIS (Para controlar o scroll suave via JS)
+  const lenisRef = useRef<Lenis | null>(null);
+
   useEffect(() => {
     const target = heroSectionRef.current;
     if (!target) return;
@@ -91,6 +94,9 @@ export default function Home() {
       smoothWheel: true,
     });
 
+    // Guardamos a referência para usar no botão
+    lenisRef.current = lenis;
+
     lenis.on("scroll", ScrollTrigger.update);
 
     const ticker = (time: number) => {
@@ -98,13 +104,23 @@ export default function Home() {
     };
 
     gsap.ticker.add(ticker);
-    // Removemos lagSmoothing(0) para evitar pulos em carregamentos pesados
 
     return () => {
       gsap.ticker.remove(ticker);
       lenis.destroy();
     };
   }, []);
+
+  // --- FUNÇÃO PARA SCROLL SUAVE ATÉ O SIMULADOR ---
+  const handleScrollToSimulacao = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault(); // Impede o pulo seco padrão do HTML
+    // Usa o Lenis para ir suavemente até o ID
+    lenisRef.current?.scrollTo("#simulacao", {
+      offset: 0,
+      duration: 1.5, // Duração da descida
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    });
+  };
 
   // Animação GSAP
   useLayoutEffect(() => {
@@ -336,10 +352,11 @@ export default function Home() {
                 className="hero-foreground bottom-18 left-18 z-40"
               >
                 <div className="flex flex-col gap-6">
-                  {/* Botão Explorar Site */}
+                  {/* Botão Explorar Site - CORRIGIDO */}
                   <div className="hero-anim opacity-0">
                     <a
-                      href="#solar"
+                      href="#simulacao"
+                      onClick={handleScrollToSimulacao} // AQUI: Adicionado evento de click
                       className="group flex w-[190px] cursor-pointer items-center justify-center gap-2 rounded-full border-2 border-white/10 bg-white/5 px-5 py-3 text-white/90 shadow-md backdrop-blur-xs duration-200 hover:bg-white/10"
                       aria-label="Explorar site"
                     >
@@ -395,8 +412,8 @@ export default function Home() {
         {/* --- FIM DA PARTE 1 --- */}
 
         {/* Inicio do Simulator */}
-
-        <section className="h-screen bg-[#F4F4F4]">
+        {/* AQUI: Adicionado id="simulacao" para o link funcionar */}
+        <section id="simulacao" className="h-screen bg-[#F4F4F4]">
           <Simulator />
         </section>
 
@@ -558,7 +575,7 @@ export default function Home() {
                     <h1 className="number m-0 text-[3.5rem] font-bold text-[#ffd700] text-shadow-md">
                       05.
                     </h1>
-                    <h1 className="title m-0 text-end text-[1.8rem] font-bold text-gray-800 text-shadow-md ">
+                    <h1 className="title m-0 text-end text-[1.8rem] font-bold text-gray-800 text-shadow-md">
                       Tecnologia de Longa Duração
                     </h1>
                   </div>

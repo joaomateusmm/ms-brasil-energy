@@ -19,6 +19,12 @@ import {
 } from "lucide-react";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
 interface ResultModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -359,13 +365,20 @@ Olá, gostaria de dar continuidade no meu projeto da Solar Energy!`;
                 >
                   Quero esse projeto
                 </button>
-                <button
-                  onClick={handlePrint}
-                  disabled={isPrinting}
-                  className="flex h-[52px] cursor-pointer items-center justify-center rounded-md bg-gray-800 px-4 text-lg font-bold text-white shadow-lg duration-300 hover:scale-105 hover:bg-gray-900 hover:shadow-xl active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  <ImageDown />
-                </button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={handlePrint}
+                      disabled={isPrinting}
+                      className="flex h-[52px] cursor-pointer items-center justify-center rounded-md bg-gray-800 px-4 text-lg font-bold text-white shadow-lg duration-300 hover:scale-105 hover:bg-gray-900 hover:shadow-xl active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      <ImageDown />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent className="mb-2 bg-gray-800">
+                    <p>Baixar Projeto</p>
+                  </TooltipContent>
+                </Tooltip>
               </div>
               <p className="mt-6 text-xs text-gray-400">
                 *Os valores apresentados são estimativas. Uma análise técnica
