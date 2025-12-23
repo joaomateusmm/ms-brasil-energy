@@ -111,7 +111,7 @@ export default function Simulator() {
   return (
     <section
       ref={containerRef}
-      className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#F5F5F7]"
+      className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#f4f4f4]"
     >
       <ResultModal
         isOpen={isModalOpen}
