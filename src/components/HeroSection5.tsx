@@ -1,6 +1,6 @@
 "use client";
 
-import { PhoneCall } from "lucide-react";
+import { ChevronsDown, PhoneCall } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 
@@ -65,6 +65,15 @@ const products = [
 ];
 
 export default function HeroSection5() {
+  // FUNÇÃO DE SCROLL (Simples e Compatível com Lenis)
+  const handleScrollToSimulacao = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const section = document.getElementById("simulacao");
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section className="relative z-50 w-full bg-[#191919] px-8 pt-20 pb-20 text-white md:px-20">
       {/* --- Cabeçalho da Secção --- */}
@@ -117,19 +126,31 @@ export default function HeroSection5() {
             </div>
           </div>
         ))}
+      </div>
 
-        <div className="mx-auto flex w-400 flex-col items-center justify-center gap-4 pt-10 text-center">
-          <h1 className="font-clash-display w-[400px] text-4xl font-semibold">
-            Quer um atendimento personalizado?
-          </h1>
-          <p className="w-[300px] text-[#ffd700]">
-            Entre em contato conosco para soluções sob medida para o seu
-            projeto.
-          </p>
+      {/* --- RODAPÉ COM CHAMADA PARA AÇÃO --- */}
+      <div className="mx-auto flex w-full max-w-[600px] flex-col items-center justify-center gap-6 pt-24 text-center">
+        <h1 className="font-clash-display w-full max-w-[400px] text-4xl font-semibold">
+          Quer um atendimento personalizado?
+        </h1>
+        <p className="max-w-[350px] text-[#ffd700]">
+          Entre em contato conosco para soluções sob medida para o seu projeto.
+        </p>
+
+        <div className="flex items-center justify-center gap-5">
           <button className="mt-2 flex cursor-pointer items-center gap-2 rounded-xl bg-gray-800 px-6 py-4 font-semibold duration-300 hover:scale-105 hover:active:scale-95">
             <PhoneCall className="h-4 w-4 text-white/90" />
             Contate-nos
           </button>
+          <a
+            href="#simulacao"
+            onClick={handleScrollToSimulacao}
+            className="group mt-2 flex cursor-pointer items-center gap-2 rounded-xl bg-gray-800 px-6 py-4 font-semibold duration-300 hover:scale-105 hover:active:scale-95"
+            aria-label="Ir para simulação"
+          >
+            <ChevronsDown className="h-5 w-5 -rotate-90 transform text-white/90 duration-300 group-hover:-rotate-180" />
+            Fazer Simulação
+          </a>
         </div>
       </div>
     </section>
