@@ -558,7 +558,7 @@ export default function Home() {
                     <h1 className="number m-0 text-[3.5rem] font-bold text-[#ffd700] text-shadow-md">
                       05.
                     </h1>
-                    <h1 className="title m-0 text-end text-[1.8rem] font-bold text-gray-800 text-shadow-md text-shadow-sm">
+                    <h1 className="title m-0 text-end text-[1.8rem] font-bold text-gray-800 text-shadow-md ">
                       Tecnologia de Longa Duração
                     </h1>
                   </div>

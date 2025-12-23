@@ -1,22 +1,60 @@
 "use client";
 
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ChevronRight, Lock } from "lucide-react";
 import Image from "next/image";
-import React, { useLayoutEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
+
+import ResultModal from "@/components/ResultModal";
+import IntegrationCard from "@/components/SimulatorCard";
+import IntegrationCard2 from "@/components/SimulatorCard2";
+import IntegrationCard3 from "@/components/SimulatorCard3";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Simulator() {
-  // Refs para animações
   const containerRef = useRef<HTMLElement>(null);
   const textRef = useRef<HTMLHeadingElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const subTextRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
 
-  // --- Animações GSAP de Entrada ---
+  // --- ESTADOS ---
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [billValue, setBillValue] = useState<number>(0);
+
+  // Validação
+  const [formStatus, setFormStatus] = useState({
+    card1: false,
+    card2: false,
+    card3: false,
+  });
+
+  const isFormValid = Object.values(formStatus).every(
+    (status) => status === true,
+  );
+
+  const handleValidation = (
+    cardKey: "card1" | "card2" | "card3",
+    isValid: boolean,
+  ) => {
+    setFormStatus((prev) => {
+      if (prev[cardKey] === isValid) return prev;
+      return { ...prev, [cardKey]: isValid };
+    });
+  };
+
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      // 1. O Texto Pequeno aparece suavemente
+      const triggerConfig = {
+        trigger: containerRef.current,
+        start: "top 70%",
+        toggleActions: "play none none reverse",
+      };
+
       gsap.from(subTextRef.current, {
+        scrollTrigger: triggerConfig,
         y: -20,
         opacity: 0,
         duration: 1,
@@ -24,8 +62,8 @@ export default function Simulator() {
         ease: "power3.out",
       });
 
-      // 2. O Título "Simulador" cresce e sobe
       gsap.from(textRef.current, {
+        scrollTrigger: triggerConfig,
         y: 100,
         opacity: 0,
         scale: 0.9,
@@ -34,8 +72,8 @@ export default function Simulator() {
         ease: "power3.out",
       });
 
-      // 3. A Casa sobe da base para a frente do texto
       gsap.from(imageRef.current, {
+        scrollTrigger: triggerConfig,
         y: 100,
         opacity: 0,
         duration: 1.5,
@@ -43,79 +81,113 @@ export default function Simulator() {
         ease: "power4.out",
       });
 
-      // 4. Os Grupos de Cards (Card + Numero) entram
-      if (cardsRef.current) {
-        gsap.from(cardsRef.current.children, {
-          y: 100,
-          opacity: 0,
+      const cardTargets = gsap.utils.toArray(".card-anim-target");
+
+      // --- CORREÇÃO DA ANIMAÇÃO ---
+      gsap.fromTo(
+        cardTargets,
+        {
+          y: 150,
+          opacity: 0, // Usar opacity puro
+          // autoAlpha: 0, // REMOVIDO (Causa conflito com blur)
+        },
+        {
+          scrollTrigger: triggerConfig,
+          y: 0,
+          opacity: 1, // Usar opacity puro
+          // autoAlpha: 1, // REMOVIDO
           duration: 1,
-          delay: 0.8,
+          delay: 0.6,
           stagger: 0.2,
           ease: "back.out(1.2)",
-        });
-      }
+          // force3D: true, // REMOVIDO (Causa conflito com blur)
+        },
+      );
     }, containerRef);
 
     return () => ctx.revert();
   }, []);
-
-  // Estilo base para o card de vidro (Clean, sem borda forte)
-  const glassCardStyle =
-    "w-[413px] h-[560px] rounded-[25px] bg-white/10 backdrop-blur-xl shadow-[0_0px_8px_0_rgba(0,0,0,0.15)] transition-transform duration-300 border border-white/10";
 
   return (
     <section
       ref={containerRef}
       className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#F5F5F7]"
     >
+      <ResultModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        monthlyBill={billValue}
+      />
+
       <div
         ref={subTextRef}
-        className="absolute top-[9%] z-20 text-center text-lg font-medium tracking-[0.2em] text-[rgba(0,0,0,0.8)]"
+        className="absolute top-[6%] z-20 text-center text-lg font-medium tracking-[0.2em] text-[rgba(0,0,0,0.8)]"
       >
         De energia solar: Solar Energy
       </div>
 
       <h1
         ref={textRef}
-        className="font-clash-display pointer-events-none relative z-0 -mt-[44vh] text-[18vw] leading-none font-medium tracking-tighter text-[rgba(0,0,0,0.8)] select-none"
+        className="font-clash-display pointer-events-none relative z-0 -mt-[52vh] text-[18vw] leading-none font-medium tracking-tighter text-[rgba(0,0,0,0.8)] select-none"
       >
         Simulador
       </h1>
 
-      {/* Faixa branca inferior (mascaramento) */}
-      <div className="absolute z-40 h-[200px] w-screen translate-y-[535px] bg-[#F5F5F7]"></div>
-
-      {/* --- CONTAINER DOS CARDS --- */}
       <div
         ref={cardsRef}
-        className="absolute inset-0 z-50 flex w-full items-center justify-center gap-30 px-4"
+        className="absolute inset-0 z-50 mb-6 flex w-full items-center justify-center gap-30 px-4"
       >
-        {/* GRUPO 01 - Esquerda (Mais baixo - Desce 25px) */}
-        <div className="flex translate-y-[25px] flex-col items-center gap-6">
-          <div className={glassCardStyle}></div>
-          <span className="font-clash-display text-4xl font-bold text-yellow-400 drop-shadow-sm">
-            01
-          </span>
+        {/* GRUPO 01 - Esquerda */}
+        <div className="translate-y-[-50px]">
+          {/* REMOVIDO 'invisible' */}
+          <div className="card-anim-target flex flex-col items-center gap-6">
+            <IntegrationCard
+              onValidate={(isValid: boolean) =>
+                handleValidation("card1", isValid)
+              }
+            />
+          </div>
         </div>
 
-        {/* GRUPO 02 - Meio (Neutro - Centro exato) */}
-        <div className="flex translate-y-0 flex-col items-center gap-6">
-          <div className={glassCardStyle}></div>
-          <span className="font-clash-display text-4xl font-bold text-yellow-400 drop-shadow-sm">
-            02
-          </span>
+        {/* GRUPO 02 - Meio */}
+        <div className="translate-y-[-25px]">
+          {/* REMOVIDO 'invisible' */}
+          <div className="card-anim-target flex flex-col items-center gap-6">
+            <IntegrationCard2
+              onValidate={(isValid) => handleValidation("card2", isValid)}
+            />
+
+            <button
+              disabled={!isFormValid}
+              onClick={() => setIsModalOpen(true)}
+              className={`group relative flex items-center justify-center gap-2 rounded-full px-10 py-4 text-lg font-bold shadow-[0_4px_20px_rgba(0,0,0,0.2)] transition-all duration-300 ${
+                isFormValid
+                  ? "cursor-pointer bg-yellow-400 text-black hover:-translate-y-1 hover:bg-yellow-300 hover:shadow-[0_8px_25px_rgba(250,204,21,0.4)] active:translate-y-0 active:scale-95"
+                  : "cursor-not-allowed bg-gray-300 text-gray-500 grayscale"
+              } `}
+            >
+              <span>{isFormValid ? "Simular" : "Preencha tudo"}</span>
+              {isFormValid ? (
+                <ChevronRight className="h-5 w-5 duration-300 group-hover:translate-x-1" />
+              ) : (
+                <Lock className="h-4 w-4" />
+              )}
+            </button>
+          </div>
         </div>
 
-        {/* GRUPO 03 - Direita (Mais alto - Sobe 25px) */}
-        <div className="flex -translate-y-[25px] flex-col items-center gap-6">
-          <div className={glassCardStyle}></div>
-          <span className="font-clash-display text-4xl font-bold text-yellow-400 drop-shadow-sm">
-            03
-          </span>
+        {/* GRUPO 03 - Direita */}
+        <div className="translate-y-[-50px]">
+          {/* REMOVIDO 'invisible' */}
+          <div className="card-anim-target flex flex-col items-center gap-6">
+            <IntegrationCard3
+              onValidate={(isValid) => handleValidation("card3", isValid)}
+              onValueChange={(val) => setBillValue(val)}
+            />
+          </div>
         </div>
       </div>
 
-      {/* Imagem da Casa */}
       <div
         ref={imageRef}
         className="absolute bottom-0 z-10 flex h-auto w-full max-w-[1400px] items-end justify-center px-4"
@@ -126,9 +198,9 @@ export default function Simulator() {
           width={1400}
           height={900}
           priority
-          className="h-auto w-full translate-y-[320px] object-contain drop-shadow-2xl"
+          className="h-auto w-full object-contain"
           style={{
-            maxHeight: "140vh",
+            maxHeight: "80vh",
           }}
         />
       </div>

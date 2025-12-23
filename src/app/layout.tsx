@@ -5,6 +5,7 @@ import { Montserrat } from "next/font/google";
 import localFont from "next/font/local";
 
 import FloatingScrollbar from "@/components/FloatingScrollbar";
+import { Toaster } from "@/components/ui/sonner";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -41,6 +42,7 @@ export default function RootLayout({
       >
         <FloatingScrollbar />
         {children}
+        <Toaster position="top-right" />
       </body>
     </html>
   );

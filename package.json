@@ -26,6 +26,8 @@
     "drizzle-orm": "^0.44.2",
     "drizzle-seed": "^0.3.1",
     "gsap": "^3.13.0",
+    "html-to-image": "^1.11.13",
+    "html2canvas": "^1.4.1",
     "ldrs": "^1.1.9",
     "lucide": "^0.554.0",
     "lucide-react": "^0.545.0",
