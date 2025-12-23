@@ -193,7 +193,7 @@ export default function Simulator() {
         className="absolute bottom-0 z-10 flex h-auto w-full max-w-[1400px] items-end justify-center px-4"
       >
         <Image
-          src="/assets/simulator/house.png"
+          src="/assets/simulator/house.webp"
           alt="Casa Moderna Energia Solar"
           width={1400}
           height={900}
