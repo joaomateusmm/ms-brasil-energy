@@ -124,7 +124,7 @@ export default function HeaderDesktop() {
           <div className="flex items-center gap-4">
             <Link
               href="#simulacao"
-              className="hidden rounded-4xl bg-emerald-500 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 duration-300 hover:scale-[1.03] hover:bg-emerald-600 hover:active:scale-95 lg:block"
+              className="hidden rounded-4xl bg-emerald-500 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 duration-300 hover:-translate-y-0.5 hover:bg-emerald-400 hover:active:scale-95 lg:block"
             >
               Fazer Simulação
             </Link>

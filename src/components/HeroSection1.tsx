@@ -1,8 +1,9 @@
 "use client";
 
 import gsap from "gsap";
-import { ArrowRight, Star, Zap } from "lucide-react";
+import { ChevronsRight, Instagram } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link"; // IMPORTADO O LINK
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 // Imports dos Headers
@@ -13,12 +14,48 @@ interface HeroSection1Props {
   onScrollToSimulacao: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
+// === DADOS DAS NOTÍCIAS (Card Esquerdo) ===
+const newsData = [
+  {
+    title: "Energia solar cresce 31,4% em Janeiro.",
+    desc: "A produção de energia solar das usinas fotovoltaicas conectadas ao Sistema Interligado Nacional (SIN) cresceu 31,4% (...) Ler Mais. ",
+    image: "/assets/page2/img-3.webp",
+    link: "https://www.portalsolar.com.br/noticias/operacao-e-expansao/geracao-de-energia-solar-cresce-31-4-na-primeira-quinzena-de-janeiro", // 🔴 AQUI: Coloque o link da notícia 1
+  },
+  {
+    title: "Taxação do sol: o que é e como funciona essa tarifa?",
+    desc: "A taxação do sol não é um imposto sobre a energia solar. Trata-se da cobrança gradual pelo uso dos fios de distribuição para quem instalar sistemas após 2023, (...) Ler Mais. ",
+    image: "/assets/page2/img-1.webp",
+    link: "https://www.portalsolar.com.br/taxacao-do-sol", // 🔴 AQUI: Coloque o link da notícia 2
+  },
+  {
+    title: "Sustentabilidade",
+    desc: "Redução de CO2 equivalente a 1000 árvores.",
+    image: "/assets/page2/img-2.webp",
+    link: "/blog/sustentabilidade", // 🔴 AQUI: Coloque o link da notícia 3
+  },
+];
+
 export default function HeroSection1({
   onScrollToSimulacao,
 }: HeroSection1Props) {
   const heroSectionRef = useRef<HTMLElement>(null);
   const heroContainerRef = useRef<HTMLDivElement>(null);
   const [heroVisible, setHeroVisible] = useState<boolean>(true);
+
+  // === LÓGICA DO CARROSSEL DE NOTÍCIAS ===
+  const [currentNewsIndex, setCurrentNewsIndex] = useState(0);
+
+  useEffect(() => {
+    // Troca a notícia a cada 10 segundos (conforme seu código anterior)
+    const interval = setInterval(() => {
+      setCurrentNewsIndex((prevIndex) => (prevIndex + 1) % newsData.length);
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const currentNews = newsData[currentNewsIndex];
 
   // --- OBSERVER ---
   useEffect(() => {
@@ -72,7 +109,7 @@ export default function HeroSection1({
         {/* === IMAGEM MOBILE (Aparece só em telas pequenas) === */}
         <div className="block h-full w-full md:hidden">
           <Image
-            src="/assets/page1/bg-mobile.jpg" // 🔴 AQUI: Coloque a imagem vertical para celular
+            src="/assets/page1/bg-mobile.jpg"
             alt="Energia Renovável Mobile"
             fill
             className="object-cover opacity-60"
@@ -83,7 +120,7 @@ export default function HeroSection1({
         {/* === IMAGEM DESKTOP (Aparece só em telas médias/grandes) === */}
         <div className="hidden h-full w-full md:block">
           <Image
-            src="/assets/page1/bg-pc.jpg" // 🔴 AQUI: Coloque a imagem horizontal para PC
+            src="/assets/page1/bg-pc.jpg"
             alt="Energia Renovável Desktop"
             fill
             className="object-cover opacity-60"
@@ -109,7 +146,7 @@ export default function HeroSection1({
           className="relative z-10 flex h-full w-full flex-col items-center justify-center px-4 pt-20 text-center"
         >
           {/* Título Principal */}
-          <h1 className="hero-anim font-clash-display max-w-4xl text-4xl leading-tight font-bold tracking-tight text-white opacity-0 md:max-w-7xl md:text-6xl lg:text-7xl">
+          <h1 className="hero-anim font-montserrat max-w-4xl text-4xl leading-tight font-bold tracking-tight text-white opacity-0 md:max-w-7xl md:text-6xl lg:text-7xl">
             Criando um Futuro Sustentável com Energia Solar.
           </h1>
 
@@ -124,39 +161,50 @@ export default function HeroSection1({
             <a
               href="#simulacao"
               onClick={onScrollToSimulacao}
-              className="group flex items-center gap-2 rounded-full bg-[#C1F12E] px-8 py-4 text-base font-bold text-[#0F2830] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(193,241,46,0.5)] active:scale-95"
+              className="group flex items-center gap-2 rounded-3xl bg-emerald-500 px-8 py-4 text-base font-bold text-white shadow-lg shadow-emerald-500/20 duration-300 hover:-translate-y-0.5 active:scale-95"
             >
-              <span className="font-montserrat">Fazer Simulação Gratuita</span>
-              <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+              <span className="font-montserrat">Conheça Nosso Trabalho</span>
+              <ChevronsRight className="h-5 w-5 duration-300 group-hover:rotate-90" />
             </a>
           </div>
 
-          {/* 4. CARDS FLUTUANTES */}
-          <div className="hero-anim mt-16 flex w-full max-w-4xl flex-col items-center gap-4 px-4 opacity-0 md:mt-24 md:flex-row md:justify-center">
-            {/* Card 1 */}
-            <div className="flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-md transition-transform hover:bg-white/20 md:w-auto md:pr-8">
-              <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white/20">
+          {/* 4. CARDS FLUTUANTES (MODIFICADOS) */}
+          <div className="hero-anim mt-16 flex w-full max-w-5xl flex-col items-center gap-4 px-4 opacity-0 md:mt-24 md:flex-row md:justify-center">
+            {/* CARD 1: CARROSSEL DE NOTÍCIAS COM LINK */}
+            <Link
+              href={currentNews.link}
+              key={currentNewsIndex}
+              // MUDANÇAS AQUI:
+              // 1. 'p-6' (mais espaçamento interno = mais altura)
+              // 2. 'md:w-96' (mais largo no PC)
+              // 3. 'min-h-[140px]' (garante uma altura mínima)
+              className="animate-in fade-in flex min-h-[140px] w-full cursor-pointer items-center gap-5 rounded-2xl border border-white/10 bg-white/10 p-6 backdrop-blur-md duration-500 hover:bg-white/20 md:w-96 md:pr-8"
+            >
+              {/* MUDANÇA NA IMAGEM: Aumentei para h-20 w-20 */}
+              <div className="relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white/20">
                 <Image
-                  src="/assets/page1/worker.jpg"
-                  alt="Técnico"
-                  width={64}
-                  height={64}
-                  className="h-full w-full object-cover"
+                  src={currentNews.image}
+                  alt="Notícia"
+                  fill
+                  className="object-cover"
                 />
               </div>
-              <div className="text-left">
-                <h3 className="font-montserrat text-lg font-bold text-white">
-                  Energia Inteligente
+
+              <div className="flex flex-col justify-center text-left">
+                {/* Ajustei ligeiramente o tamanho da fonte do título */}
+                <h3 className="font-montserrat text-base font-bold text-[#C1F12E]">
+                  {currentNews.title}
                 </h3>
-                <p className="font-montserrat text-xs text-white/70">
-                  Descubra o poder da transformação solar.
+                <p className="font-montserrat line-clamp-5 text-xs leading-relaxed text-white/80">
+                  {currentNews.desc}
                 </p>
               </div>
-            </div>
+            </Link>
 
-            {/* Card 2 */}
+            {/* CARD 2: INSTAGRAM SOCIAL PROOF */}
             <div className="flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-md transition-transform hover:bg-white/20 md:w-auto md:pr-8">
-              <div className="flex -space-x-3">
+              {/* Avatares */}
+              <div className="flex shrink-0 -space-x-3">
                 {[1, 2, 3].map((i) => (
                   <div
                     key={i}
@@ -171,22 +219,26 @@ export default function HeroSection1({
                     />
                   </div>
                 ))}
+                {/* Indicador de quantidade */}
                 <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white/20 bg-[#C1F12E] text-[10px] font-bold text-[#0F2830]">
-                  80+
+                  5k+
                 </div>
               </div>
 
+              {/* Texto Instagram */}
               <div className="text-left">
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className="h-3 w-3 fill-[#C1F12E] text-[#C1F12E]"
-                    />
-                  ))}
+                <div className="mb-1 flex items-center gap-1">
+                  <Instagram className="h-3 w-3 text-white/70" />
+                  <span className="text-[10px] font-bold tracking-wide text-white/50 uppercase">
+                    Instagram
+                  </span>
                 </div>
-                <p className="font-montserrat mt-1 text-xs text-white/70">
-                  Mais de 200 clientes satisfeitos pelo Brasil.
+                <p className="font-montserrat text-xs leading-snug text-white">
+                  Mais de{" "}
+                  <span className="font-bold text-[#C1F12E]">
+                    +5.900 seguidores
+                  </span>{" "}
+                  só no Instagram, vem com a gente!
                 </p>
               </div>
             </div>
