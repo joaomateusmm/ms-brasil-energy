@@ -163,9 +163,11 @@ html {
     /* Garante que o fundo do corpo seja escuro para o scroll */
     background-color: #191919;
   }
-  .font-clash-display {
-    font-family: var(--font-clash-display);
-  }
+}
+
+@theme {
+  --font-montserrat: var(--font-montserrat), sans-serif;
+  --font-clash-display: var(--font-clash-display), sans-serif;
 }
 
 /* Background for the hero section (page-1) */
