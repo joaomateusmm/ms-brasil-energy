@@ -22,41 +22,39 @@ const SimulatorCard = ({ className, onValidate }: SimulatorCardProps) => {
     { id: "residencial", label: "Residencial", icon: "/icons/home.png" },
     { id: "empresarial", label: "Empresarial", icon: "/icons/skyline.png" },
     { id: "rural", label: "Área Rural", icon: "/icons/farm.png" },
-    {
-      id: "sem_conexao",
-      label: "Sem conexão com a rede",
-      icon: "/icons/energy.png",
-    },
+    { id: "sem_conexao", label: "Sem rede", icon: "/icons/energy.png" },
   ];
 
   return (
-    // WRAPPER (Mantém layout)
-    <div className="relative flex cursor-default items-center justify-center pt-[270px]">
-      {/* O CARD VISUAL (Simplificado) */}
-      {/* Removemos refs, eventos de mouse e will-change-transform */}
+    // WRAPPER: Removemos pt-[270px] no mobile, mantemos no desktop (lg:pt-[270px])
+    <div className="relative flex cursor-default items-center justify-center pt-0 lg:pt-[270px]">
+      {/* O CARD VISUAL: Altura dinâmica no mobile, fixa no desktop */}
       <div
-        className={`relative flex h-[560px] w-[413px] shrink-0 flex-col items-center overflow-hidden rounded-3xl border-2 border-transparent bg-black/10 p-8 shadow-[0_0px_8px_rgba(0,0,0,0.2)] backdrop-blur-2xl ${className}`}
+        className={`relative flex min-h-[400px] w-full shrink-0 flex-col items-center overflow-hidden rounded-3xl border-2 border-transparent bg-black/10 p-6 shadow-lg backdrop-blur-2xl lg:h-[560px] lg:w-[413px] lg:p-8 ${className}`}
       >
         <div className="relative z-10 flex h-full flex-col items-center justify-center">
-          <h2 className="font-clash-display text-center text-2xl leading-tight font-semibold text-white drop-shadow-md">
+          <h2 className="font-clash-display text-center text-xl leading-tight font-semibold text-white drop-shadow-md lg:text-2xl">
             Qual é o tipo do local que <br />
-            irá <span className="text-yellow-400">instalar</span> o gerador?
+            irá <span className="text-emerald-500">instalar</span> o gerador?
           </h2>
 
           <div className="my-6 h-[2px] w-[80%] rounded-full bg-white shadow-sm"></div>
 
-          <div className="mt-2 grid w-full grid-cols-2 gap-x-6 gap-y-8 px-2">
+          <div className="mt-2 grid w-full grid-cols-2 gap-4 px-2 lg:gap-x-6 lg:gap-y-8">
             {options.map((opt) => (
-              <div key={opt.id} className="flex flex-col items-center gap-3">
+              <div
+                key={opt.id}
+                className="flex flex-col items-center gap-2 lg:gap-3"
+              >
                 <button
                   onClick={() => setSelectedOption(opt.id)}
-                  className={`relative flex h-24 w-24 cursor-pointer items-center justify-center rounded-2xl bg-white shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 ${
+                  className={`relative flex h-20 w-20 cursor-pointer items-center justify-center rounded-2xl bg-white shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 lg:h-24 lg:w-24 ${
                     selectedOption === opt.id
-                      ? "ring-3 ring-yellow-400"
+                      ? "ring-3 ring-emerald-500"
                       : "hover:ring-2 hover:ring-white/50"
                   } `}
                 >
-                  <div className="relative h-12 w-12">
+                  <div className="relative h-10 w-10 lg:h-12 lg:w-12">
                     <Image
                       src={opt.icon}
                       alt={opt.label}
@@ -65,7 +63,7 @@ const SimulatorCard = ({ className, onValidate }: SimulatorCardProps) => {
                     />
                   </div>
                 </button>
-                <span className="text-md text-center leading-tight font-medium text-white drop-shadow-md">
+                <span className="lg:text-md text-center text-sm leading-tight font-medium text-white drop-shadow-md">
                   {opt.label}
                 </span>
               </div>

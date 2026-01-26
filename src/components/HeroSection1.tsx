@@ -18,19 +18,19 @@ interface HeroSection1Props {
 const newsData = [
   {
     title: "Energia solar cresce 31,4% em Janeiro.",
-    desc: "A produção de energia solar das usinas fotovoltaicas conectadas ao Sistema Interligado Nacional (SIN) cresceu 31,4% (...) Ler Mais. ",
+    desc: "A produção de energia solar das usinas fotovoltaicas conectadas ao Sistema Interligado Nacional (SIN) cresceu 31,4%...  Ler Mais. ",
     image: "/assets/page2/img-3.webp",
     link: "https://www.portalsolar.com.br/noticias/operacao-e-expansao/geracao-de-energia-solar-cresce-31-4-na-primeira-quinzena-de-janeiro", // 🔴 AQUI: Coloque o link da notícia 1
   },
   {
     title: "Taxação do sol: o que é e como funciona essa tarifa?",
-    desc: "A taxação do sol não é um imposto sobre a energia solar. Trata-se da cobrança gradual pelo uso dos fios de distribuição para quem instalar sistemas após 2023, (...) Ler Mais. ",
+    desc: "A taxação do sol não é um imposto sobre a energia solar. Trata-se da cobrança gradual pelo uso dos fios de distribuição...  Ler Mais. ",
     image: "/assets/page2/img-1.webp",
     link: "https://www.portalsolar.com.br/taxacao-do-sol", // 🔴 AQUI: Coloque o link da notícia 2
   },
   {
-    title: "Sustentabilidade",
-    desc: "Redução de CO2 equivalente a 1000 árvores.",
+    title: "Sol mais forte, atenção redobra.",
+    desc: "O verão é marcado por sol intenso, dias mais longos e temperaturas elevadas. Para o setor de energia solar, esse período ...  Ler Mais.",
     image: "/assets/page2/img-2.webp",
     link: "/blog/sustentabilidade", // 🔴 AQUI: Coloque o link da notícia 3
   },
@@ -50,7 +50,7 @@ export default function HeroSection1({
     // Troca a notícia a cada 10 segundos (conforme seu código anterior)
     const interval = setInterval(() => {
       setCurrentNewsIndex((prevIndex) => (prevIndex + 1) % newsData.length);
-    }, 10000);
+    }, 8000);
 
     return () => clearInterval(interval);
   }, []);
@@ -170,17 +170,12 @@ export default function HeroSection1({
 
           {/* 4. CARDS FLUTUANTES (MODIFICADOS) */}
           <div className="hero-anim mt-16 flex w-full max-w-5xl flex-col items-center gap-4 px-4 opacity-0 md:mt-24 md:flex-row md:justify-center">
-            {/* CARD 1: CARROSSEL DE NOTÍCIAS COM LINK */}
+            {/* CARD 1: NOTÍCIAS (SEU CÓDIGO MANTIDO) */}
             <Link
               href={currentNews.link}
               key={currentNewsIndex}
-              // MUDANÇAS AQUI:
-              // 1. 'p-6' (mais espaçamento interno = mais altura)
-              // 2. 'md:w-96' (mais largo no PC)
-              // 3. 'min-h-[140px]' (garante uma altura mínima)
               className="animate-in fade-in flex min-h-[140px] w-full cursor-pointer items-center gap-5 rounded-2xl border border-white/10 bg-white/10 p-6 backdrop-blur-md duration-500 hover:bg-white/20 md:w-96 md:pr-8"
             >
-              {/* MUDANÇA NA IMAGEM: Aumentei para h-20 w-20 */}
               <div className="relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white/20">
                 <Image
                   src={currentNews.image}
@@ -191,18 +186,22 @@ export default function HeroSection1({
               </div>
 
               <div className="flex flex-col justify-center text-left">
-                {/* Ajustei ligeiramente o tamanho da fonte do título */}
-                <h3 className="font-montserrat text-base font-bold text-[#C1F12E]">
+                <h3 className="font-montserrat text-base font-bold text-emerald-500">
                   {currentNews.title}
                 </h3>
+                <div className="my-2 w-full border-t border-white/10"></div>
                 <p className="font-montserrat line-clamp-5 text-xs leading-relaxed text-white/80">
                   {currentNews.desc}
                 </p>
               </div>
             </Link>
 
-            {/* CARD 2: INSTAGRAM SOCIAL PROOF */}
-            <div className="flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-md transition-transform hover:bg-white/20 md:w-auto md:pr-8">
+            <Link
+              href="https://www.instagram.com/seuperfil" // 🔴 AQUI: Coloque o link do seu Instagram
+              target="_blank" // Abre em nova aba
+              rel="noopener noreferrer" // Segurança para links externos
+              className="flex min-h-[140px] w-full cursor-pointer items-center gap-5 rounded-2xl border border-white/10 bg-white/10 p-6 backdrop-blur-md transition-all duration-500 hover:bg-white/20 md:w-96 md:pr-8"
+            >
               {/* Avatares */}
               <div className="flex shrink-0 -space-x-3">
                 {[1, 2, 3].map((i) => (
@@ -211,7 +210,7 @@ export default function HeroSection1({
                     className="h-10 w-10 overflow-hidden rounded-full border-2 border-white/20 bg-gray-500"
                   >
                     <Image
-                      src={`/assets/page3/avatar-${i}.png`}
+                      src={`/assets/page1/avatar-${i}.webp`}
                       alt="Avatar"
                       width={40}
                       height={40}
@@ -220,28 +219,32 @@ export default function HeroSection1({
                   </div>
                 ))}
                 {/* Indicador de quantidade */}
-                <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white/20 bg-[#C1F12E] text-[10px] font-bold text-[#0F2830]">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white/20 bg-emerald-500 text-[10px] font-bold text-[#0F2830]">
                   5k+
                 </div>
               </div>
 
               {/* Texto Instagram */}
-              <div className="text-left">
-                <div className="mb-1 flex items-center gap-1">
-                  <Instagram className="h-3 w-3 text-white/70" />
-                  <span className="text-[10px] font-bold tracking-wide text-white/50 uppercase">
+              <div className="flex w-full flex-col justify-center text-left">
+                <div className="flex items-center gap-2">
+                  <Instagram className="h-4 w-4 text-emerald-500" />
+                  <span className="font-montserrat text-sm font-bold text-emerald-500 uppercase">
                     Instagram
                   </span>
                 </div>
-                <p className="font-montserrat text-xs leading-snug text-white">
+
+                {/* Linha divisória */}
+                <div className="my-2 w-full border-t border-white/10"></div>
+
+                <p className="font-montserrat text-xs leading-relaxed text-white/80">
                   Mais de{" "}
-                  <span className="font-bold text-[#C1F12E]">
+                  <span className="font-bold text-white">
                     +5.900 seguidores
                   </span>{" "}
                   só no Instagram, vem com a gente!
                 </p>
               </div>
-            </div>
+            </Link>
           </div>
         </div>
       )}

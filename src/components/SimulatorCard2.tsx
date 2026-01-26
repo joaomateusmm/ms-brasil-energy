@@ -106,24 +106,23 @@ const SimulatorCard2 = ({ className, onValidate }: SimulatorCard2Props) => {
         }
       `}</style>
 
-      {/* WRAPPER (Mantém layout e espaçamento) */}
-      <div className="relative flex cursor-default items-center justify-center pt-[270px]">
-        {/* O CARD VISUAL (Simplificado e Estático) */}
-        {/* Removido o bg-black/10 daqui e colocado na camada de blur se necessário, ou mantido se o blur funcionar bem assim */}
+      {/* WRAPPER: Responsivo */}
+      <div className="relative flex cursor-default items-center justify-center pt-0 lg:pt-[270px]">
+        {/* CARD: Responsivo */}
         <div
-          className={`relative flex h-[560px] w-[413px] shrink-0 cursor-default flex-col items-center overflow-hidden rounded-3xl border-2 border-transparent bg-black/10 p-8 shadow-[0_0px_8px_rgba(0,0,0,0.2)] backdrop-blur-2xl ${className}`}
+          className={`relative flex min-h-[400px] w-full shrink-0 cursor-default flex-col items-center overflow-hidden rounded-3xl border-2 border-transparent bg-black/10 p-6 shadow-lg backdrop-blur-2xl lg:h-[560px] lg:w-[413px] lg:p-8 ${className}`}
         >
-          <div className="relative z-10 flex h-full w-full flex-col items-center justify-center pt-10">
+          <div className="relative z-10 flex h-full w-full flex-col items-center justify-center pt-4 lg:pt-10">
             {/* TÍTULO */}
-            <h2 className="font-clash-display text-center text-2xl leading-tight font-semibold text-white drop-shadow-md">
+            <h2 className="font-clash-display text-center text-xl leading-tight font-semibold text-white drop-shadow-md lg:text-2xl">
               Onde pretende <br />
-              <span className="text-yellow-400">realizar</span> a instalação?
+              <span className="text-emerald-500">realizar</span> a instalação?
             </h2>
 
             {/* SEPARATOR */}
-            <div className="my-10 h-[2px] w-[80%] rounded-full bg-white shadow-sm"></div>
+            <div className="my-8 h-[2px] w-[80%] rounded-full bg-white shadow-sm lg:my-10"></div>
 
-            {/* INPUT E BOTÃO DE LOCALIZAÇÃO */}
+            {/* INPUT E BOTÃO */}
             <div className="flex w-full flex-col items-center gap-6 px-2">
               <input
                 type="text"
@@ -131,15 +130,15 @@ const SimulatorCard2 = ({ className, onValidate }: SimulatorCard2Props) => {
                 onChange={handleCepChange}
                 disabled={isLoading}
                 placeholder={
-                  isLoading ? "Buscando..." : "Digite o CEP, cidade, bairro..."
+                  isLoading ? "Buscando..." : "Digite o CEP, cidade..."
                 }
-                className={`input-autofill-fix w-[280px] rounded-[10px] border-2 border-white/80 bg-white/5 p-3 text-center text-lg text-white placeholder-white/60 shadow-lg backdrop-blur-sm transition-all focus:border-yellow-400 focus:bg-white/10 focus:outline-none ${isLoading ? "cursor-wait opacity-50" : ""}`}
+                className={`input-autofill-fix w-full max-w-[280px] rounded-[10px] border-2 border-white/80 bg-white/5 p-3 text-center text-base text-white placeholder-white/60 shadow-lg backdrop-blur-sm transition-all focus:border-yellow-400 focus:bg-white/10 focus:outline-none lg:text-lg ${isLoading ? "cursor-wait opacity-50" : ""}`}
               />
 
               <button
                 onClick={handleUseLocation}
                 disabled={isLoading}
-                className="group -mt-3 flex cursor-pointer items-center justify-center gap-1 text-lg font-medium text-yellow-400 transition-colors hover:text-yellow-300 disabled:cursor-not-allowed disabled:opacity-50"
+                className="group -mt-2 flex cursor-pointer items-center justify-center gap-1 text-base font-medium text-emerald-500 transition-colors hover:text-emerald-300 lg:-mt-3 lg:text-lg"
               >
                 {isLoading ? (
                   <Loader2 className="h-5 w-5 animate-spin" />

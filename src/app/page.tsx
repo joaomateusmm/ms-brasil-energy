@@ -10,7 +10,6 @@ import Footer from "@/components/footer";
 // --- 2. IMPORTS DE COMPONENTES ORGANIZADOS ---
 import HeroSection1 from "@/components/HeroSection1";
 import HeroSection5 from "@/components/HeroSection5";
-import MobileWarning from "@/components/MobileWarning";
 import ModelSection from "@/components/ModelSection";
 import PartnersSection from "@/components/PartnersSection";
 import Simulator from "@/components/Simulator";
@@ -63,25 +62,17 @@ export default function Home() {
 
   return (
     <main className="scroll-smooth text-white">
-      {/* Aviso Mobile (Se quiseres ativar, descomenta a linha abaixo) */}
-      {/* <MobileWarning /> */}
-
       <div className="w-full">
-        {/* Componente 1: Hero Section */}
         <HeroSection1 onScrollToSimulacao={handleScrollToSimulacao} />
 
-        {/* Componente: Simulador */}
-        <section id="simulacao" className="h-screen bg-[#F4F4F4]">
+        <section id="simulacao" className="bg-[#F4F4F4]">
           <Simulator />
         </section>
 
-        {/* Componente 2: Seção Solar (Cards Horizontais) */}
         <SolarBenefitsSection />
 
-        {/* Componente 3: Tech vs Nature */}
         <TechNatureSection />
 
-        {/* Restante dos Componentes */}
         <VideoSection />
         <ModelSection />
         <HeroSection5 />

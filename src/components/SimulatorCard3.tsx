@@ -124,7 +124,7 @@ const SimulatorCard3 = ({
           </h1>
           <p className="text-sm font-semibold text-neutral-500">
             Você deve adicionar um valor acima de{" "}
-            <span className="text-yellow-400">R$ 150,00</span> para continuar
+            <span className="text-emerald-500">R$ 150,00</span> para continuar
             com a simulação.
           </p>
         </div>
@@ -135,23 +135,25 @@ const SimulatorCard3 = ({
   return (
     <div
       ref={wrapperRef}
-      className="relative flex cursor-default items-center justify-center pt-[270px]"
+      className="relative flex cursor-default items-center justify-center pt-0 lg:pt-[270px]"
       style={{ perspective: "1000px" }}
     >
       <div
         ref={cardRef}
-        className={`relative flex h-[560px] w-[413px] shrink-0 cursor-default flex-col items-center overflow-hidden rounded-3xl border-2 border-transparent bg-black/10 p-8 shadow-[0_0px_8px_rgba(0,0,0,0.2)] backdrop-blur-2xl ${className}`}
+        className={`relative flex min-h-[400px] w-full shrink-0 cursor-default flex-col items-center overflow-hidden rounded-3xl border-2 border-transparent bg-black/10 p-6 shadow-lg backdrop-blur-2xl lg:h-[560px] lg:w-[413px] lg:p-8 ${className}`}
       >
         <div
           ref={contentRef}
-          className="relative z-10 flex h-full w-full flex-col items-center justify-center pt-8 will-change-transform"
+          className="relative z-10 flex h-full w-full flex-col items-center justify-center pt-4 will-change-transform lg:pt-8"
         >
-          <h2 className="font-clash-display text-center text-2xl leading-tight font-semibold text-white drop-shadow-md">
+          <h2 className="font-clash-display text-center text-xl leading-tight font-semibold text-white drop-shadow-md lg:text-2xl">
             Quanto é o seu gasto <br /> médio{" "}
-            <span className="text-yellow-400">mensal</span> com <br /> conta de
+            <span className="text-emerald-500">mensal</span> com <br /> conta de
             luz?
           </h2>
-          <div className="my-10 h-[2px] w-[80%] rounded-full bg-white shadow-sm"></div>
+
+          <div className="my-8 h-[2px] w-[80%] rounded-full bg-white shadow-sm lg:my-10"></div>
+
           <div className="flex w-full flex-col items-center gap-4 px-2">
             <input
               type="text"
@@ -159,9 +161,9 @@ const SimulatorCard3 = ({
               value={inputValue}
               onChange={handleInputChange}
               onBlur={handleBlur}
-              className="w-[280px] rounded-[10px] border-2 border-white/80 bg-white/5 p-3 text-center text-3xl font-bold text-white placeholder-white/40 shadow-lg backdrop-blur-sm transition-all focus:border-yellow-400 focus:bg-white/10 focus:outline-none"
+              className="w-full max-w-[280px] rounded-[10px] border-2 border-white/80 bg-white/5 p-3 text-center text-2xl font-bold text-white placeholder-white/40 shadow-lg backdrop-blur-sm transition-all focus:border-emerald-500 focus:bg-white/10 focus:outline-none lg:text-3xl"
             />
-            <p className="mt-2 text-center text-sm font-medium text-yellow-400 drop-shadow-md">
+            <p className="mt-2 text-center text-sm font-medium text-emerald-500 drop-shadow-md">
               *Dados fornecidos na sua conta de luz
             </p>
           </div>
