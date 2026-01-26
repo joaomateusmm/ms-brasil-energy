@@ -132,7 +132,7 @@ const SimulatorCard2 = ({ className, onValidate }: SimulatorCard2Props) => {
                 placeholder={
                   isLoading ? "Buscando..." : "Digite o CEP, cidade..."
                 }
-                className={`input-autofill-fix w-full max-w-[280px] rounded-[10px] border-2 border-white/80 bg-white/5 p-3 text-center text-base text-white placeholder-white/60 shadow-lg backdrop-blur-sm transition-all focus:border-yellow-400 focus:bg-white/10 focus:outline-none lg:text-lg ${isLoading ? "cursor-wait opacity-50" : ""}`}
+                className={`input-autofill-fix w-full max-w-[280px] rounded-[10px] border-2 border-white/80 bg-white/5 p-3 text-center text-base text-white placeholder-white/60 shadow-lg backdrop-blur-sm transition-all focus:border-emerald-500 focus:bg-white/10 focus:outline-none lg:text-lg ${isLoading ? "cursor-wait opacity-50" : ""}`}
               />
 
               <button
