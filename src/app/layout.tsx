@@ -1,5 +1,6 @@
 import "./globals.css";
 
+import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import localFont from "next/font/local";
@@ -36,14 +37,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-br">
-      <body
-        className={`${montserrat.variable} ${clash.variable} scroll-smooth antialiased`}
-      >
-        <FloatingScrollbar />
-        {children}
-        <Toaster position="top-right" />
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="pt-br">
+        <body
+          className={`${montserrat.variable} ${clash.variable} scroll-smooth antialiased`}
+        >
+          <FloatingScrollbar />
+          {children}
+          <Toaster position="top-right" />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

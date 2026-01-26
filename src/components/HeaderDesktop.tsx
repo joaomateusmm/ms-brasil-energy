@@ -1,4 +1,6 @@
-import { ChevronDown, PhoneCall, Search, ShoppingCart } from "lucide-react";
+// src/components/HeaderDesktop.tsx
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { ChevronDown, PhoneCall } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -128,6 +130,21 @@ export default function HeaderDesktop() {
             >
               Fazer Simulação
             </Link>
+          </div>
+          <div className="flex items-center gap-4">
+            {/* Mostra APENAS se o usuário NÃO estiver logado */}
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button className="rounded-xl bg-emerald-500 px-6 py-2 font-bold text-white transition hover:bg-emerald-600">
+                  Entrar
+                </button>
+              </SignInButton>
+            </SignedOut>
+
+            {/* Mostra APENAS se o usuário JÁ estiver logado */}
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
           </div>
         </div>
       </div>

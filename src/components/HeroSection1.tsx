@@ -9,9 +9,7 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import HeaderDesktop from "@/components/HeaderDesktop";
 import HeaderMobile from "@/components/HeaderMobile";
 
-interface HeroSection1Props {
-  onScrollToSimulacao: (e: React.MouseEvent<HTMLAnchorElement>) => void;
-}
+// REMOVI A INTERFACE DE PROPS POIS NÃO PRECISAMOS MAIS DELA
 
 const newsData = [
   {
@@ -34,9 +32,7 @@ const newsData = [
   },
 ];
 
-export default function HeroSection1({
-  onScrollToSimulacao,
-}: HeroSection1Props) {
+export default function HeroSection1() {
   const heroSectionRef = useRef<HTMLElement>(null);
   const heroContainerRef = useRef<HTMLDivElement>(null);
   const [heroVisible, setHeroVisible] = useState<boolean>(true);
@@ -44,6 +40,15 @@ export default function HeroSection1({
 
   // Estados para animação suave de troca de texto
   const [fadeClass, setFadeClass] = useState("opacity-100");
+
+  // --- NOVA FUNÇÃO DE SCROLL INTERNA ---
+  const handleScrollToSimulacao = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const section = document.getElementById("simulacao");
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -147,7 +152,7 @@ export default function HeroSection1({
           <div className="hero-anim mt-8 opacity-0">
             <a
               href="#simulacao"
-              onClick={onScrollToSimulacao}
+              onClick={handleScrollToSimulacao} // Agora usa a função interna
               className="group flex items-center gap-2 rounded-3xl bg-emerald-500 px-8 py-4 text-base font-bold text-white shadow-lg shadow-emerald-500/20 duration-300 hover:-translate-y-0.5 active:scale-95"
             >
               <span className="font-montserrat">Conheça Nosso Trabalho</span>
@@ -160,7 +165,7 @@ export default function HeroSection1({
               <p className="font-montserrat mt-2 text-xs font-medium text-neutral-300">
                 Últimas Notícias - Clique para ler:
               </p>
-              {/* CARD 1: NOTÍCIAS (ESTABILIZADO) */}
+              {/* CARD 1: NOTÍCIAS */}
               <Link
                 href={currentNews.link}
                 className="animate-in fade-in flex h-[160px] w-full cursor-pointer items-center gap-5 rounded-2xl border border-white/10 bg-white/10 p-6 backdrop-blur-md transition-all duration-300 hover:bg-white/20 md:w-96 md:pr-8"
@@ -175,7 +180,6 @@ export default function HeroSection1({
                 </div>
 
                 <div className="flex h-full flex-col justify-center text-left">
-                  {/* Container de texto com transição de opacidade */}
                   <div
                     className={`transition-opacity duration-300 ${fadeClass}`}
                   >
@@ -191,12 +195,11 @@ export default function HeroSection1({
               </Link>
             </div>
 
-            {/* CARD 2: INSTAGRAM (MANTIDO E COM A MESMA ALTURA FIXA) */}
+            {/* CARD 2: INSTAGRAM */}
             <Link
               href="https://www.instagram.com/seuperfil"
               target="_blank"
               rel="noopener noreferrer"
-              // Adicionei h-[160px] para igualar a altura fixa do card de notícias
               className="flex h-[160px] w-full cursor-pointer items-center gap-5 rounded-2xl border border-white/10 bg-white/10 p-6 backdrop-blur-md transition-all duration-500 hover:bg-white/20 md:mt-6 md:w-96 md:pr-8"
             >
               <div className="flex shrink-0 -space-x-3">
@@ -206,7 +209,7 @@ export default function HeroSection1({
                     className="h-10 w-10 overflow-hidden rounded-full border-2 border-white/20 bg-gray-500"
                   >
                     <Image
-                      src={`/assets/page1/avatar-${i}.png`}
+                      src={`/assets/page1/avatar-${i}.webp`}
                       alt="Avatar"
                       width={40}
                       height={40}

@@ -210,10 +210,6 @@ export default function ResultModal({
     }
   };
 
-  const handleContactChange = (method: string) => {
-    setFormData((prev) => ({ ...prev, contato: method }));
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (

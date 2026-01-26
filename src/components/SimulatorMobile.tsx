@@ -2,7 +2,6 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Lock } from "lucide-react";
-import Image from "next/image";
 import { useState } from "react";
 
 import IntegrationCard from "@/components/SimulatorCard";
