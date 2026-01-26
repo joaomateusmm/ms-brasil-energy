@@ -3,10 +3,9 @@
 import gsap from "gsap";
 import { ChevronsRight, Instagram } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link"; // IMPORTADO O LINK
+import Link from "next/link";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-// Imports dos Headers
 import HeaderDesktop from "@/components/HeaderDesktop";
 import HeaderMobile from "@/components/HeaderMobile";
 
@@ -14,25 +13,24 @@ interface HeroSection1Props {
   onScrollToSimulacao: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
-// === DADOS DAS NOTÍCIAS (Card Esquerdo) ===
 const newsData = [
   {
     title: "Energia solar cresce 31,4% em Janeiro.",
     desc: "A produção de energia solar das usinas fotovoltaicas conectadas ao Sistema Interligado Nacional (SIN) cresceu 31,4%...  Ler Mais. ",
     image: "/assets/page2/img-3.webp",
-    link: "https://www.portalsolar.com.br/noticias/operacao-e-expansao/geracao-de-energia-solar-cresce-31-4-na-primeira-quinzena-de-janeiro", // 🔴 AQUI: Coloque o link da notícia 1
+    link: "https://www.portalsolar.com.br/noticias/operacao-e-expansao/geracao-de-energia-solar-cresce-31-4-na-primeira-quinzena-de-janeiro",
   },
   {
     title: "Taxação do sol: o que é e como funciona essa tarifa?",
     desc: "A taxação do sol não é um imposto sobre a energia solar. Trata-se da cobrança gradual pelo uso dos fios de distribuição...  Ler Mais. ",
     image: "/assets/page2/img-1.webp",
-    link: "https://www.portalsolar.com.br/taxacao-do-sol", // 🔴 AQUI: Coloque o link da notícia 2
+    link: "https://www.portalsolar.com.br/taxacao-do-sol",
   },
   {
     title: "Sol mais forte, atenção redobra.",
     desc: "O verão é marcado por sol intenso, dias mais longos e temperaturas elevadas. Para o setor de energia solar, esse período ...  Ler Mais.",
     image: "/assets/page2/img-2.webp",
-    link: "/blog/sustentabilidade", // 🔴 AQUI: Coloque o link da notícia 3
+    link: "/blog/sustentabilidade",
   },
 ];
 
@@ -42,46 +40,45 @@ export default function HeroSection1({
   const heroSectionRef = useRef<HTMLElement>(null);
   const heroContainerRef = useRef<HTMLDivElement>(null);
   const [heroVisible, setHeroVisible] = useState<boolean>(true);
-
-  // === LÓGICA DO CARROSSEL DE NOTÍCIAS ===
   const [currentNewsIndex, setCurrentNewsIndex] = useState(0);
 
-  useEffect(() => {
-    // Troca a notícia a cada 10 segundos (conforme seu código anterior)
-    const interval = setInterval(() => {
-      setCurrentNewsIndex((prevIndex) => (prevIndex + 1) % newsData.length);
-    }, 8000);
+  // Estados para animação suave de troca de texto
+  const [fadeClass, setFadeClass] = useState("opacity-100");
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // 1. Inicia o fade out
+      setFadeClass("opacity-0");
+
+      // 2. Espera a animação de saída terminar (300ms) para trocar os dados
+      setTimeout(() => {
+        setCurrentNewsIndex((prevIndex) => (prevIndex + 1) % newsData.length);
+        // 3. Inicia o fade in
+        setFadeClass("opacity-100");
+      }, 300);
+    }, 8000);
     return () => clearInterval(interval);
   }, []);
 
   const currentNews = newsData[currentNewsIndex];
 
-  // --- OBSERVER ---
   useEffect(() => {
     const target = heroSectionRef.current;
     if (!target) return;
-
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          setHeroVisible(entry.isIntersecting);
-        });
+        entries.forEach((entry) => setHeroVisible(entry.isIntersecting));
       },
       { threshold: 0 },
     );
-
     observer.observe(target);
     return () => observer.disconnect();
   }, []);
 
-  // --- ANIMAÇÃO GSAP ---
   useLayoutEffect(() => {
     if (!heroVisible || !heroContainerRef.current) return;
-
     const ctx = gsap.context(() => {
       const elements = gsap.utils.toArray(".hero-anim");
-
       gsap.fromTo(
         elements,
         { y: 50, opacity: 0 },
@@ -95,18 +92,15 @@ export default function HeroSection1({
         },
       );
     }, heroContainerRef);
-
     return () => ctx.revert();
   }, [heroVisible]);
 
   return (
     <section
       ref={heroSectionRef}
-      className="relative h-screen w-full overflow-hidden bg-gray-900"
+      className="relative min-h-screen w-full overflow-hidden bg-gray-900 pb-20 lg:pb-0"
     >
-      {/* 1. IMAGEM DE FUNDO (Background Responsivo) */}
       <div className="absolute inset-0 z-0">
-        {/* === IMAGEM MOBILE (Aparece só em telas pequenas) === */}
         <div className="block h-full w-full md:hidden">
           <Image
             src="/assets/page1/bg-mobile.jpg"
@@ -116,8 +110,6 @@ export default function HeroSection1({
             priority
           />
         </div>
-
-        {/* === IMAGEM DESKTOP (Aparece só em telas médias/grandes) === */}
         <div className="hidden h-full w-full md:block">
           <Image
             src="/assets/page1/bg-pc.jpg"
@@ -129,7 +121,6 @@ export default function HeroSection1({
         </div>
       </div>
 
-      {/* 2. HEADERS (Desktop & Mobile) */}
       <div className="relative z-50">
         <div className="hidden lg:block">
           <HeaderDesktop />
@@ -139,24 +130,20 @@ export default function HeroSection1({
         </div>
       </div>
 
-      {/* 3. CONTEÚDO CENTRAL */}
       {heroVisible && (
         <div
           ref={heroContainerRef}
-          className="relative z-10 flex h-full w-full flex-col items-center justify-center px-4 pt-20 text-center"
+          className="relative z-10 flex h-full w-full flex-col items-center justify-center px-4 pt-32 text-center"
         >
-          {/* Título Principal */}
           <h1 className="hero-anim font-montserrat max-w-4xl text-4xl leading-tight font-bold tracking-tight text-white opacity-0 md:max-w-7xl md:text-6xl lg:text-7xl">
             Criando um Futuro Sustentável com Energia Solar.
           </h1>
 
-          {/* Subtítulo */}
-          <p className="hero-anim font-montserrat mt-6 max-w-2xl text-lg text-white/90 opacity-0 md:text-xl">
+          <p className="hero-anim font-montserrat text-md mt-6 max-w-2xl text-white/90 opacity-0 md:text-xl">
             Descubra como a energia solar pode transformar a sua casa ou
             empresa, reduzindo custos em até 85%.
           </p>
 
-          {/* Botão de Ação */}
           <div className="hero-anim mt-8 opacity-0">
             <a
               href="#simulacao"
@@ -168,41 +155,50 @@ export default function HeroSection1({
             </a>
           </div>
 
-          {/* 4. CARDS FLUTUANTES (MODIFICADOS) */}
-          <div className="hero-anim mt-16 flex w-full max-w-5xl flex-col items-center gap-4 px-4 opacity-0 md:mt-24 md:flex-row md:justify-center">
-            {/* CARD 1: NOTÍCIAS (SEU CÓDIGO MANTIDO) */}
-            <Link
-              href={currentNews.link}
-              key={currentNewsIndex}
-              className="animate-in fade-in flex min-h-[140px] w-full cursor-pointer items-center gap-5 rounded-2xl border border-white/10 bg-white/10 p-6 backdrop-blur-md duration-500 hover:bg-white/20 md:w-96 md:pr-8"
-            >
-              <div className="relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white/20">
-                <Image
-                  src={currentNews.image}
-                  alt="Notícia"
-                  fill
-                  className="object-cover"
-                />
-              </div>
+          <div className="hero-anim mt-16 flex w-full max-w-5xl flex-col items-center justify-center gap-4 px-4 opacity-0 md:mt-24 md:flex-row md:justify-center">
+            <div className="flex flex-col items-start justify-center">
+              <p className="font-montserrat mt-2 text-xs font-medium text-neutral-300">
+                Últimas Notícias - Clique para ler:
+              </p>
+              {/* CARD 1: NOTÍCIAS (ESTABILIZADO) */}
+              <Link
+                href={currentNews.link}
+                className="animate-in fade-in flex h-[160px] w-full cursor-pointer items-center gap-5 rounded-2xl border border-white/10 bg-white/10 p-6 backdrop-blur-md transition-all duration-300 hover:bg-white/20 md:w-96 md:pr-8"
+              >
+                <div className="relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white/20">
+                  <Image
+                    src={currentNews.image}
+                    alt="Notícia"
+                    fill
+                    className={`object-cover transition-opacity duration-300 ${fadeClass}`}
+                  />
+                </div>
 
-              <div className="flex flex-col justify-center text-left">
-                <h3 className="font-montserrat text-base font-bold text-emerald-500">
-                  {currentNews.title}
-                </h3>
-                <div className="my-2 w-full border-t border-white/10"></div>
-                <p className="font-montserrat line-clamp-5 text-xs leading-relaxed text-white/80">
-                  {currentNews.desc}
-                </p>
-              </div>
-            </Link>
+                <div className="flex h-full flex-col justify-center text-left">
+                  {/* Container de texto com transição de opacidade */}
+                  <div
+                    className={`transition-opacity duration-300 ${fadeClass}`}
+                  >
+                    <h3 className="font-montserrat line-clamp-1 text-base font-bold text-emerald-500">
+                      {currentNews.title}
+                    </h3>
+                    <div className="my-2 w-full border-t border-white/10"></div>
+                    <p className="font-montserrat line-clamp-3 text-xs leading-relaxed text-white/80">
+                      {currentNews.desc}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            </div>
 
+            {/* CARD 2: INSTAGRAM (MANTIDO E COM A MESMA ALTURA FIXA) */}
             <Link
-              href="https://www.instagram.com/seuperfil" // 🔴 AQUI: Coloque o link do seu Instagram
-              target="_blank" // Abre em nova aba
-              rel="noopener noreferrer" // Segurança para links externos
-              className="flex min-h-[140px] w-full cursor-pointer items-center gap-5 rounded-2xl border border-white/10 bg-white/10 p-6 backdrop-blur-md transition-all duration-500 hover:bg-white/20 md:w-96 md:pr-8"
+              href="https://www.instagram.com/seuperfil"
+              target="_blank"
+              rel="noopener noreferrer"
+              // Adicionei h-[160px] para igualar a altura fixa do card de notícias
+              className="flex h-[160px] w-full cursor-pointer items-center gap-5 rounded-2xl border border-white/10 bg-white/10 p-6 backdrop-blur-md transition-all duration-500 hover:bg-white/20 md:mt-6 md:w-96 md:pr-8"
             >
-              {/* Avatares */}
               <div className="flex shrink-0 -space-x-3">
                 {[1, 2, 3].map((i) => (
                   <div
@@ -210,7 +206,7 @@ export default function HeroSection1({
                     className="h-10 w-10 overflow-hidden rounded-full border-2 border-white/20 bg-gray-500"
                   >
                     <Image
-                      src={`/assets/page1/avatar-${i}.webp`}
+                      src={`/assets/page1/avatar-${i}.png`}
                       alt="Avatar"
                       width={40}
                       height={40}
@@ -218,13 +214,11 @@ export default function HeroSection1({
                     />
                   </div>
                 ))}
-                {/* Indicador de quantidade */}
                 <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white/20 bg-emerald-500 text-[10px] font-bold text-[#0F2830]">
                   5k+
                 </div>
               </div>
 
-              {/* Texto Instagram */}
               <div className="flex w-full flex-col justify-center text-left">
                 <div className="flex items-center gap-2">
                   <Instagram className="h-4 w-4 text-emerald-500" />
@@ -232,10 +226,7 @@ export default function HeroSection1({
                     Instagram
                   </span>
                 </div>
-
-                {/* Linha divisória */}
                 <div className="my-2 w-full border-t border-white/10"></div>
-
                 <p className="font-montserrat text-xs leading-relaxed text-white/80">
                   Mais de{" "}
                   <span className="font-bold text-white">

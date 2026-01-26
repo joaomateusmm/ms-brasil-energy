@@ -66,7 +66,7 @@ export default function SimulatorDesktop({
         y: 100,
         opacity: 0,
         duration: 1.5,
-        delay: 0.8,
+        delay: 2.3,
         ease: "power4.out",
       });
 
