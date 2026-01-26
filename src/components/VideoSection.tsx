@@ -84,7 +84,10 @@ export default function VideoSection() {
       <div className="absolute inset-0 bg-black/20" />
 
       {/* Texto de exemplo para visualizar o efeito */}
-      <h1 className="font-clash-display relative z-10 text-6xl font-bold text-white/20">
+      <h1 className="font-clash-display relative z-10 hidden text-6xl font-bold text-white/20 md:flex">
+        O Futuro é Agora
+      </h1>
+      <h1 className="font-clash-display relative z-10 flex text-center text-4xl font-bold text-white/20 md:hidden">
         O Futuro é Agora
       </h1>
     </section>

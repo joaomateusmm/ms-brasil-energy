@@ -6,8 +6,6 @@ import { ChevronsDown } from "lucide-react";
 import Image from "next/image";
 import React, { useLayoutEffect, useRef } from "react";
 
-import ImageTrail from "@/components/ImageTrail"; // Ajuste o caminho
-
 gsap.registerPlugin(ScrollTrigger);
 
 export default function SolarBenefitsSection() {
@@ -131,26 +129,6 @@ export default function SolarBenefitsSection() {
         ref={solarContainerRef}
         className="page-2 relative z-20 flex h-screen w-full items-center overflow-hidden bg-[#f4f4f4]"
       >
-        {/* Fundo ImageTrail */}
-        <div
-          style={{ height: "500px", position: "relative", overflow: "hidden" }}
-          className="absolute inset-0 z-30 h-full w-full overflow-hidden"
-        >
-          <ImageTrail
-            items={[
-              "/assets/page2/trail/trail-1.png",
-              "/assets/page2/trail/trail-5.png",
-              "/assets/page2/trail/trail-8.png",
-              "/assets/page2/trail/trail-3.png",
-              "/assets/page2/trail/trail-4.png",
-              "/assets/page2/trail/trail-2.png",
-              "/assets/page2/trail/trail-7.png",
-              "/assets/page2/trail/trail-6.png",
-            ]}
-            variant={5}
-          />
-        </div>
-
         <div
           ref={solarWrapperRef}
           className="horizontal-wrapper relative flex h-full flex-nowrap items-center gap-[10vw] pr-[25vw] pl-[12vw] will-change-transform"

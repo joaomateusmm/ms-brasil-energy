@@ -61,7 +61,7 @@ export default function Home() {
   };
 
   return (
-    <main className="scroll-smooth text-white">
+    <main className="scroll-smooth bg-[#f4f4f4] text-white">
       <div className="w-full">
         <HeroSection1 onScrollToSimulacao={handleScrollToSimulacao} />
 
