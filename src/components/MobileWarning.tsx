@@ -1,4 +1,4 @@
-import { Laptop, Monitor, Smartphone } from "lucide-react";
+import { Laptop, Monitor } from "lucide-react";
 import React from "react";
 
 export default function MobileWarning() {

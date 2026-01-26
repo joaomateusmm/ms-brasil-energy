@@ -1,6 +1,6 @@
 "use client";
 
-import { Image as ImageIcon, MapPin, X } from "lucide-react";
+import { Image as ImageIcon, MapPin } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 
