@@ -29,8 +29,10 @@ export default function Home() {
         <VideoSection />
 
         <ModelSection />
-
-        <HeroSection5 />
+        
+        <section id="projetos">
+          <HeroSection5 />
+        </section>
 
         <PartnersSection />
 

@@ -133,13 +133,13 @@ export default function Footer() {
 
         <div className="flex flex-wrap gap-4 md:gap-8">
           <a
-            href="#"
+            href="/politica-de-privacidade"
             className="transition-colors duration-200 hover:text-emerald-500 hover:underline"
           >
             Política de Privacidade
           </a>
           <a
-            href="#"
+            href="/termos-de-uso"
             className="transition-colors duration-200 hover:text-emerald-500 hover:underline"
           >
             Termos de Uso
@@ -148,9 +148,9 @@ export default function Footer() {
       </div>
 
       {/* Texto Grande Decorativo no Fundo */}
-      <div className="pointer-events-none absolute bottom-0 left-0 w-full overflow-hidden opacity-[0.03] select-none">
-        <h1 className="font-clash-display translate-y-[20%] text-center text-[22vw] leading-none font-bold text-black">
-          SOLAR
+      <div className="pointer-events-none absolute bottom-0 left-0 w-full overflow-hidden opacity-[0.01] select-none">
+        <h1 className="font-clash-display translate-y-[20%] text-center text-[16vw] leading-none font-bold text-black">
+          MS BRASIL
         </h1>
       </div>
     </footer>

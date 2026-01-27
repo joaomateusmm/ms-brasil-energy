@@ -1,19 +1,24 @@
 // src/components/HeaderDesktop.tsx
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
-import { ChevronDown, PhoneCall } from "lucide-react";
+"use client";
+
+import {
+  ClerkLoaded,
+  ClerkLoading,
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from "@clerk/nextjs";
+import { ChevronDown, Loader2, PhoneCall, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function HeaderDesktop() {
-  // === CONFIGURAÇÃO CENTRAL DOS MENUS ===
-  // Aqui é onde personalizas tudo.
-  // Se 'subMenu' estiver vazio [], o dropdown não aparece.
-  // Se tiver itens, eles aparecem na lista.
   const navItems = [
     {
       name: "Home",
       href: "/",
-      subMenu: [], // Sem dropdown
+      subMenu: [],
     },
     {
       name: "Sobre Nós",
@@ -41,7 +46,6 @@ export default function HeaderDesktop() {
   ];
 
   return (
-    // Header principal
     <header className="absolute top-0 left-0 z-50 w-full border-b border-white/20 text-white backdrop-blur-sm">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
         {/* === 1. ESQUERDA: LOGO === */}
@@ -56,8 +60,8 @@ export default function HeaderDesktop() {
           </div>
         </Link>
 
-        {/* === 2. CENTRO: NAVEGAÇÃO (DINÂMICA) === */}
-        <nav className="hidden lg:block">
+        {/* === 2. CENTRO: NAVEGAÇÃO === */}
+        <nav className="-mr-8 hidden lg:block">
           <ul className="flex items-center gap-6 text-sm font-medium">
             {navItems.map((item) => (
               <li key={item.name} className="group relative py-6">
@@ -66,17 +70,14 @@ export default function HeaderDesktop() {
                   className="flex items-center gap-1 text-white/80 transition-colors hover:text-emerald-400"
                 >
                   {item.name}
-                  {/* Verifica se a lista subMenu tem itens para mostrar a setinha */}
                   {item.subMenu.length > 0 && (
                     <ChevronDown className="h-4 w-4 transition-transform group-hover:rotate-180" />
                   )}
                 </Link>
 
-                {/* Renderiza o Dropdown APENAS se houver itens no subMenu */}
                 {item.subMenu.length > 0 && (
                   <div className="invisible absolute top-full left-0 mt-0 w-48 translate-y-2 rounded-lg border border-white/10 bg-[#0c1f26] p-2 opacity-0 shadow-xl transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
                     <ul className="flex flex-col gap-1">
-                      {/* Aqui fazemos um segundo loop para os itens internos */}
                       {item.subMenu.map((subItem, index) => (
                         <li key={index}>
                           <Link
@@ -110,29 +111,51 @@ export default function HeaderDesktop() {
           {/* Divisória vertical */}
           <div className="hidden h-8 w-px bg-white/10 lg:block"></div>
 
-          {/* Ícones e Botão */}
-          <div className="flex items-center gap-4">
+          {/* CONTEINER DE BOTÕES UNIFICADO */}
+          <div className="flex items-center gap-3">
+            {/* Botão Fazer Simulação */}
             <Link
               href="#simulacao"
-              className="hidden rounded-4xl bg-emerald-500 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 duration-300 hover:-translate-y-0.5 hover:bg-emerald-400 hover:active:scale-95 lg:block"
+              className="hidden rounded-full bg-emerald-500 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-emerald-400 hover:shadow-emerald-500/40 active:scale-95 lg:block"
             >
               Fazer Simulação
             </Link>
-          </div>
-          <div className="flex items-center gap-4">
-            {/* Mostra APENAS se o usuário NÃO estiver logado */}
-            <SignedOut>
-              <SignInButton mode="modal">
-                <button className="rounded-xl bg-emerald-500 px-6 py-2 font-bold text-white transition hover:bg-emerald-600">
-                  Entrar
-                </button>
-              </SignInButton>
-            </SignedOut>
 
-            {/* Mostra APENAS se o usuário JÁ estiver logado */}
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
+            {/* Botão de Auth (Circular e Alinhado) */}
+            <div className="flex items-center">
+              <ClerkLoading>
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5">
+                  <Loader2 className="h-4 w-4 animate-spin text-white/50" />
+                </div>
+              </ClerkLoading>
+
+              <ClerkLoaded>
+                <SignedOut>
+                  <SignInButton mode="modal">
+                    <button
+                      className="group hover:border-bg-white/15 ml-2 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/5 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/10 active:scale-95"
+                      title="Entrar na sua conta"
+                    >
+                      <User className="h-5 w-5 text-white transition-colors group-hover:text-white" />
+                    </button>
+                  </SignInButton>
+                </SignedOut>
+
+                <SignedIn>
+                  <div className="ml-2 flex h-10 w-10 items-center justify-center">
+                    <UserButton
+                      afterSignOutUrl="/"
+                      appearance={{
+                        elements: {
+                          avatarBox:
+                            "h-10 w-10 scale-130 ring-2 ring-white/10 hover:ring-emerald-500 transition-all",
+                        },
+                      }}
+                    />
+                  </div>
+                </SignedIn>
+              </ClerkLoaded>
+            </div>
           </div>
         </div>
       </div>

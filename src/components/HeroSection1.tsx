@@ -41,15 +41,6 @@ export default function HeroSection1() {
   // Estados para animação suave de troca de texto
   const [fadeClass, setFadeClass] = useState("opacity-100");
 
-  // --- NOVA FUNÇÃO DE SCROLL INTERNA ---
-  const handleScrollToSimulacao = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    const section = document.getElementById("simulacao");
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   useEffect(() => {
     const interval = setInterval(() => {
       // 1. Inicia o fade out
@@ -138,7 +129,7 @@ export default function HeroSection1() {
       {heroVisible && (
         <div
           ref={heroContainerRef}
-          className="relative z-10 flex h-full w-full flex-col items-center justify-center px-4 pt-32 text-center"
+          className="relative z-10 flex h-full w-full flex-col items-center justify-center px-4 pt-35 text-center md:pt-45"
         >
           <h1 className="hero-anim font-montserrat max-w-4xl text-4xl leading-tight font-bold tracking-tight text-white opacity-0 md:max-w-7xl md:text-6xl lg:text-7xl">
             Criando um Futuro Sustentável com Energia Solar.
@@ -152,7 +143,6 @@ export default function HeroSection1() {
           <div className="hero-anim mt-8 opacity-0">
             <a
               href="#projetos"
-              onClick={handleScrollToSimulacao} // Agora usa a função interna
               className="group flex items-center gap-2 rounded-3xl bg-emerald-500 px-8 py-4 text-base font-bold text-white shadow-lg shadow-emerald-500/20 duration-300 hover:-translate-y-0.5 active:scale-95"
             >
               <span className="font-montserrat">Conheça Nosso Trabalho</span>
@@ -162,7 +152,7 @@ export default function HeroSection1() {
 
           <div className="hero-anim mt-16 flex w-full max-w-5xl flex-col items-center justify-center gap-4 px-4 opacity-0 md:mt-24 md:flex-row md:justify-center">
             <div className="flex flex-col items-start justify-center">
-              <p className="font-montserrat mt-2 text-xs font-medium text-neutral-300">
+              <p className="font-montserrat mt-2 mb-1 text-xs font-medium text-neutral-300">
                 Últimas Notícias - Clique para ler:
               </p>
               {/* CARD 1: NOTÍCIAS */}

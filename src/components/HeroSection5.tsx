@@ -17,10 +17,7 @@ export default async function HeroSection5() {
     .limit(6);
 
   return (
-    <section
-      id="projetos"
-      className="relative z-50 w-full bg-[#191919] px-6 py-20 text-white md:px-20"
-    >
+    <section className="relative z-50 w-full bg-[#191919] px-6 py-20 text-white md:px-20">
       {/* --- CABEÇALHO --- */}
       <div className="mx-auto mb-16 max-w-3xl text-center">
         <h2 className="font-clash-display mb-4 text-4xl font-semibold md:text-5xl">
@@ -34,7 +31,7 @@ export default async function HeroSection5() {
 
       {/* --- GRID DE PROJETOS --- */}
       {dbProjects.length > 0 ? (
-        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 md:grid-cols-3">
           {dbProjects.map((project: Project) => (
             // Passamos o objeto inteiro do projeto para o componente cliente
             <ProjectCard key={project.id} project={project} />

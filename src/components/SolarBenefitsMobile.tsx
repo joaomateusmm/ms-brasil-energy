@@ -1,9 +1,66 @@
 "use client";
 
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
-import React from "react";
+import React, { useLayoutEffect, useRef } from "react";
 
 export default function SolarBenefitsMobile() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // ANIMAÇÃO DOS CARDS (Imagem -> Texto)
+  useLayoutEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      // Seleciona todos os cards
+      const cards = gsap.utils.toArray<HTMLElement>(".benefit-card");
+
+      cards.forEach((card, index) => {
+        // Define a direção (Esquerda ou Direita)
+        const xOffset = index % 2 === 0 ? -50 : 50;
+
+        // Seleciona os elementos internos do card atual
+        const imageContainer = card.querySelector(".benefit-image");
+        const textContainer = card.querySelector(".benefit-text");
+
+        // Cria uma timeline para sequenciar: Imagem -> Texto
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: card,
+            start: "top 85%", // Inicia quando o topo do card entra na tela
+            toggleActions: "play none none reverse",
+          },
+        });
+
+        // 1. Anima a Imagem
+        tl.fromTo(
+          imageContainer,
+          { opacity: 0, x: xOffset },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 1,
+            ease: "power3.out",
+          },
+        );
+        tl.fromTo(
+          textContainer,
+          { opacity: 0, x: xOffset }, // O texto vem da mesma direção
+          {
+            opacity: 1,
+            x: 0,
+            duration: 1,
+            ease: "power3.out",
+          },
+          "-=0.8", // Começa 0.2s APÓS o início da imagem (1s - 0.8s = 0.2s de "atraso visual")
+        );
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   const benefits = [
     {
       id: "01",
@@ -39,10 +96,11 @@ export default function SolarBenefitsMobile() {
 
   return (
     <section
+      ref={sectionRef}
       id="solar-mobile"
-      className="relative w-full bg-[#f4f4f4] px-6 py-16"
+      className="relative w-full overflow-hidden bg-[#f4f4f4] px-6 py-16"
     >
-      {/* INTRODUÇÃO */}
+      {/* INTRODUÇÃO (Pode ter uma animação simples também se quiser) */}
       <div className="mb-12 flex flex-col gap-4">
         <span className="text-xs font-semibold tracking-[3px] text-gray-800 uppercase overline">
           Energia do Futuro
@@ -59,11 +117,14 @@ export default function SolarBenefitsMobile() {
       </div>
 
       {/* LISTA DE CARDS */}
-      <div className="flex flex-col gap-12">
+      <div className="flex flex-col gap-16">
         {benefits.map((item) => (
-          <div key={item.id} className="flex flex-col gap-4">
-            {/* Imagem */}
-            <div className="relative h-64 w-full overflow-hidden rounded-2xl shadow-lg">
+          <div
+            key={item.id}
+            className="benefit-card flex flex-col gap-4" // Wrapper principal
+          >
+            {/* Imagem (Alvo 1) */}
+            <div className="benefit-image relative h-64 w-full overflow-hidden rounded-2xl opacity-0 shadow-lg">
               <Image
                 src={item.img}
                 alt={item.title}
@@ -72,8 +133,8 @@ export default function SolarBenefitsMobile() {
               />
             </div>
 
-            {/* Texto */}
-            <div>
+            {/* Texto (Alvo 2) */}
+            <div className="benefit-text opacity-0">
               <div className="mb-2 flex items-center gap-4">
                 <span className="text-4xl font-bold text-emerald-500 drop-shadow-sm">
                   {item.id}.

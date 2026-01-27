@@ -63,8 +63,8 @@ export function AdminProjectCard({ project }: AdminProjectCardProps) {
         />
         {/* Badge do Tipo de Sistema */}
         {project.systemType && (
-          <div className="absolute top-3 right-3 rounded-full border border-white/10 bg-black/70 px-3 py-1 backdrop-blur-md">
-            <span className="text-[10px] font-bold tracking-wider text-emerald-500 uppercase">
+          <div className="absolute top-3 right-3 flex items-center justify-center rounded-full border border-white/10 bg-black/70 backdrop-blur-md">
+            <span className="px-3 py-1 text-xs font-bold tracking-wider text-emerald-500 uppercase">
               {project.systemType}
             </span>
           </div>
