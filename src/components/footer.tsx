@@ -45,7 +45,7 @@ export default function Footer() {
     >
       {/* --- Parte Superior: Chamada para Ação --- */}
       <div className="flex flex-col gap-12 border-b border-black/10 pb-12 lg:flex-row lg:items-start lg:justify-between lg:pb-20">
-        <div className="max-w-2xl">
+        <div className="max-w-3xl">
           <h2 className="footer-item font-clash-display text-4xl leading-[1.1] font-semibold md:text-6xl lg:text-7xl">
             Vamos construir um <br />
             <span className="text-emerald-500">futuro sustentável.</span>

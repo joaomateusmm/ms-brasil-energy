@@ -109,7 +109,7 @@ export default function PartnersSection() {
               </h2>
             </div>
 
-            <p className="partner-text border-l-4 border-[#ffd700] pl-6 text-lg leading-relaxed text-gray-600 md:text-xl">
+            <p className="partner-text border-l-4 border-emerald-500 pl-6 text-lg leading-relaxed text-gray-600 md:text-xl">
               Temos orgulho de colaborar com líderes da indústria que
               compartilham a nossa paixão por um futuro sustentável e eficiente.
               Juntos, levamos energia limpa para cada canto do país.
