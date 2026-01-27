@@ -143,7 +143,7 @@ export default function SolarBenefitsSection() {
               <h1 className="main-title text-shadow-lg-dark m-0 text-[3.2rem] leading-[1.1] font-bold text-gray-800 lg:text-[4.5rem]">
                 Que vale a pena,
                 <br />
-                <span className="highlight text-shadow-lg-light text-[#ffd700] italic">
+                <span className="highlight text-shadow-lg-light text-emerald-500 italic">
                   você já sabe.
                 </span>
               </h1>
@@ -171,7 +171,7 @@ export default function SolarBenefitsSection() {
             <div className="img img-1 mb-5 h-[300px] w-full rounded-[10px] bg-[url('/assets/page2/img-1.webp')] bg-cover bg-center"></div>
             <div className="texts w-full opacity-0">
               <div className="titles my-[10px] flex flex-row items-center justify-between gap-[30px]">
-                <h1 className="number m-0 text-[3.5rem] font-bold text-[#ffd700] text-shadow-md">
+                <h1 className="number m-0 text-[3.5rem] font-bold text-emerald-500 text-shadow-md">
                   01.
                 </h1>
                 <h1 className="title m-0 text-end text-[1.8rem] font-bold text-gray-800 text-shadow-md">
@@ -191,7 +191,7 @@ export default function SolarBenefitsSection() {
           <div className="card card-2 invisible relative z-40 flex h-[600px] w-[20vw] shrink-0 translate-y-[100px] flex-col opacity-0">
             <div className="texts w-full opacity-0">
               <div className="titles my-[10px] flex flex-row items-center justify-between gap-[30px]">
-                <h1 className="number m-0 text-[3.5rem] font-bold text-[#ffd700] text-shadow-md">
+                <h1 className="number m-0 text-[3.5rem] font-bold text-emerald-500 text-shadow-md">
                   02.
                 </h1>
                 <h1 className="title m-0 text-end text-[1.8rem] font-bold text-gray-800 text-shadow-md">
@@ -211,7 +211,7 @@ export default function SolarBenefitsSection() {
             <div className="img img-3 mb-5 h-[500px] w-full rounded-[10px] bg-[url('/assets/page2/img-3.webp')] bg-cover bg-center"></div>
             <div className="texts w-full opacity-0">
               <div className="titles my-[10px] flex flex-row items-center justify-between gap-[30px]">
-                <h1 className="number m-0 text-[3.5rem] font-bold text-[#ffd700] text-shadow-md">
+                <h1 className="number m-0 text-[3.5rem] font-bold text-emerald-500 text-shadow-md">
                   03.
                 </h1>
                 <h1 className="title m-0 text-end text-[1.8rem] font-bold text-gray-800 text-shadow-md">
@@ -230,7 +230,7 @@ export default function SolarBenefitsSection() {
             <div className="img img-4 mb-5 h-[400px] w-full rounded-[10px] bg-[url('/assets/page2/img-4.webp')] bg-cover bg-center"></div>
             <div className="texts w-full opacity-0">
               <div className="titles my-[10px] flex flex-row items-center justify-between gap-[30px]">
-                <h1 className="number m-0 text-[3.5rem] font-bold text-[#ffd700] text-shadow-md">
+                <h1 className="number m-0 text-[3.5rem] font-bold text-emerald-500 text-shadow-md">
                   04.
                 </h1>
                 <h1 className="title m-0 text-end text-[1.8rem] font-bold text-gray-800 text-shadow-md">
@@ -248,7 +248,7 @@ export default function SolarBenefitsSection() {
           <div className="card card-4 invisible relative z-40 flex h-[600px] w-[25vw] shrink-0 -translate-y-[24px] flex-col opacity-0">
             <div className="texts w-full opacity-0">
               <div className="titles my-[10px] flex flex-row items-center justify-between gap-[30px]">
-                <h1 className="number m-0 text-[3.5rem] font-bold text-[#ffd700] text-shadow-md">
+                <h1 className="number m-0 text-[3.5rem] font-bold text-emerald-500 text-shadow-md">
                   05.
                 </h1>
                 <h1 className="title m-0 text-end text-[1.8rem] font-bold text-gray-800 text-shadow-md">
@@ -269,7 +269,7 @@ export default function SolarBenefitsSection() {
               <div className="titles my-[10px] flex flex-row items-center gap-[30px]">
                 <h1 className="title font-clash-display m-0 text-end text-[3.3rem] font-bold text-gray-800 text-shadow-md">
                   Vem com a gente,{" "}
-                  <span className="highlight font-clash-display text-[#ffd700] italic text-shadow-md">
+                  <span className="highlight font-clash-display text-emerald-500 italic text-shadow-md">
                     o futuro é solar!
                   </span>
                 </h1>

@@ -17,37 +17,25 @@ export default function HeaderDesktop() {
     },
     {
       name: "Sobre Nós",
-      href: "/sobre",
-      subMenu: [
-        { title: "Nossa História", href: "/historia" },
-        { title: "Equipe", href: "/equipe" },
-        { title: "Certificações", href: "/certificacoes" },
-      ],
-    },
-    {
-      name: "Serviços",
-      href: "/servicos",
-      subMenu: [
-        { title: "Energia Solar Residencial", href: "/residencial" },
-        { title: "Energia Comercial", href: "/comercial" },
-        { title: "Manutenção", href: "/manutencao" },
-        { title: "Instalação", href: "/instalacao" },
-      ],
+      href: "/sobre-nos",
+      subMenu: [],
     },
     {
       name: "Projetos",
-      href: "/projetos",
-      subMenu: [
-        { title: "Casos de Sucesso", href: "/casos" },
-        { title: "Galeria de Fotos", href: "/galeria" },
-      ],
+      href: "#projetos",
+      subMenu: [],
     },
     {
-      name: "Notícias",
-      href: "/blog",
+      name: "Simulação",
+      href: "#simulacao",
+      subMenu: [],
+    },
+    {
+      name: "Social",
+      href: "/",
       subMenu: [
-        { title: "Artigos Recentes", href: "/blog/recentes" },
-        { title: "Tendências de Mercado", href: "/blog/mercado" },
+        { title: "WhatsApp", href: "https://wa.link/lfkh22" },
+        { title: "Email", href: "/" },
       ],
     },
   ];

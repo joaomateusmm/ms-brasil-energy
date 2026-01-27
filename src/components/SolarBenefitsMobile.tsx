@@ -49,7 +49,7 @@ export default function SolarBenefitsMobile() {
         </span>
         <h1 className="text-4xl leading-tight font-bold text-gray-800">
           Que vale a pena, <br />
-          <span className="text-[#ffd700] italic">você já sabe.</span>
+          <span className="text-emerald-500 italic">você já sabe.</span>
         </h1>
         <p className="text-lg text-[#5a5a5a]">
           Mas separamos aqui as{" "}
@@ -75,7 +75,7 @@ export default function SolarBenefitsMobile() {
             {/* Texto */}
             <div>
               <div className="mb-2 flex items-center gap-4">
-                <span className="text-4xl font-bold text-[#ffd700] drop-shadow-sm">
+                <span className="text-4xl font-bold text-emerald-500 drop-shadow-sm">
                   {item.id}.
                 </span>
                 <h2 className="text-xl leading-tight font-bold text-gray-800">
@@ -91,7 +91,7 @@ export default function SolarBenefitsMobile() {
         <div className="mt-8 flex flex-col items-center gap-6 text-center">
           <h2 className="font-clash-display text-4xl font-bold text-gray-800">
             Vem com a gente, <br />
-            <span className="text-[#ffd700] italic">o futuro é solar!</span>
+            <span className="text-emerald-500 italic">o futuro é solar!</span>
           </h2>
           <p className="text-sm font-medium text-[#8b8b8b]">
             Ajude o planeta e gaste menos no final do mês.

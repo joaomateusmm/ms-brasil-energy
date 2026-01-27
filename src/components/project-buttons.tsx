@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronsDown, PhoneCall } from "lucide-react";
+import Link from "next/link";
 
 export function ProjectActionButtons() {
   // FUNÇÃO DE SCROLL
@@ -14,10 +15,12 @@ export function ProjectActionButtons() {
 
   return (
     <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-      <button className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-emerald-600 px-8 py-4 font-semibold text-white shadow-lg shadow-emerald-500/20 duration-300 hover:scale-105 hover:bg-emerald-500 active:scale-95 sm:w-auto">
-        <PhoneCall className="h-4 w-4" />
-        Falar com Consultor
-      </button>
+      <Link href="https://wa.link/emsgix">
+        <button className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-emerald-600 px-8 py-4 font-semibold text-white shadow-lg shadow-emerald-500/20 duration-300 hover:scale-105 hover:bg-emerald-500 active:scale-95 sm:w-auto">
+          <PhoneCall className="h-4 w-4" />
+          Falar com Consultor
+        </button>
+      </Link>
 
       <a
         href="#simulacao"

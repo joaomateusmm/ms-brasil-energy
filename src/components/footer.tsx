@@ -48,19 +48,19 @@ export default function Footer() {
   return (
     <footer
       ref={footerRef}
-      className="relative z-50 w-full bg-[#191919] px-8 pt-24 pb-12 text-white md:px-20"
+      className="relative z-50 w-full bg-[#f4f4f4] px-8 pt-24 pb-12 text-neutral-800 md:px-20"
     >
       {/* --- Parte Superior: Chamada para Ação --- */}
       <div className="flex flex-col items-start justify-between gap-12 border-b border-white/10 pb-20 lg:flex-row">
         <div className="max-w-3xl">
           <h2 className="footer-item font-clash-display mb-6 text-5xl leading-[1.1] font-semibold md:text-7xl">
             Vamos construir um <br />
-            <span className="text-[#ffd700]">futuro sustentável.</span>
+            <span className="text-emerald-500">futuro sustentável.</span>
           </h2>
 
-          <button className="footer-item group mt-8 flex items-center gap-4 text-xl font-medium text-white transition-all duration-300 hover:text-[#ffd700]">
+          <button className="footer-item group mt-8 flex items-center gap-4 text-xl font-medium text-black transition-all duration-300 hover:text-emerald-500">
             <span className="relative">Fazer Orçamento Agora</span>
-            <span className="flex h-12 w-12 items-center justify-center rounded-full border border-white/20 transition-all duration-300 group-hover:border-[#ffd700] group-hover:bg-[#ffd700] group-hover:text-black">
+            <span className="flex h-12 w-12 items-center justify-center rounded-full border border-white/20 transition-all duration-300 group-hover:border-emerald-500 group-hover:bg-emerald-500 group-hover:text-black">
               <MoveRight className="h-5 w-5 -rotate-45 transition-transform duration-300 group-hover:rotate-0" />
             </span>
           </button>
@@ -70,30 +70,47 @@ export default function Footer() {
         <div className="footer-item flex flex-col gap-16 sm:flex-row sm:gap-24">
           {/* Coluna 1 */}
           <div className="flex flex-col gap-6">
-            <h3 className="font-clash-display text-lg font-semibold tracking-wide text-white/40 uppercase">
+            <h3 className="font-clash-display text-lg font-semibold tracking-wide text-emerald-500 uppercase">
               Menu
             </h3>
-            <ul className="flex flex-col gap-4 text-lg text-white/80">
+            <ul className="font-montserrat flex flex-col gap-2 text-lg font-medium text-black/80">
               <li>
-                <a href="#" className="transition-colors hover:text-[#ffd700]">
+                <a
+                  href="#"
+                  className="transition-colors hover:text-emerald-500"
+                >
                   Início
                 </a>
               </li>
               <li>
                 <a
-                  href="#solar"
-                  className="transition-colors hover:text-[#ffd700]"
+                  href="#simulacao"
+                  className="transition-colors hover:text-emerald-500"
                 >
-                  Vantagens
+                  Simulador de Energia
                 </a>
               </li>
               <li>
-                <a href="#" className="transition-colors hover:text-[#ffd700]">
-                  Produtos
+                <a
+                  href="#solar"
+                  className="transition-colors hover:text-emerald-500"
+                >
+                  Benefícios
                 </a>
               </li>
               <li>
-                <a href="#" className="transition-colors hover:text-[#ffd700]">
+                <a
+                  href="#projetos"
+                  className="transition-colors hover:text-emerald-500"
+                >
+                  Serviços
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/sobre-nos"
+                  className="transition-colors hover:text-emerald-500"
+                >
                   Sobre Nós
                 </a>
               </li>
@@ -102,22 +119,22 @@ export default function Footer() {
 
           {/* Coluna 2 */}
           <div className="flex flex-col gap-6">
-            <h3 className="font-clash-display text-lg font-semibold tracking-wide text-white/40 uppercase">
+            <h3 className="font-clash-display text-lg font-semibold tracking-wide text-emerald-500 uppercase">
               Social
             </h3>
-            <ul className="flex flex-col gap-4 text-lg text-white/80">
+            <ul className="font-montserrat flex flex-col gap-4 text-lg font-medium text-neutral-800">
               <li>
                 <a
-                  href="#"
-                  className="flex items-center gap-2 transition-colors hover:text-[#ffd700]"
+                  href="https://www.instagram.com/msbrasilenergy/"
+                  className="flex items-center gap-2 transition-colors hover:text-emerald-500"
                 >
                   <Instagram className="h-5 w-5" /> Instagram
                 </a>
               </li>
-              <li>
+              {/* <li>
                 <a
                   href="#"
-                  className="flex items-center gap-2 transition-colors hover:text-[#ffd700]"
+                  className="flex items-center gap-2 transition-colors hover:text-emerald-500"
                 >
                   <Linkedin className="h-5 w-5" /> LinkedIn
                 </a>
@@ -125,7 +142,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="flex items-center gap-2 transition-colors hover:text-[#ffd700]"
+                  className="flex items-center gap-2 transition-colors hover:text-emerald-500"
                 >
                   <Facebook className="h-5 w-5" /> Facebook
                 </a>
@@ -133,28 +150,34 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="flex items-center gap-2 transition-colors hover:text-[#ffd700]"
+                  className="flex items-center gap-2 transition-colors hover:text-emerald-500"
                 >
                   <Twitter className="h-5 w-5" /> Twitter
                 </a>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>
       </div>
 
       {/* --- Parte Inferior: Copyright --- */}
-      <div className="footer-item mt-12 flex flex-col items-center justify-between gap-6 text-sm text-white/30 md:flex-row">
+      <div className="footer-item mt-12 flex flex-col items-center justify-between gap-6 text-sm text-neutral-800 md:flex-row">
         <p>
           &copy; {new Date().getFullYear()} Solar Energy. Todos os direitos
           reservados.
         </p>
 
         <div className="flex gap-8">
-          <a href="#" className="transition-colors hover:text-white">
+          <a
+            href="#"
+            className="transition-colors duration-200 hover:text-emerald-500 hover:underline"
+          >
             Política de Privacidade
           </a>
-          <a href="#" className="transition-colors hover:text-white">
+          <a
+            href="#"
+            className="transition-colors duration-200 hover:text-emerald-500 hover:underline"
+          >
             Termos de Uso
           </a>
         </div>

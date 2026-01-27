@@ -17,7 +17,10 @@ export default async function HeroSection5() {
     .limit(6);
 
   return (
-    <section className="relative z-50 w-full bg-[#191919] px-6 py-20 text-white md:px-20">
+    <section
+      id="projetos"
+      className="relative z-50 w-full bg-[#191919] px-6 py-20 text-white md:px-20"
+    >
       {/* --- CABEÇALHO --- */}
       <div className="mx-auto mb-16 max-w-3xl text-center">
         <h2 className="font-clash-display mb-4 text-4xl font-semibold md:text-5xl">

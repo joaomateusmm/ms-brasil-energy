@@ -5,7 +5,6 @@ import Footer from "@/components/footer";
 import HeroSection1 from "@/components/HeroSection1";
 import HeroSection5 from "@/components/HeroSection5"; // Agora funciona (Server Component)
 import ModelSection from "@/components/ModelSection";
-import PartnersSection from "@/components/PartnersSection";
 import Simulator from "@/components/Simulator";
 // Wrapper de Animação
 import SmoothScroll from "@/components/SmoothScroll";
@@ -17,8 +16,7 @@ export default function Home() {
   return (
     <SmoothScroll>
       <main className="w-full">
-        {/* Hero 1 - (Ajuste o botão interno dele para rolar para #simulacao) */}
-        <HeroSection1  />
+        <HeroSection1 />
 
         <section id="simulacao" className="bg-[#F4F4F4]">
           <Simulator />
@@ -34,7 +32,7 @@ export default function Home() {
 
         <HeroSection5 />
 
-        <PartnersSection />
+        {/* <PartnersSection /> */}
 
         <Footer />
       </main>
