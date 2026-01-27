@@ -19,12 +19,11 @@ const robotoFlex = Roboto_Flex({
 
 // ... O resto do código permanece igual ...
 const partners = [
-  { name: "Partner 1", src: "/assets/page6/logo-1.png" },
-  { name: "Partner 2", src: "/assets/page6/logo-2.png" },
-  { name: "Partner 3", src: "/assets/page6/logo-3.png" },
-  { name: "Partner 4", src: "/assets/page6/logo-4.png" },
-  { name: "Partner 5", src: "/assets/page6/logo-5.png" },
-  { name: "Partner 6", src: "/assets/page6/logo-6.png" },
+  { name: "Partner 1", src: "/assets/page6/logo-1.webp" },
+  { name: "Partner 2", src: "/assets/page6/logo-2.webp" },
+  { name: "Partner 3", src: "/assets/page6/logo-3.webp" },
+  { name: "Partner 4", src: "/assets/page6/logo-4.webp" },
+  { name: "Partner 5", src: "/assets/page6/logo-5.webp" },
 ];
 
 export default function PartnersSection() {

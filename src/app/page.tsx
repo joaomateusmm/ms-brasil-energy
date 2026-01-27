@@ -3,10 +3,10 @@ import React from "react";
 // Components
 import Footer from "@/components/footer";
 import HeroSection1 from "@/components/HeroSection1";
-import HeroSection5 from "@/components/HeroSection5"; // Agora funciona (Server Component)
+import HeroSection5 from "@/components/HeroSection5";
 import ModelSection from "@/components/ModelSection";
+import PartnersSection from "@/components/PartnersSection";
 import Simulator from "@/components/Simulator";
-// Wrapper de Animação
 import SmoothScroll from "@/components/SmoothScroll";
 import SolarBenefitsSection from "@/components/SolarBenefitsSection";
 import TechNatureSection from "@/components/TechNatureSection";
@@ -32,7 +32,7 @@ export default function Home() {
 
         <HeroSection5 />
 
-        {/* <PartnersSection /> */}
+        <PartnersSection />
 
         <Footer />
       </main>
