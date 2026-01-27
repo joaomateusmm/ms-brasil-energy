@@ -28,7 +28,7 @@ const clash = localFont({
 export const metadata: Metadata = {
   title: "MS Brasil Energy - Soluções em Energia Solar Residencial e Comercial",
   description:
-    "A MS Brasil Energy projeta, instala e mantém sistemas fotovoltaicos sob medida para residências e empresas. Reduza sua conta de energia em até 85% com tecnologia de alta eficiência, opções de financiamento e suporte técnico local.",
+    "A MS Brasil Energy é uma empresa especializada em soluções energéticas, focada em transformar a maneira como Mato Grosso do Sul consome eletricidade.",
 };
 
 export default function RootLayout({

@@ -151,7 +151,7 @@ export default function HeroSection1() {
 
           <div className="hero-anim mt-8 opacity-0">
             <a
-              href="#simulacao"
+              href="#projetos"
               onClick={handleScrollToSimulacao} // Agora usa a função interna
               className="group flex items-center gap-2 rounded-3xl bg-emerald-500 px-8 py-4 text-base font-bold text-white shadow-lg shadow-emerald-500/20 duration-300 hover:-translate-y-0.5 active:scale-95"
             >

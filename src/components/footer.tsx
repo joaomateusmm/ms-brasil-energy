@@ -2,8 +2,7 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Instagram, MoveRight } from "lucide-react";
-import Link from "next/link";
+import { Instagram } from "lucide-react";
 import React, { useLayoutEffect, useRef } from "react";
 
 export default function Footer() {
