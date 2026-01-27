@@ -117,8 +117,7 @@ const SimulatorCard3 = ({
     const numericValue = parseFloat(rawValue) / 100;
 
     if (numericValue < 150) {
-      // CORREÇÃO AQUI: Mudei (t) para (_) para indicar ao TypeScript que a variável não será usada
-      toast.custom((_) => (
+      toast.custom(() => (
         <div className="animate-in slide-in-from-bottom-5 fade-in zoom-in-95 relative flex w-full max-w-md flex-col items-start rounded-xl border border-neutral-200 bg-white p-4 shadow-xl duration-300 ease-out">
           <h1 className="mb-1 text-sm font-semibold text-neutral-600">
             Valor Mínimo
