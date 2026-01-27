@@ -40,7 +40,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="pt-br">
         <body
-          className={`${montserrat.variable} ${clash.variable} scroll-smooth antialiased`}
+          className={`${montserrat.variable} ${clash.variable} overflow-x-hidden scroll-smooth antialiased`}
         >
           <FloatingScrollbar />
           {children}

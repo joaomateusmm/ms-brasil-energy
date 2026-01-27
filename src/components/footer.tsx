@@ -2,13 +2,8 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import {
-  Facebook,
-  Instagram,
-  Linkedin,
-  MoveRight,
-  Twitter,
-} from "lucide-react";
+import { Instagram, MoveRight } from "lucide-react";
+import Link from "next/link";
 import React, { useLayoutEffect, useRef } from "react";
 
 export default function Footer() {
@@ -18,25 +13,24 @@ export default function Footer() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      // Seleciona todos os elementos com a classe 'footer-item'
       const items = gsap.utils.toArray(".footer-item");
 
       gsap.fromTo(
         items,
         {
-          y: 50, // Começa 50px abaixo
-          opacity: 0, // Invisível
+          y: 30, // Reduzi um pouco o deslocamento para ficar mais sutil no mobile
+          opacity: 0,
         },
         {
           y: 0,
           opacity: 1,
-          duration: 1,
-          stagger: 0.1, // Um item aparece 0.1s depois do outro (efeito cascata)
+          duration: 0.8,
+          stagger: 0.1,
           ease: "power3.out",
           scrollTrigger: {
             trigger: footerRef.current,
-            start: "top 85%", // Inicia quando o topo do footer entra nos 85% da tela
-            toggleActions: "play none none reverse", // Toca ao entrar
+            start: "top 90%", // Inicia um pouco antes no mobile
+            toggleActions: "play none none reverse",
           },
         },
       );
@@ -48,32 +42,25 @@ export default function Footer() {
   return (
     <footer
       ref={footerRef}
-      className="relative z-50 w-full bg-[#f4f4f4] px-8 pt-24 pb-12 text-neutral-800 md:px-20"
+      className="relative z-50 w-full overflow-hidden bg-[#f4f4f4] px-6 pt-16 pb-8 text-neutral-800 md:px-12 lg:px-20 lg:pt-24 lg:pb-12"
     >
       {/* --- Parte Superior: Chamada para Ação --- */}
-      <div className="flex flex-col items-start justify-between gap-12 border-b border-white/10 pb-20 lg:flex-row">
-        <div className="max-w-3xl">
-          <h2 className="footer-item font-clash-display mb-6 text-5xl leading-[1.1] font-semibold md:text-7xl">
+      <div className="flex flex-col gap-12 border-b border-black/10 pb-12 lg:flex-row lg:items-start lg:justify-between lg:pb-20">
+        <div className="max-w-2xl">
+          <h2 className="footer-item font-clash-display text-4xl leading-[1.1] font-semibold md:text-6xl lg:text-7xl">
             Vamos construir um <br />
             <span className="text-emerald-500">futuro sustentável.</span>
           </h2>
-
-          <button className="footer-item group mt-8 flex items-center gap-4 text-xl font-medium text-black transition-all duration-300 hover:text-emerald-500">
-            <span className="relative">Fazer Orçamento Agora</span>
-            <span className="flex h-12 w-12 items-center justify-center rounded-full border border-white/20 transition-all duration-300 group-hover:border-emerald-500 group-hover:bg-emerald-500 group-hover:text-black">
-              <MoveRight className="h-5 w-5 -rotate-45 transition-transform duration-300 group-hover:rotate-0" />
-            </span>
-          </button>
         </div>
 
         {/* --- Navegação --- */}
-        <div className="footer-item flex flex-col gap-16 sm:flex-row sm:gap-24">
+        <div className="footer-item flex flex-col gap-10 sm:flex-row sm:gap-20 lg:gap-24">
           {/* Coluna 1 */}
-          <div className="flex flex-col gap-6">
-            <h3 className="font-clash-display text-lg font-semibold tracking-wide text-emerald-500 uppercase">
+          <div className="flex flex-col gap-4 lg:gap-6">
+            <h3 className="font-clash-display text-base font-semibold tracking-wide text-emerald-500 uppercase lg:text-lg">
               Menu
             </h3>
-            <ul className="font-montserrat flex flex-col gap-2 text-lg font-medium text-black/80">
+            <ul className="font-montserrat flex flex-col gap-3 text-base font-medium text-black/80 lg:gap-2 lg:text-lg">
               <li>
                 <a
                   href="#"
@@ -118,56 +105,34 @@ export default function Footer() {
           </div>
 
           {/* Coluna 2 */}
-          <div className="flex flex-col gap-6">
-            <h3 className="font-clash-display text-lg font-semibold tracking-wide text-emerald-500 uppercase">
+          <div className="flex flex-col gap-4 lg:gap-6">
+            <h3 className="font-clash-display text-base font-semibold tracking-wide text-emerald-500 uppercase lg:text-lg">
               Social
             </h3>
-            <ul className="font-montserrat flex flex-col gap-4 text-lg font-medium text-neutral-800">
+            <ul className="font-montserrat flex flex-col gap-3 text-base font-medium text-neutral-800 lg:gap-4 lg:text-lg">
               <li>
                 <a
                   href="https://www.instagram.com/msbrasilenergy/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex items-center gap-2 transition-colors hover:text-emerald-500"
                 >
                   <Instagram className="h-5 w-5" /> Instagram
                 </a>
               </li>
-              {/* <li>
-                <a
-                  href="#"
-                  className="flex items-center gap-2 transition-colors hover:text-emerald-500"
-                >
-                  <Linkedin className="h-5 w-5" /> LinkedIn
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="flex items-center gap-2 transition-colors hover:text-emerald-500"
-                >
-                  <Facebook className="h-5 w-5" /> Facebook
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="flex items-center gap-2 transition-colors hover:text-emerald-500"
-                >
-                  <Twitter className="h-5 w-5" /> Twitter
-                </a>
-              </li> */}
             </ul>
           </div>
         </div>
       </div>
 
       {/* --- Parte Inferior: Copyright --- */}
-      <div className="footer-item mt-12 flex flex-col items-center justify-between gap-6 text-sm text-neutral-800 md:flex-row">
+      <div className="footer-item mt-8 flex flex-col items-start gap-4 text-xs text-neutral-600 md:mt-12 md:flex-row md:items-center md:justify-between md:text-sm">
         <p>
           &copy; {new Date().getFullYear()} Solar Energy. Todos os direitos
           reservados.
         </p>
 
-        <div className="flex gap-8">
+        <div className="flex flex-wrap gap-4 md:gap-8">
           <a
             href="#"
             className="transition-colors duration-200 hover:text-emerald-500 hover:underline"
@@ -183,9 +148,9 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Texto Grande Decorativo no Fundo (Opcional - Estilo Lando) */}
-      <div className="pointer-events-none absolute bottom-0 left-0 w-full overflow-hidden opacity-[0.02] select-none">
-        <h1 className="font-clash-display translate-y-[30%] text-center text-[20vw] leading-none font-bold">
+      {/* Texto Grande Decorativo no Fundo */}
+      <div className="pointer-events-none absolute bottom-0 left-0 w-full overflow-hidden opacity-[0.03] select-none">
+        <h1 className="font-clash-display translate-y-[20%] text-center text-[22vw] leading-none font-bold text-black">
           SOLAR
         </h1>
       </div>

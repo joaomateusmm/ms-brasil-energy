@@ -15,7 +15,7 @@ import VideoSection from "@/components/VideoSection";
 export default function Home() {
   return (
     <SmoothScroll>
-      <main className="w-full">
+      <main className="w-full overflow-x-hidden">
         <HeroSection1 />
 
         <section id="simulacao" className="bg-[#F4F4F4]">
