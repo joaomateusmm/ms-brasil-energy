@@ -7,7 +7,6 @@ import { toast } from "sonner";
 interface SimulatorCard3Props {
   className?: string;
   onValidate?: (isValid: boolean) => void;
-  // NOVO: Função para enviar o valor monetário para o pai
   onValueChange?: (value: number) => void;
 }
 
@@ -22,26 +21,7 @@ const SimulatorCard3 = ({
   const cardRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  // --- Validação e Envio de Dados ---
-  useEffect(() => {
-    const rawValue = inputValue.replace(/\D/g, "");
-
-    // Converte para número float (ex: 15000 -> 150.00)
-    const numericValue = rawValue ? parseFloat(rawValue) / 100 : 0;
-
-    // 1. Envia validação (se >= 150)
-    if (onValidate) {
-      const isValid = numericValue >= 150;
-      onValidate(isValid);
-    }
-
-    // 2. Envia o valor real para o cálculo (NOVO)
-    if (onValueChange) {
-      onValueChange(numericValue);
-    }
-  }, [inputValue, onValidate, onValueChange]);
-
-  // ... (RESTO DO CÓDIGO DE ANIMAÇÃO GSAP PERMANECE IGUAL) ...
+  // --- ANIMAÇÃO GSAP ---
   useEffect(() => {
     if (!wrapperRef.current || !cardRef.current || !contentRef.current) return;
     const wrapper = wrapperRef.current;
@@ -97,18 +77,38 @@ const SimulatorCard3 = ({
     };
   }, []);
 
+  // --- LÓGICA PRINCIPAL CORRIGIDA ---
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // 1. Limpa e formata o input
     const rawValue = e.target.value.replace(/\D/g, "");
+
     if (!rawValue) {
       setInputValue("");
+      if (onValidate) onValidate(false); // Invalida se estiver vazio
+      if (onValueChange) onValueChange(0);
       return;
     }
+
+    // 2. Converte para número e formata BRL
     const amount = parseFloat(rawValue) / 100;
     const formatted = amount.toLocaleString("pt-BR", {
       style: "currency",
       currency: "BRL",
     });
+
     setInputValue(formatted);
+
+    // 3. Valida e Envia para o pai IMEDIATAMENTE (Sem useEffect)
+    // Regra: Valor >= 150
+    const isValid = amount >= 150;
+
+    if (onValidate) {
+      onValidate(isValid);
+    }
+
+    if (onValueChange) {
+      onValueChange(amount);
+    }
   };
 
   const handleBlur = () => {

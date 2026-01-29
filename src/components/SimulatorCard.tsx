@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface SimulatorCardProps {
   className?: string;
@@ -11,13 +11,6 @@ interface SimulatorCardProps {
 const SimulatorCard = ({ className, onValidate }: SimulatorCardProps) => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (onValidate) {
-      const isValid = selectedOption !== null;
-      onValidate(isValid);
-    }
-  }, [selectedOption, onValidate]);
-
   const options = [
     { id: "residencial", label: "Residencial", icon: "/icons/home.png" },
     { id: "empresarial", label: "Empresarial", icon: "/icons/skyline.png" },
@@ -25,10 +18,16 @@ const SimulatorCard = ({ className, onValidate }: SimulatorCardProps) => {
     { id: "sem_conexao", label: "Sem rede", icon: "/icons/energy.png" },
   ];
 
+  const handleSelect = (id: string) => {
+    setSelectedOption(id);
+    // Validação direta no clique: se selecionou algo, é válido (true)
+    if (onValidate) {
+      onValidate(true);
+    }
+  };
+
   return (
-    // WRAPPER: Removemos pt-[270px] no mobile, mantemos no desktop (lg:pt-[270px])
     <div className="relative flex cursor-default items-center justify-center pt-0 lg:pt-[270px]">
-      {/* O CARD VISUAL: Altura dinâmica no mobile, fixa no desktop */}
       <div
         className={`relative flex min-h-[400px] w-full shrink-0 flex-col items-center overflow-hidden rounded-3xl border-2 border-transparent bg-black/10 p-6 shadow-lg backdrop-blur-2xl lg:h-[560px] lg:w-[413px] lg:p-8 ${className}`}
       >
@@ -47,7 +46,7 @@ const SimulatorCard = ({ className, onValidate }: SimulatorCardProps) => {
                 className="flex flex-col items-center gap-2 lg:gap-3"
               >
                 <button
-                  onClick={() => setSelectedOption(opt.id)}
+                  onClick={() => handleSelect(opt.id)}
                   className={`relative flex h-20 w-20 cursor-pointer items-center justify-center rounded-2xl bg-white shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 lg:h-24 lg:w-24 ${
                     selectedOption === opt.id
                       ? "ring-3 ring-emerald-500"

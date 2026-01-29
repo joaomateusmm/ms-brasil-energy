@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
-import ResultModal from "@/components/ResultModal";
+import ResultModal from "@/components/ResultModal"; // Modal Desktop
+import ResultModalMobile from "@/components/ResultModalMobile"; // Modal Mobile
 import SimulatorDesktop from "@/components/SimulatorDesktop";
 import SimulatorMobile from "@/components/SimulatorMobile";
 
 export default function Simulator() {
-  // --- ESTADOS GERAIS (Compartilhados entre Mobile e Desktop) ---
+  // --- ESTADOS GERAIS ---
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [billValue, setBillValue] = useState<number>(0);
 
@@ -22,15 +23,15 @@ export default function Simulator() {
     (status) => status === true,
   );
 
-  const handleValidation = (
-    cardKey: "card1" | "card2" | "card3",
-    isValid: boolean,
-  ) => {
-    setFormStatus((prev) => {
-      if (prev[cardKey] === isValid) return prev;
-      return { ...prev, [cardKey]: isValid };
-    });
-  };
+  const handleValidation = useCallback(
+    (cardKey: "card1" | "card2" | "card3", isValid: boolean) => {
+      setFormStatus((prev) => {
+        if (prev[cardKey] === isValid) return prev;
+        return { ...prev, [cardKey]: isValid };
+      });
+    },
+    [],
+  );
 
   const sharedProps = {
     formStatus,
@@ -42,21 +43,27 @@ export default function Simulator() {
 
   return (
     <>
-      <ResultModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        monthlyBill={billValue}
-      />
+      {/* AQUI ESTÁ A LÓGICA DE TROCA DE MODAL:
+        Renderizamos os dois, mas usamos CSS para mostrar apenas um por vez.
+      */}
 
-      {/* RENDERIZAÇÃO CONDICIONAL VIA CSS */}
-
-      {/* 1. Versão Desktop (Escondida no Mobile) */}
+      {/* 1. Modal e Simulador DESKTOP (Visível apenas em telas grandes lg:block) */}
       <div className="hidden lg:block">
+        <ResultModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          monthlyBill={billValue}
+        />
         <SimulatorDesktop {...sharedProps} />
       </div>
 
-      {/* 2. Versão Mobile (Escondida no Desktop) */}
+      {/* 2. Modal e Simulador MOBILE (Visível apenas em telas pequenas lg:hidden) */}
       <div className="lg:hidden">
+        <ResultModalMobile
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          monthlyBill={billValue}
+        />
         <SimulatorMobile {...sharedProps} />
       </div>
     </>

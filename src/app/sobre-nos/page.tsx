@@ -9,6 +9,7 @@ import {
 import Link from "next/link";
 import React from "react";
 
+import FaqSection from "@/components/FaqSection";
 import Footer from "@/components/footer";
 import HeaderDesktop from "@/components/HeaderDesktop";
 import HeaderMobile from "@/components/HeaderMobile";
@@ -207,6 +208,10 @@ export default function SobreNosPage() {
           >
             Fazer Orçamento Agora
           </Link>
+        </section>
+
+        <section className="-mb-14 bg-[#f4f4f4]">
+          <FaqSection />
         </section>
 
         <Footer />

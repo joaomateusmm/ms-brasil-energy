@@ -1,23 +1,11 @@
 "use client";
 
-import {
-  Atom,
-  Battery,
-  CheckCircle2,
-  CloudSun,
-  Home,
-  Lightbulb,
-  MonitorCheck,
-  PlugZap,
-  ShieldCheck,
-  Sun,
-  Zap,
-  ZapOff,
-} from "lucide-react";
+import { Atom, CheckCircle2, ShieldCheck, Zap, ZapOff } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
+import FaqSection from "@/components/FaqSection";
 import Footer from "@/components/footer";
 import HeaderDesktop from "@/components/HeaderDesktop";
 import HeaderMobile from "@/components/HeaderMobile";
@@ -356,6 +344,8 @@ export default function SystemTypesPage() {
             </Link>
           </div>
         </section>
+
+        <FaqSection />
 
         <Footer />
       </main>

@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronRight, Loader2, LocateFixed } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface SimulatorCard2Props {
   className?: string;
@@ -9,24 +9,25 @@ interface SimulatorCard2Props {
 }
 
 const SimulatorCard2 = ({ className, onValidate }: SimulatorCard2Props) => {
-  // --- LÓGICA (ESTADOS) ---
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // --- VALIDAÇÃO AUTOMÁTICA ---
-  useEffect(() => {
+  // Helper para validar e notificar o pai imediatamente
+  const updateValueAndValidate = (newValue: string) => {
+    setInputValue(newValue);
     if (onValidate) {
-      const isValid = inputValue.length >= 8;
-      onValidate(isValid);
+      // Consideramos válido se tiver pelo menos 8 caracteres (tamanho de um CEP ou nome de cidade curto)
+      onValidate(newValue.length >= 8);
     }
-  }, [inputValue, onValidate]);
+  };
 
   // --- LÓGICA DE CEP (BrasilAPI) ---
   const handleCepChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
 
+    // Se estiver apagando, apenas atualiza
     if (value.length < inputValue.length) {
-      setInputValue(value);
+      updateValueAndValidate(value);
       return;
     }
 
@@ -38,7 +39,7 @@ const SimulatorCard2 = ({ className, onValidate }: SimulatorCard2Props) => {
       formattedValue = rawValue.replace(/^(\d{5})(\d)/, "$1-$2");
     }
 
-    setInputValue(formattedValue);
+    updateValueAndValidate(formattedValue);
 
     if (rawValue.length === 8) {
       setIsLoading(true);
@@ -50,7 +51,7 @@ const SimulatorCard2 = ({ className, onValidate }: SimulatorCard2Props) => {
 
         const data = await response.json();
         const address = `${data.street ? data.street + ", " : ""}${data.city} - ${data.state}`;
-        setInputValue(address);
+        updateValueAndValidate(address);
       } catch (error) {
         console.error("Erro ao buscar CEP", error);
       } finally {
@@ -79,7 +80,8 @@ const SimulatorCard2 = ({ className, onValidate }: SimulatorCard2Props) => {
           const state = addr.state || "";
           const road = addr.road || "";
           const fullAddress = `${road ? road + ", " : ""}${city} - ${state}`;
-          setInputValue(fullAddress);
+
+          updateValueAndValidate(fullAddress);
         } catch (error) {
           console.error("Erro no GPS", error);
         } finally {

@@ -4,7 +4,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ChevronRight, Lock } from "lucide-react";
 import Image from "next/image";
-import { useLayoutEffect, useRef } from "react";
+import { useCallback, useLayoutEffect, useRef } from "react";
 
 import IntegrationCard from "@/components/SimulatorCard";
 import IntegrationCard2 from "@/components/SimulatorCard2";
@@ -33,6 +33,22 @@ export default function SimulatorDesktop({
   const imageRef = useRef<HTMLDivElement>(null);
   const subTextRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
+
+  // Handlers otimizados
+  const onValidateCard1 = useCallback(
+    (isValid: boolean) => handleValidation("card1", isValid),
+    [handleValidation],
+  );
+
+  const onValidateCard2 = useCallback(
+    (isValid: boolean) => handleValidation("card2", isValid),
+    [handleValidation],
+  );
+
+  const onValidateCard3 = useCallback(
+    (isValid: boolean) => handleValidation("card3", isValid),
+    [handleValidation],
+  );
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -115,18 +131,14 @@ export default function SimulatorDesktop({
         {/* GRUPO 01 - Esquerda */}
         <div className="translate-y-[-50px]">
           <div className="card-anim-target flex flex-col items-center gap-6">
-            <IntegrationCard
-              onValidate={(isValid) => handleValidation("card1", isValid)}
-            />
+            <IntegrationCard onValidate={onValidateCard1} />
           </div>
         </div>
 
         {/* GRUPO 02 - Meio */}
         <div className="translate-y-[-25px]">
           <div className="card-anim-target flex flex-col items-center gap-6">
-            <IntegrationCard2
-              onValidate={(isValid) => handleValidation("card2", isValid)}
-            />
+            <IntegrationCard2 onValidate={onValidateCard2} />
 
             <button
               disabled={!isFormValid}
@@ -151,7 +163,7 @@ export default function SimulatorDesktop({
         <div className="translate-y-[-50px]">
           <div className="card-anim-target flex flex-col items-center gap-6">
             <IntegrationCard3
-              onValidate={(isValid) => handleValidation("card3", isValid)}
+              onValidate={onValidateCard3}
               onValueChange={setBillValue}
             />
           </div>

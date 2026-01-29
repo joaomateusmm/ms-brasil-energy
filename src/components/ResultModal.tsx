@@ -17,6 +17,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
+import Link from "next/link";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import {
@@ -371,7 +372,7 @@ Olá, gostaria de dar continuidade no meu projeto da Solar Energy!`;
                       <ImageDown />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent className="mb-2 bg-gray-800">
+                  <TooltipContent className="mb-2 bg-gray-800 text-white">
                     <p>Baixar Projeto</p>
                   </TooltipContent>
                 </Tooltip>
@@ -457,14 +458,16 @@ Olá, gostaria de dar continuidade no meu projeto da Solar Energy!`;
                   *Ao clicar em &quot;Enviar Solicitação&quot;, você concorda
                   com os{" "}
                   <span className="cursor-pointer text-emerald-500 underline">
-                    Termos de Privacidades{" "}
+                    <Link href="/politica-de-privacidade">
+                      Termos de Privacidades{" "}
+                    </Link>
                   </span>{" "}
                   da MS Brasil Energy.
                 </p>
               </div>
               <button
                 type="submit"
-                className="group mt-6 flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-emerald-500 py-4 text-lg font-bold text-white shadow-lg duration-300 hover:bg-yellow-500 hover:shadow-xl active:scale-[0.98]"
+                className="group mt-6 flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-emerald-500 py-4 text-lg font-bold text-white shadow-lg duration-300 hover:shadow-xl active:scale-[0.98]"
               >
                 <MessageCircle className="h-5 w-5 duration-300 group-hover:-translate-x-1" />
                 Enviar Solicitação
