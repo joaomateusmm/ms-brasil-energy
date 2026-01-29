@@ -2,7 +2,7 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Instagram } from "lucide-react";
+import { Facebook, Instagram } from "lucide-react";
 import React, { useLayoutEffect, useRef } from "react";
 
 export default function Footer() {
@@ -119,6 +119,16 @@ export default function Footer() {
                   <Instagram className="h-5 w-5" /> Instagram
                 </a>
               </li>
+              <li>
+                <a
+                  href="https://www.facebook.com/msbrasilenergy?mibextid=LQQJ4d&rdid=DwFU6nuDDll8081n&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1DRLxtYfL3%2F%3Fmibextid%3DLQQJ4d#"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 transition-colors hover:text-emerald-500"
+                >
+                  <Facebook className="h-5 w-5" /> Facebook
+                </a>
+              </li>
             </ul>
           </div>
         </div>
@@ -156,5 +166,3 @@ export default function Footer() {
     </footer>
   );
 }
-
-
