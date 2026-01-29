@@ -8,13 +8,43 @@ import {
   SignedOut,
   SignInButton,
   UserButton,
+  useUser,
 } from "@clerk/nextjs";
-import { ChevronDown, Loader2, PhoneCall, User } from "lucide-react";
+import {
+  ChevronDown,
+  Loader2,
+  PhoneCall,
+  ShieldCheck,
+  User,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+
+// 1. Definindo a Interface para tipagem correta
+interface NavItem {
+  name: string;
+  href: string;
+  subMenu: { title: string; href: string }[];
+  isAdminItem?: boolean; // Propriedade opcional
+}
 
 export default function HeaderDesktop() {
-  const navItems = [
+  const { user } = useUser();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    // Verificação segura de tipo para role
+    const role = user?.publicMetadata?.role;
+    if (role === "admin") {
+      setIsAdmin(true);
+    } else {
+      setIsAdmin(false);
+    }
+  }, [user]);
+
+  // 2. Tipando a lista base
+  const baseNavItems: NavItem[] = [
     {
       name: "Home",
       href: "/",
@@ -45,6 +75,19 @@ export default function HeaderDesktop() {
     },
   ];
 
+  // 3. Construindo a lista final
+  const navItems: NavItem[] = isAdmin
+    ? [
+        ...baseNavItems,
+        {
+          name: "Admin",
+          href: "/admin",
+          subMenu: [],
+          isAdminItem: true,
+        },
+      ]
+    : baseNavItems;
+
   return (
     <header className="absolute top-0 left-0 z-50 w-full border-b border-white/20 text-white backdrop-blur-sm">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
@@ -67,9 +110,15 @@ export default function HeaderDesktop() {
               <li key={item.name} className="group relative py-6">
                 <Link
                   href={item.href}
-                  className="flex items-center gap-1 text-white/80 transition-colors hover:text-emerald-400"
+                  // 4. Acesso direto à propriedade sem 'as any'
+                  className={`flex items-center gap-1 transition-colors ${
+                    item.isAdminItem
+                      ? "-ml-2 font-bold text-emerald-400 hover:text-emerald-300"
+                      : "text-white/80 hover:text-emerald-400"
+                  }`}
                 >
                   {item.name}
+
                   {item.subMenu.length > 0 && (
                     <ChevronDown className="h-4 w-4 transition-transform group-hover:rotate-180" />
                   )}
@@ -108,12 +157,9 @@ export default function HeaderDesktop() {
             </div>
           </div>
 
-          {/* Divisória vertical */}
           <div className="hidden h-8 w-px bg-white/10 lg:block"></div>
 
-          {/* CONTEINER DE BOTÕES UNIFICADO */}
           <div className="flex items-center gap-3">
-            {/* Botão Fazer Simulação */}
             <Link
               href="#simulacao"
               className="hidden rounded-full bg-emerald-500 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-emerald-400 hover:shadow-emerald-500/40 active:scale-95 lg:block"
@@ -121,7 +167,6 @@ export default function HeaderDesktop() {
               Fazer Simulação
             </Link>
 
-            {/* Botão de Auth (Circular e Alinhado) */}
             <div className="flex items-center">
               <ClerkLoading>
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5">
