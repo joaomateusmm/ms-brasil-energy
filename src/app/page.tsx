@@ -1,5 +1,6 @@
 import React from "react";
 
+import FaqSection from "@/components/FaqSection";
 // Components
 import Footer from "@/components/footer";
 import HeroSection1 from "@/components/HeroSection1";
@@ -29,10 +30,12 @@ export default function Home() {
         <VideoSection />
 
         <ModelSection />
-        
+
         <section id="projetos">
           <HeroSection5 />
         </section>
+
+        <FaqSection />
 
         <PartnersSection />
 

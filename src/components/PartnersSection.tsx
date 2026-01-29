@@ -69,7 +69,7 @@ export default function PartnersSection() {
       className="relative z-50 w-full overflow-hidden bg-[#f4f4f4] py-24 text-[#191919]"
     >
       {/* Elemento Decorativo de Fundo */}
-      <div className="pointer-events-none absolute top-0 left-0 h-full w-full overflow-hidden select-none">
+      <div className="pointer-events-none absolute top-0 left-0 hidden h-full w-full overflow-hidden select-none md:flex">
         <span className="font-clash-display absolute -top-10 -left-20 rotate-[-5deg] text-[20vw] leading-none font-bold text-[#e5e5e559] opacity-60">
           Parceiros
         </span>

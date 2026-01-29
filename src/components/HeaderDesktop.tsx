@@ -11,12 +11,14 @@ import {
   useUser,
 } from "@clerk/nextjs";
 import {
+  Check,
   ChevronDown,
+  Copy,
   Loader2,
   PhoneCall,
   ShieldCheck,
   User,
-} from "lucide-react";
+} from "lucide-react"; // Adicionei Check e Copy
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -32,6 +34,7 @@ interface NavItem {
 export default function HeaderDesktop() {
   const { user } = useUser();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [copied, setCopied] = useState(false); // Novo estado para controle da cópia
 
   useEffect(() => {
     // Verificação segura de tipo para role
@@ -42,6 +45,21 @@ export default function HeaderDesktop() {
       setIsAdmin(false);
     }
   }, [user]);
+
+  // Função para Copiar Email
+  const handleCopyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText("msbrasilenergy@gmail.com");
+      setCopied(true);
+
+      // Reseta o estado após 2 segundos
+      setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+    } catch (err) {
+      console.error("Falha ao copiar!", err);
+    }
+  };
 
   // 2. Tipando a lista base
   const baseNavItems: NavItem[] = [
@@ -66,12 +84,9 @@ export default function HeaderDesktop() {
       subMenu: [],
     },
     {
-      name: "Social",
-      href: "/",
-      subMenu: [
-        { title: "WhatsApp", href: "https://wa.link/lfkh22" },
-        { title: "Email", href: "/" },
-      ],
+      name: "Tipos de Sistemas",
+      href: "/tipos-de-sistemas",
+      subMenu: [],
     },
   ];
 
@@ -90,7 +105,7 @@ export default function HeaderDesktop() {
 
   return (
     <header className="absolute top-0 left-0 z-50 w-full border-b border-white/20 text-white backdrop-blur-sm">
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
+      <div className="mx-auto flex h-21 max-w-7xl items-center justify-between px-6">
         {/* === 1. ESQUERDA: LOGO === */}
         <Link href="/" className="flex items-center gap-3">
           <div className="relative h-14 w-18">
@@ -110,10 +125,9 @@ export default function HeaderDesktop() {
               <li key={item.name} className="group relative py-6">
                 <Link
                   href={item.href}
-                  // 4. Acesso direto à propriedade sem 'as any'
                   className={`flex items-center gap-1 transition-colors ${
                     item.isAdminItem
-                      ? "-ml-2 font-bold text-emerald-400 hover:text-emerald-300"
+                      ? "font-bold text-emerald-400 hover:text-emerald-300"
                       : "text-white/80 hover:text-emerald-400"
                   }`}
                 >
@@ -147,13 +161,48 @@ export default function HeaderDesktop() {
 
         {/* === 3. DIREITA: AÇÕES === */}
         <div className="flex items-center gap-6">
-          {/* Telefone */}
+          {/* Telefone e Email */}
           <div className="hidden flex-col items-end xl:flex">
             <div className="flex items-center gap-2 text-xs font-semibold text-white/60">
               <PhoneCall className="h-3 w-3" /> Nosso Contato:
             </div>
-            <div className="cursor-pointer text-sm font-bold text-white duration-300 hover:text-emerald-400 hover:underline">
-              <Link href="https://wa.link/lfkh22">+55 67 9912-5299</Link>
+
+            <div className="my-1 flex flex-col items-end gap-1">
+              {/* Link do WhatsApp */}
+              <Link
+                className="cursor-pointer text-[13px] font-bold text-white duration-300 hover:text-emerald-400 hover:underline"
+                href="https://wa.link/lfkh22"
+              >
+                +55 67 9912-5299
+              </Link>
+
+              {/* Ação de Copiar Email com Animação */}
+              <button
+                onClick={handleCopyEmail}
+                className="group flex items-center gap-1.5 text-[13px] font-bold text-white transition-all duration-300 hover:text-emerald-400"
+                title="Clique para copiar"
+              >
+                {/* Ícone que muda suavemente */}
+                <span className="relative h-3.5 w-3.5">
+                  <Copy
+                    className={`absolute inset-0 h-full w-full transition-all duration-300 ${
+                      copied ? "scale-0 opacity-0" : "scale-100 opacity-100"
+                    }`}
+                  />
+                  <Check
+                    className={`absolute inset-0 h-full w-full text-emerald-400 transition-all duration-300 ${
+                      copied ? "scale-100 opacity-100" : "scale-0 opacity-0"
+                    }`}
+                  />
+                </span>
+                <span
+                  className={`cursor-pointer transition-all duration-300 ${copied ? "text-emerald-400" : ""}`}
+                >
+                  {copied
+                    ? "msbrasilenergy@gmail.com"
+                    : "msbrasilenergy@gmail.com"}
+                </span>
+              </button>
             </div>
           </div>
 
