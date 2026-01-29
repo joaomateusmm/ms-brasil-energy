@@ -1,3 +1,4 @@
+// src/components/HeaderMobile.tsx
 "use client";
 
 import {
@@ -7,8 +8,17 @@ import {
   SignedOut,
   SignInButton,
   UserButton,
+  useUser, // Adicionado hook
 } from "@clerk/nextjs";
-import { ChevronDown, Loader2, Mail, Menu, PhoneCall, X } from "lucide-react";
+import {
+  ChevronDown,
+  Loader2,
+  Mail,
+  Menu,
+  PhoneCall,
+  ShieldCheck, // Adicionado ícone
+  X,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -18,16 +28,31 @@ interface SubMenuItem {
   href: string;
 }
 
+// Atualizada a interface para incluir a propriedade opcional
 interface NavItem {
   name: string;
   href: string;
   subMenu: SubMenuItem[];
+  isAdminItem?: boolean;
 }
 
 export default function HeaderMobile() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSubMenu, setActiveSubMenu] = useState<string | null>(null);
 
+  // Lógica de Admin
+  const { user } = useUser();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    if (user?.publicMetadata?.role === "admin") {
+      setIsAdmin(true);
+    } else {
+      setIsAdmin(false);
+    }
+  }, [user]);
+
+  // Fecha o menu no resize
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
@@ -38,6 +63,7 @@ export default function HeaderMobile() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Bloqueia scroll
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -49,13 +75,27 @@ export default function HeaderMobile() {
     };
   }, [isOpen]);
 
-  const navItems: NavItem[] = [
+  // Lista Base
+  const baseNavItems: NavItem[] = [
     { name: "Home", href: "/", subMenu: [] },
     { name: "Sobre Nós", href: "/sobre-nos", subMenu: [] },
     { name: "Projetos", href: "#projetos", subMenu: [] },
     { name: "Simulação", href: "#simulacao", subMenu: [] },
     { name: "Social :", href: "/", subMenu: [] },
   ];
+
+  // Lista Dinâmica (Com Admin)
+  const navItems: NavItem[] = isAdmin
+    ? [
+        ...baseNavItems,
+        {
+          name: "Admin",
+          href: "/admin",
+          subMenu: [],
+          isAdminItem: true,
+        },
+      ]
+    : baseNavItems;
 
   const toggleSubMenu = (name: string) => {
     setActiveSubMenu(activeSubMenu === name ? null : name);
@@ -161,8 +201,15 @@ export default function HeaderMobile() {
                       <Link
                         href={item.href}
                         onClick={() => setIsOpen(false)}
-                        className="block text-lg font-medium text-white/90 transition-colors hover:text-emerald-400"
+                        className={`flex items-center gap-2 text-lg transition-colors ${
+                          item.isAdminItem
+                            ? "font-bold text-emerald-400 hover:text-emerald-300"
+                            : "font-medium text-white/90 hover:text-emerald-400"
+                        }`}
                       >
+                        {item.isAdminItem && (
+                          <ShieldCheck className="h-5 w-5" />
+                        )}
                         {item.name}
                       </Link>
                     ) : (

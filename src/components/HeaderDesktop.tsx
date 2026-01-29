@@ -61,7 +61,7 @@ export default function HeaderDesktop() {
       subMenu: [],
     },
     {
-      name: "Simulação",
+      name: "Calculadora Solar",
       href: "#simulacao",
       subMenu: [],
     },
