@@ -6,6 +6,7 @@ import { toast } from "sonner";
 interface SimulatorCard3Props {
   className?: string;
   onValidate?: (isValid: boolean) => void;
+  // Esta função envia o valor numérico (ex: 450.50) para o componente pai
   onValueChange?: (value: number) => void;
 }
 
@@ -20,19 +21,19 @@ const SimulatorCard3 = ({
   const cardRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  // --- LÓGICA PRINCIPAL CORRIGIDA ---
+  // --- LÓGICA DE FORMATAÇÃO E ENVIO ---
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // 1. Limpa e formata o input
+    // 1. Limpa caracteres não numéricos
     const rawValue = e.target.value.replace(/\D/g, "");
 
     if (!rawValue) {
       setInputValue("");
-      if (onValidate) onValidate(false); // Invalida se estiver vazio
+      if (onValidate) onValidate(false);
       if (onValueChange) onValueChange(0);
       return;
     }
 
-    // 2. Converte para número e formata BRL
+    // 2. Converte para número (centavos para decimal) e formata como Moeda BRL
     const amount = parseFloat(rawValue) / 100;
     const formatted = amount.toLocaleString("pt-BR", {
       style: "currency",
@@ -41,14 +42,14 @@ const SimulatorCard3 = ({
 
     setInputValue(formatted);
 
-    // 3. Valida e Envia para o pai IMEDIATAMENTE (Sem useEffect)
-    // Regra: Valor >= 150
+    // 3. Validação: Regra de valor mínimo R$ 150,00
     const isValid = amount >= 150;
 
     if (onValidate) {
       onValidate(isValid);
     }
 
+    // 4. Envia o valor numérico "limpo" para o simulador principal calcular os resultados
     if (onValueChange) {
       onValueChange(amount);
     }
@@ -87,7 +88,7 @@ const SimulatorCard3 = ({
       >
         <div
           ref={contentRef}
-          className="relative z-10 flex h-full w-full flex-col items-center justify-center pt-4 will-change-transform lg:pt-8"
+          className="relative z-10 flex h-full w-full flex-col items-center justify-center pt-4 lg:pt-8"
         >
           <h2 className="font-clash-display text-center text-xl leading-tight font-semibold text-white drop-shadow-md lg:text-2xl">
             Quanto é o seu gasto <br /> médio{" "}

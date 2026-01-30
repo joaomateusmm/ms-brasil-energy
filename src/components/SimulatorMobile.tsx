@@ -16,6 +16,8 @@ interface SimulatorMobileProps {
     isValid: boolean,
   ) => void;
   setBillValue: (val: number) => void;
+  setLocationType: (val: string) => void; // Nova prop
+  setAddress: (val: string) => void; // Nova prop
   openModal: () => void;
   isFormValid: boolean;
 }
@@ -24,13 +26,15 @@ export default function SimulatorMobile({
   formStatus,
   handleValidation,
   setBillValue,
+  setLocationType,
+  setAddress,
   openModal,
   isFormValid,
 }: SimulatorMobileProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 3;
 
-  // Callbacks otimizados para evitar re-renderizações desnecessárias
+  // Callbacks otimizados
   const onValidateCard1 = useCallback(
     (isValid: boolean) => handleValidation("card1", isValid),
     [handleValidation],
@@ -78,10 +82,7 @@ export default function SimulatorMobile({
         ))}
       </div>
 
-      {/* ÁREA DO CARD COM ANIMAÇÃO (Ajuste de Centralização)
-         - mx-auto: Garante que o container fique no centro.
-         - max-w-[350px]: Tamanho ideal para não estourar telas pequenas.
-      */}
+      {/* ÁREA DO CARD COM ANIMAÇÃO */}
       <div className="relative z-50 mx-auto min-h-[450px] w-full max-w-[350px] px-2">
         <AnimatePresence mode="wait">
           {/* PASSO 1: Card 1 (Tipo de Local) */}
@@ -92,10 +93,12 @@ export default function SimulatorMobile({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -50 }}
               transition={{ duration: 0.3 }}
-              // absolute left-0 right-0 mx-auto: Centraliza o elemento absoluto
               className="absolute right-0 left-0 mx-auto w-full"
             >
-              <IntegrationCard onValidate={onValidateCard1} />
+              <IntegrationCard
+                onValidate={onValidateCard1}
+                onValueChange={setLocationType}
+              />
             </motion.div>
           )}
 
@@ -126,7 +129,10 @@ export default function SimulatorMobile({
               transition={{ duration: 0.3 }}
               className="absolute right-0 left-0 mx-auto w-full"
             >
-              <IntegrationCard2 onValidate={onValidateCard2} />
+              <IntegrationCard2
+                onValidate={onValidateCard2}
+                onValueChange={setAddress}
+              />
             </motion.div>
           )}
         </AnimatePresence>
@@ -142,7 +148,7 @@ export default function SimulatorMobile({
             <ChevronLeft className="h-4 w-4" /> Voltar
           </button>
         ) : (
-          <div /> // Espaçador
+          <div />
         )}
 
         {currentStep < totalSteps ? (

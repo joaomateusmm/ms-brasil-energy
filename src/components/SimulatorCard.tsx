@@ -6,9 +6,15 @@ import { useState } from "react";
 interface SimulatorCardProps {
   className?: string;
   onValidate?: (isValid: boolean) => void;
+  // Esta função envia o nome do local (ex: "Residencial") para o simulador principal
+  onValueChange?: (value: string) => void;
 }
 
-const SimulatorCard = ({ className, onValidate }: SimulatorCardProps) => {
+const SimulatorCard = ({
+  className,
+  onValidate,
+  onValueChange,
+}: SimulatorCardProps) => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
   const options = [
@@ -18,11 +24,17 @@ const SimulatorCard = ({ className, onValidate }: SimulatorCardProps) => {
     { id: "sem_conexao", label: "Sem rede", icon: "/icons/energy.png" },
   ];
 
-  const handleSelect = (id: string) => {
+  const handleSelect = (id: string, label: string) => {
     setSelectedOption(id);
-    // Validação direta no clique: se selecionou algo, é válido (true)
+
+    // 1. Avisa que o card está validado (para liberar o botão "Próximo")
     if (onValidate) {
       onValidate(true);
+    }
+
+    // 2. Envia o texto amigável (ex: "Residencial") para ser usado na mensagem do WhatsApp depois
+    if (onValueChange) {
+      onValueChange(label);
     }
   };
 
@@ -46,7 +58,7 @@ const SimulatorCard = ({ className, onValidate }: SimulatorCardProps) => {
                 className="flex flex-col items-center gap-2 lg:gap-3"
               >
                 <button
-                  onClick={() => handleSelect(opt.id)}
+                  onClick={() => handleSelect(opt.id, opt.label)}
                   className={`relative flex h-20 w-20 cursor-pointer items-center justify-center rounded-2xl bg-white shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 lg:h-24 lg:w-24 ${
                     selectedOption === opt.id
                       ? "ring-3 ring-emerald-500"

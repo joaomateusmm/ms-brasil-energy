@@ -2,17 +2,17 @@
 
 import { useCallback, useState } from "react";
 
-import ResultModal from "@/components/ResultModal"; // Modal Desktop
-import ResultModalMobile from "@/components/ResultModalMobile"; // Modal Mobile
+import ResultModal from "@/components/ResultModal";
+import ResultModalMobile from "@/components/ResultModalMobile";
 import SimulatorDesktop from "@/components/SimulatorDesktop";
 import SimulatorMobile from "@/components/SimulatorMobile";
 
 export default function Simulator() {
-  // --- ESTADOS GERAIS ---
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [billValue, setBillValue] = useState<number>(0);
+  const [locationType, setLocationType] = useState<string>("");
+  const [address, setAddress] = useState<string>("");
 
-  // --- VALIDAÇÃO ---
   const [formStatus, setFormStatus] = useState({
     card1: false,
     card2: false,
@@ -37,29 +37,32 @@ export default function Simulator() {
     formStatus,
     handleValidation,
     setBillValue,
+    setLocationType,
+    setAddress,
     openModal: () => setIsModalOpen(true),
     isFormValid,
   };
 
   return (
     <>
-
-      {/* 1. Modal e Simulador DESKTOP (Visível apenas em telas grandes lg:block) */}
       <div className="hidden lg:block">
         <ResultModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           monthlyBill={billValue}
+          locationType={locationType}
+          address={address}
         />
         <SimulatorDesktop {...sharedProps} />
       </div>
 
-      {/* 2. Modal e Simulador MOBILE (Visível apenas em telas pequenas lg:hidden) */}
       <div className="lg:hidden">
         <ResultModalMobile
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           monthlyBill={billValue}
+          locationType={locationType}
+          address={address}
         />
         <SimulatorMobile {...sharedProps} />
       </div>

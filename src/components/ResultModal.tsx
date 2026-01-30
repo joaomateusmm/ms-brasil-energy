@@ -1,14 +1,14 @@
 "use client";
 
 import gsap from "gsap";
-// 1. IMPORTAÇÃO DA BIBLIOTECA CORRETA
 import { toPng } from "html-to-image";
 import {
+  AlertTriangle,
   Banknote,
   CalendarCheck,
   Check,
   ChevronLeft,
-  ChevronRight,
+  ChevronsRight,
   CircleDollarSign,
   ImageDown,
   LucideIcon,
@@ -30,14 +30,17 @@ interface ResultModalProps {
   isOpen: boolean;
   onClose: () => void;
   monthlyBill: number;
+  locationType?: string;
+  address?: string;
 }
 
 export default function ResultModal({
   isOpen,
   onClose,
   monthlyBill,
+  locationType = "Não informado",
+  address = "Não informado",
 }: ResultModalProps) {
-  // --- ESTADOS ---
   const [step, setStep] = useState<"results" | "form">("results");
   const modalRef = useRef<HTMLDivElement>(null);
   const printRef = useRef<HTMLDivElement>(null);
@@ -62,7 +65,10 @@ export default function ResultModal({
 
   const [isPrinting, setIsPrinting] = useState(false);
 
-  // --- RESET ---
+  // --- FUNÇÕES DE VALIDAÇÃO ---
+  const isValidEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
+  const isValidName = (name: string) => name.trim().length > 3;
+
   useEffect(() => {
     if (isOpen) {
       setStep("results");
@@ -70,7 +76,6 @@ export default function ResultModal({
     }
   }, [isOpen]);
 
-  // --- ANIMAÇÕES GSAP ---
   useLayoutEffect(() => {
     if (!isOpen || !modalRef.current) return;
 
@@ -78,7 +83,6 @@ export default function ResultModal({
       if (step === "results") {
         gsap.fromTo(
           ".result-card-item",
-          // REMOVIDO opacity-0 do CSS, o GSAP cuida do estado inicial aqui:
           { opacity: 0, y: 20, scale: 0.95 },
           {
             opacity: 1,
@@ -105,32 +109,23 @@ export default function ResultModal({
     return () => ctx.revert();
   }, [isOpen, step]);
 
-  // --- FUNÇÃO DE PRINT BLINDADA ---
   const handlePrint = async () => {
     if (!printRef.current || isPrinting) return;
     setIsPrinting(true);
-
     try {
-      // Pequeno delay para garantir que renderizações pendentes terminem
       await new Promise((resolve) => setTimeout(resolve, 100));
-
       const dataUrl = await toPng(printRef.current, {
         cacheBust: true,
-        backgroundColor: "#ffffff", // Garante fundo branco
-        pixelRatio: 2, // Alta resolução
-        style: {
-          // Garante que a fonte base seja escura, caso o navegador tente aplicar modo escuro
-          color: "#1f2937",
-        },
+        backgroundColor: "#ffffff",
+        pixelRatio: 2,
+        style: { color: "#1f2937" },
       });
-
       const link = document.createElement("a");
       link.href = dataUrl;
       link.download = `Orcamento-Solar-${monthlyBill}.png`;
       link.click();
     } catch (error) {
-      console.error("Erro ao gerar print:", error);
-      alert("Erro ao salvar imagem. Tente novamente.");
+      console.error(error);
     } finally {
       setIsPrinting(false);
     }
@@ -157,40 +152,65 @@ export default function ResultModal({
     });
   };
 
-  // --- CÁLCULOS ---
   useEffect(() => {
     if (monthlyBill > 0) {
       const kwhPrice = 1.05;
-      const monthlyConsumptionKwh = monthlyBill / kwhPrice;
       const irradiation = 4.8;
+      const monthlyConsumptionKwh = monthlyBill / kwhPrice;
+
+      const pricingTable = [
+        { kwh: 300, price: 6890 },
+        { kwh: 400, price: 9990 },
+        { kwh: 500, price: 10790 },
+        { kwh: 600, price: 11990 },
+        { kwh: 700, price: 13490 },
+        { kwh: 800, price: 15690 },
+        { kwh: 900, price: 17490 },
+        { kwh: 1000, price: 18390 },
+        { kwh: 1500, price: 23990 },
+        { kwh: 2000, price: 35890 },
+        { kwh: 2500, price: 41977 },
+        { kwh: 3000, price: 49982 },
+      ];
+
+      const calculateInterpolatedPrice = (kwh: number) => {
+        if (kwh <= 300) return 6890;
+        if (kwh >= 3000) return 49982 + (kwh - 3000) * 16;
+        for (let i = 0; i < pricingTable.length - 1; i++) {
+          const lower = pricingTable[i];
+          const upper = pricingTable[i + 1];
+          if (kwh >= lower.kwh && kwh <= upper.kwh) {
+            const ratio = (kwh - lower.kwh) / (upper.kwh - lower.kwh);
+            return lower.price + ratio * (upper.price - lower.price);
+          }
+        }
+        return 6890;
+      };
+
+      const basePrice = calculateInterpolatedPrice(monthlyConsumptionKwh);
       const systemPowerKwp = monthlyConsumptionKwh / (irradiation * 30 * 0.8);
-      const area = systemPowerKwp * 7;
-      const production = systemPowerKwp * irradiation * 30;
+      const costMin = basePrice * 1.02;
+      const costMax = basePrice * 1.1;
       const economy = Math.max(0, (monthlyBill - 50) * 12);
-      const costMin = systemPowerKwp * 3800;
-      const costMax = systemPowerKwp * 4800;
-      let roiMinCalc = 0;
-      let roiMaxCalc = 0;
-      if (economy > 0) {
-        roiMinCalc = costMin / economy;
-        roiMaxCalc = costMax / economy;
-      }
+
       setResults({
         power: parseFloat(systemPowerKwp.toFixed(2)),
-        area: Math.ceil(area),
+        area: Math.ceil(systemPowerKwp * 7),
         costMin: costMin,
         costMax: costMax,
-        monthlyProduction: parseFloat(production.toFixed(2)),
+        monthlyProduction: parseFloat(
+          (systemPowerKwp * irradiation * 30).toFixed(2),
+        ),
         annualSavings: economy,
-        roiMin: parseFloat(roiMinCalc.toFixed(1)),
-        roiMax: parseFloat(roiMaxCalc.toFixed(1)),
+        roiMin: parseFloat((costMin / economy).toFixed(1)),
+        roiMax: parseFloat((costMax / economy).toFixed(1)),
       });
     }
   }, [monthlyBill]);
 
-  if (!isOpen) return null;
+  const formatCurrency = (val: number) =>
+    val.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-  // --- HELPERS ---
   const formatPhone = (value: string) => {
     const cleanValue = value.replace(/\D/g, "");
     const truncatedValue = cleanValue.substring(0, 11);
@@ -198,9 +218,6 @@ export default function ResultModal({
       .replace(/^(\d{2})(\d)/, "($1) $2")
       .replace(/(\d{5})(\d)/, "$1-$2");
   };
-
-  const isValidEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
-  const isValidName = (name: string) => name.trim().length > 3;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -221,25 +238,29 @@ export default function ResultModal({
       alert("Por favor, preencha todos os campos corretamente.");
       return;
     }
-    const NUMERO_DO_DONO = "556799125299";
-    const mensagem = `Dados do cliente:
-Nome - ${formData.nome}
-Email - ${formData.email}
-Telefone - ${formData.celular}
 
-Olá, gostaria de dar continuidade no meu projeto da MS Brasil Energy!`;
-    const mensagemCodificada = encodeURIComponent(mensagem);
-    const whatsappUrl = `https://wa.me/${NUMERO_DO_DONO}?text=${mensagemCodificada}`;
-    window.open(whatsappUrl, "_blank");
+    const NUMERO_DO_DONO = "556799125299";
+    const mensagem = `*Nova Solicitação - MS Brasil Energy*
+    
+👤 *Cliente:* ${formData.nome}
+📱 *Telefone:* ${formData.celular}
+
+🏠 *Tipo de Local:* ${locationType}
+📍 *Endereço:* ${address}
+
+⚡ *Potência:* ${results.power} kWp
+💰 *Estimativa:* ${formatCurrency(results.costMin)} a ${formatCurrency(results.costMax)}
+📈 *Economia Anual:* ${formatCurrency(results.annualSavings)}
+
+Olá! Vi minha estimativa no site e quero um orçamento oficial!`;
+
+    window.open(
+      `https://wa.me/${NUMERO_DO_DONO}?text=${encodeURIComponent(mensagem)}`,
+      "_blank",
+    );
     onClose();
   };
 
-  const formatCurrency = (val: number) =>
-    val.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-
-  // --- COMPONENTE ResultCard CORRIGIDO ---
-  // 1. Removemos 'opacity-0' da className (deixamos o GSAP controlar o início)
-  // 2. Usamos HEX codes (#4b5563, #9ca3af) ao invés de 'text-gray-600' para evitar erro de OKLCH no print
   const ResultCard = ({
     icon: Icon,
     label,
@@ -251,56 +272,55 @@ Olá, gostaria de dar continuidade no meu projeto da MS Brasil Energy!`;
     value: React.ReactNode;
     subValue?: string;
   }) => (
-    <div className="result-card-item flex flex-col items-center justify-center gap-2 p-4 text-center will-change-transform">
-      <Icon className="mb-2 h-10 w-10 stroke-[1.5] text-[#374151]" />{" "}
-      {/* text-gray-700 hex */}
-      <h3 className="text-sm font-medium text-[#4b5563]">{label}</h3>{" "}
-      {/* text-gray-600 hex */}
-      <div className="text-xl font-bold text-[#00D68F]">{value}</div>
+    <div className="result-card-item flex flex-col items-center justify-center gap-2 p-2 text-center will-change-transform md:p-4">
+      <Icon className="mb-2 h-8 w-8 stroke-[1.5] text-[#374151] md:h-10 md:w-10" />
+      <h3 className="text-xs font-medium text-[#4b5563] md:text-sm">{label}</h3>
+      <div className="text-lg font-bold text-[#00D68F] md:text-xl">{value}</div>
       {subValue && (
-        <div className="text-xs text-[#9ca3af]">{subValue}</div>
-      )}{" "}
-      {/* text-gray-400 hex */}
+        <div className="text-[10px] text-[#9ca3af] md:text-xs">{subValue}</div>
+      )}
     </div>
   );
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 px-4 backdrop-blur-md transition-all duration-300">
       <div
         ref={modalRef}
-        className="animate-in fade-in zoom-in-95 relative flex max-h-[90vh] min-h-[650px] w-full max-w-5xl flex-col overflow-y-auto rounded-2xl bg-white p-8 shadow-2xl duration-300 lg:p-12"
+        className="animate-in fade-in zoom-in-95 relative flex max-h-[95vh] min-h-0 w-full max-w-5xl flex-col overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl duration-300 md:p-8 lg:max-h-[90vh] lg:min-h-[650px] lg:p-12"
       >
         <button
           onClick={onClose}
-          className="absolute top-6 right-6 z-20 rounded-full bg-gray-100 p-2 text-gray-400 transition-colors hover:bg-gray-200 hover:text-gray-600"
+          className="absolute top-4 right-4 z-20 rounded-full bg-gray-100 p-2 text-gray-400 transition-colors hover:bg-gray-200 hover:text-gray-600 md:top-6 md:right-6"
         >
-          <X className="h-6 w-6" />
+          <X className="h-5 w-5 md:h-6 md:w-6" />
         </button>
-
-        {step === "form" && (
-          <button
-            onClick={handleBackToResults}
-            className="absolute top-6 left-6 z-20 flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-emerald-500"
-          >
-            <ChevronLeft className="h-4 w-4" /> Voltar
-          </button>
-        )}
 
         {step === "results" && (
           <div className="results-content flex h-full flex-col justify-between">
-            {/* WRAPPER DO PRINT - Adicionado text-[#1f2937] para garantir cor base escura */}
             <div
               ref={printRef}
               className="rounded-xl bg-white px-2 py-4 text-[#1f2937]"
             >
-              <div className="mb-10 text-center">
-                <h2 className="font-clash-display text-4xl font-light text-[#1f2937]">
+              <div className="mb-6 text-center md:mb-10">
+                <h2 className="font-clash-display text-2xl font-light text-[#1f2937] md:text-4xl">
                   Resultado
                 </h2>
                 <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-emerald-500"></div>
-                <p className="mt-4 text-[#6b7280]">
-                  {" "}
-                  {/* text-gray-500 hex */}
+
+                <div className="mt-6 flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4 text-left md:items-center">
+                  <AlertTriangle className="h-6 w-6 flex-shrink-0 text-amber-600" />
+                  <p className="text-xs leading-relaxed text-amber-900 md:text-sm">
+                    <span className="font-bold">IMPORTANTE:</span> Valores
+                    baseados em médias. O valor real pode variar de 2% a 10%
+                    após análise técnica da localização, tipo de telhado, etc.
+                    Consulte um especialista da MS Brasil Energy para ter o seu
+                    orçamento real.
+                  </p>
+                </div>
+
+                <p className="mt-4 text-sm text-[#6b7280] md:text-base">
                   Com base em sua conta de{" "}
                   <span className="font-bold text-[#374151]">
                     {formatCurrency(monthlyBill)}
@@ -309,7 +329,7 @@ Olá, gostaria de dar continuidade no meu projeto da MS Brasil Energy!`;
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 gap-x-8 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-x-8 gap-y-6 md:grid-cols-2 md:gap-y-12 lg:grid-cols-3">
                 <ResultCard
                   icon={Zap}
                   label="Potência instalada*"
@@ -348,28 +368,30 @@ Olá, gostaria de dar continuidade no meu projeto da MS Brasil Energy!`;
                 />
                 <ResultCard
                   icon={CalendarCheck}
-                  label="Tempo aproximado de retorno do investimento*"
+                  label="Retorno do investimento*"
                   value={`Entre ${results.roiMin} e ${results.roiMax} anos`}
                 />
               </div>
             </div>
 
-            <div className="mt-12 text-center">
-              <div className="flex items-center justify-center gap-3">
+            <div className="mt-8 text-center md:mt-12">
+              <div className="flex flex-col items-center justify-center gap-3 md:flex-row">
                 <button
                   onClick={handleSwitchToForm}
-                  className="h-[52px] cursor-pointer rounded-md bg-emerald-500 px-8 text-lg font-bold text-white shadow-lg duration-300 hover:scale-[1.03] hover:bg-emerald-500 hover:shadow-xl active:scale-[0.98]"
+                  className="group flex h-[52px] w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-emerald-500 px-8 text-lg font-bold text-white shadow-lg duration-300 hover:scale-[1.03] hover:bg-emerald-500 hover:shadow-xl active:scale-[0.98] md:w-auto"
                 >
-                  Quero esse projeto
+                  Falar com um especialista{" "}
+                  <ChevronsRight className="h-5 w-5 duration-300 group-hover:translate-x-1" />
                 </button>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <button
                       onClick={handlePrint}
                       disabled={isPrinting}
-                      className="flex h-[52px] cursor-pointer items-center justify-center rounded-md bg-gray-800 px-4 text-lg font-bold text-white shadow-lg duration-300 hover:scale-105 hover:bg-gray-900 hover:shadow-xl active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex h-[52px] w-full cursor-pointer items-center justify-center rounded-md bg-gray-800 px-4 text-lg font-bold text-white shadow-lg duration-300 hover:scale-105 hover:bg-gray-900 hover:shadow-xl active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 md:w-auto"
                     >
-                      <ImageDown />
+                      <ImageDown className="mr-2 md:mr-0" />
+                      <span className="md:hidden">Baixar Resultado</span>
                     </button>
                   </TooltipTrigger>
                   <TooltipContent className="mb-2 bg-gray-800 text-white">
@@ -386,15 +408,28 @@ Olá, gostaria de dar continuidade no meu projeto da MS Brasil Energy!`;
         )}
 
         {step === "form" && (
-          <div className="form-content flex h-full w-full flex-col items-center justify-center py-40.5 pt-4 opacity-0">
-            <h2 className="font-clash-display mb-2 text-4xl font-normal text-gray-800">
-              Solicitar Orçamento
+          <div className="form-content flex h-full w-full flex-col items-center justify-center pt-25 pb-25 opacity-0">
+            <button
+              onClick={handleBackToResults}
+              className="absolute top-4 left-4 z-20 flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-emerald-500 md:top-6 md:left-6"
+            >
+              <ChevronLeft className="h-4 w-4" /> Voltar
+            </button>
+            <h2 className="font-clash-display mb-2 text-2xl font-normal text-gray-800 md:text-4xl">
+              Solicitar Orçamento Final
             </h2>
-            <p className="mb-10 max-w-lg text-center text-gray-500">
+            <p className="mb-6 max-w-lg text-center text-sm text-gray-500 md:mb-10 md:text-base">
               Preencha os dados abaixo para que um de nossos consultores entre
               em contato com você.
             </p>
-            <form onSubmit={handleSubmit} className="w-full max-w-xl space-y-6">
+            <p className="mb-8 text-center text-sm text-gray-500">
+              Dados para a unidade em: <strong>{address}</strong>
+            </p>
+
+            <form
+              onSubmit={handleSubmit}
+              className="w-full max-w-xl space-y-4 md:space-y-6"
+            >
               <div className="flex flex-col gap-1">
                 <label className="ml-1 text-xs font-medium text-gray-500">
                   Nome completo
@@ -407,13 +442,18 @@ Olá, gostaria de dar continuidade no meu projeto da MS Brasil Energy!`;
                     placeholder="Seu nome completo"
                     value={formData.nome}
                     onChange={handleInputChange}
-                    className={`w-full rounded-md border p-3 text-gray-700 transition-all outline-none ${isValidName(formData.nome) ? "border-[#00D68F] ring-1 ring-[#00D68F]" : "border-gray-300 focus:border-[#00D68F]"}`}
+                    className={`w-full rounded-md border p-3 text-gray-700 transition-all outline-none ${
+                      isValidName(formData.nome)
+                        ? "border-[#00D68F] ring-1 ring-[#00D68F]"
+                        : "border-gray-300 focus:border-[#00D68F]"
+                    }`}
                   />
                   {isValidName(formData.nome) && (
                     <Check className="absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2 text-[#00D68F]" />
                   )}
                 </div>
               </div>
+
               <div className="flex flex-col gap-1">
                 <label className="ml-1 text-xs font-medium text-gray-500">
                   Digite seu e-mail
@@ -426,13 +466,18 @@ Olá, gostaria de dar continuidade no meu projeto da MS Brasil Energy!`;
                     placeholder="seu@email.com"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className={`w-full rounded-md border p-3 text-gray-700 transition-all outline-none ${isValidEmail(formData.email) ? "border-[#00D68F] ring-1 ring-[#00D68F]" : "border-gray-300 focus:border-[#00D68F]"}`}
+                    className={`w-full rounded-md border p-3 text-gray-700 transition-all outline-none ${
+                      isValidEmail(formData.email)
+                        ? "border-[#00D68F] ring-1 ring-[#00D68F]"
+                        : "border-gray-300 focus:border-[#00D68F]"
+                    }`}
                   />
                   {isValidEmail(formData.email) && (
                     <Check className="absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2 text-[#00D68F]" />
                   )}
                 </div>
               </div>
+
               <div className="flex flex-col gap-1">
                 <label className="ml-1 text-xs font-medium text-gray-500">
                   Celular
@@ -446,32 +491,36 @@ Olá, gostaria de dar continuidade no meu projeto da MS Brasil Energy!`;
                     value={formData.celular}
                     onChange={handleInputChange}
                     maxLength={15}
-                    className={`w-full rounded-md border p-3 text-gray-700 transition-all outline-none ${formData.celular.length >= 14 ? "border-[#00D68F] ring-1 ring-[#00D68F]" : "border-gray-300 focus:border-[#00D68F]"}`}
+                    className={`w-full rounded-md border p-3 text-gray-700 transition-all outline-none ${
+                      formData.celular.length >= 14
+                        ? "border-[#00D68F] ring-1 ring-[#00D68F]"
+                        : "border-gray-300 focus:border-[#00D68F]"
+                    }`}
                   />
                   {formData.celular.length >= 14 && (
                     <Check className="absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2 text-[#00D68F]" />
                   )}
                 </div>
               </div>
+
               <div className="pt-2">
                 <p className="mb-3 text-xs text-gray-600">
-                  *Ao clicar em &quot;Enviar Solicitação&quot;, você concorda
+                  *Ao clicar em &quot;Enviar via WhatsApp&quot;, você concorda
                   com os{" "}
                   <span className="cursor-pointer text-emerald-500 underline">
                     <Link href="/politica-de-privacidade">
-                      Termos de Privacidades{" "}
+                      Termos de Privacidades
                     </Link>
                   </span>{" "}
                   da MS Brasil Energy.
                 </p>
               </div>
+
               <button
                 type="submit"
-                className="group mt-6 flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-emerald-500 py-4 text-lg font-bold text-white shadow-lg duration-300 hover:shadow-xl active:scale-[0.98]"
+                className="flex w-full items-center justify-center gap-2 rounded-md bg-emerald-500 py-4 font-bold text-white shadow-lg duration-300 hover:bg-emerald-600 active:scale-[0.98]"
               >
-                <MessageCircle className="h-5 w-5 duration-300 group-hover:-translate-x-1" />
-                Enviar Solicitação
-                <ChevronRight className="-ml-2 h-5 w-5 duration-300 group-hover:translate-x-1" />
+                <MessageCircle size={20} /> Enviar via WhatsApp
               </button>
             </form>
           </div>

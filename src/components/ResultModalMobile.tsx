@@ -3,10 +3,12 @@
 import gsap from "gsap";
 import { toPng } from "html-to-image";
 import {
+  AlertTriangle,
   Banknote,
   CalendarCheck,
+  Check,
   ChevronLeft,
-  ChevronRight,
+  ChevronsRight,
   CircleDollarSign,
   ImageDown,
   LucideIcon,
@@ -18,17 +20,21 @@ import {
 import Link from "next/link";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-interface ResultModalProps {
+interface ResultModalMobileProps {
   isOpen: boolean;
   onClose: () => void;
   monthlyBill: number;
+  locationType: string;
+  address: string;
 }
 
 export default function ResultModalMobile({
   isOpen,
   onClose,
   monthlyBill,
-}: ResultModalProps) {
+  locationType,
+  address,
+}: ResultModalMobileProps) {
   const [step, setStep] = useState<"results" | "form">("results");
   const modalRef = useRef<HTMLDivElement>(null);
   const printRef = useRef<HTMLDivElement>(null);
@@ -72,7 +78,7 @@ export default function ResultModalMobile({
             opacity: 1,
             y: 0,
             scale: 1,
-            duration: 0.8, // Mais rápido no mobile
+            duration: 0.8,
             stagger: 0.05,
             ease: "power2.out",
             delay: 0.1,
@@ -107,7 +113,7 @@ export default function ResultModalMobile({
       });
       const link = document.createElement("a");
       link.href = dataUrl;
-      link.download = `Orcamento-Solar-${monthlyBill}.png`;
+      link.download = `Estimativa-Solar-Mobile.png`;
       link.click();
     } catch (error) {
       console.error("Erro ao gerar print:", error);
@@ -135,23 +141,60 @@ export default function ResultModalMobile({
     });
   };
 
+  // --- LÓGICA DE CÁLCULO ATUALIZADA (MESMA DO DESKTOP) ---
   useEffect(() => {
     if (monthlyBill > 0) {
       const kwhPrice = 1.05;
-      const monthlyConsumptionKwh = monthlyBill / kwhPrice;
       const irradiation = 4.8;
+      const monthlyConsumptionKwh = monthlyBill / kwhPrice;
+
+      const pricingTable = [
+        { kwh: 300, price: 6890 },
+        { kwh: 400, price: 9990 },
+        { kwh: 500, price: 10790 },
+        { kwh: 600, price: 11990 },
+        { kwh: 700, price: 13490 },
+        { kwh: 800, price: 15690 },
+        { kwh: 900, price: 17490 },
+        { kwh: 1000, price: 18390 },
+        { kwh: 1500, price: 23990 },
+        { kwh: 2000, price: 35890 },
+        { kwh: 2500, price: 41977 },
+        { kwh: 3000, price: 49982 },
+      ];
+
+      const calculateInterpolatedPrice = (kwh: number) => {
+        if (kwh <= 300) return 6890;
+        if (kwh >= 3000) {
+          const last = pricingTable[pricingTable.length - 1];
+          const secondLast = pricingTable[pricingTable.length - 2];
+          const slope =
+            (last.price - secondLast.price) / (last.kwh - secondLast.kwh);
+          return last.price + (kwh - last.kwh) * slope;
+        }
+        for (let i = 0; i < pricingTable.length - 1; i++) {
+          const lower = pricingTable[i];
+          const upper = pricingTable[i + 1];
+          if (kwh >= lower.kwh && kwh <= upper.kwh) {
+            const ratio = (kwh - lower.kwh) / (upper.kwh - lower.kwh);
+            return lower.price + ratio * (upper.price - lower.price);
+          }
+        }
+        return 6890;
+      };
+
+      const basePrice = calculateInterpolatedPrice(monthlyConsumptionKwh);
       const systemPowerKwp = monthlyConsumptionKwh / (irradiation * 30 * 0.8);
       const area = systemPowerKwp * 7;
       const production = systemPowerKwp * irradiation * 30;
       const economy = Math.max(0, (monthlyBill - 50) * 12);
-      const costMin = systemPowerKwp * 3800;
-      const costMax = systemPowerKwp * 4800;
-      let roiMinCalc = 0;
-      let roiMaxCalc = 0;
-      if (economy > 0) {
-        roiMinCalc = costMin / economy;
-        roiMaxCalc = costMax / economy;
-      }
+
+      const costMin = basePrice * 1.02;
+      const costMax = basePrice * 1.1;
+
+      const roiMinCalc = economy > 0 ? costMin / economy : 0;
+      const roiMaxCalc = economy > 0 ? costMax / economy : 0;
+
       setResults({
         power: parseFloat(systemPowerKwp.toFixed(2)),
         area: Math.ceil(area),
@@ -198,26 +241,40 @@ export default function ResultModalMobile({
       return;
     }
     const NUMERO_DO_DONO = "556799125299";
-    const mensagem = `Dados do cliente:\nNome - ${formData.nome}\nEmail - ${formData.email}\nTelefone - ${formData.celular}\n\nOlá, gostaria de dar continuidade no meu projeto da MS Brasil Energy!`;
-    const whatsappUrl = `https://wa.me/${NUMERO_DO_DONO}?text=${encodeURIComponent(mensagem)}`;
-    window.open(whatsappUrl, "_blank");
+    const mensagem = `*Nova Solicitação - MS Brasil Energy*
+
+👤 *Cliente:* ${formData.nome}
+📧 *Email:* ${formData.email}
+📱 *Telefone:* ${formData.celular}
+
+🏠 *Tipo de Local:* ${locationType}
+📍 *Endereço:* ${address}
+
+*Dados Estimados:*
+💰 *Conta Mensal:* ${formatCurrency(monthlyBill)}
+⚡ *Potência:* ${results.power} kWp
+💵 *Estimativa:* ${formatCurrency(results.costMin)} a ${formatCurrency(results.costMax)}
+
+Olá! Acabei de realizar uma simulação e gostaria de um orçamento oficial!`;
+
+    window.open(
+      `https://wa.me/${NUMERO_DO_DONO}?text=${encodeURIComponent(mensagem)}`,
+      "_blank",
+    );
     onClose();
   };
 
   const formatCurrency = (val: number) =>
     val.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-  // CARD MOBILE COMPACTO
   const ResultCard = ({
     icon: Icon,
     label,
     value,
-    subValue,
   }: {
     icon: LucideIcon;
     label: string;
     value: React.ReactNode;
-    subValue?: string;
   }) => (
     <div className="result-card-item flex flex-col items-center justify-center gap-1 rounded-lg border border-gray-100 bg-gray-50/80 p-3 text-center shadow-sm">
       <Icon className="mb-1 h-5 w-5 text-gray-600" />
@@ -225,16 +282,13 @@ export default function ResultModalMobile({
         {label}
       </h3>
       <div className="text-sm font-bold text-emerald-600">{value}</div>
-      {subValue && <div className="text-[9px] text-gray-400">{subValue}</div>}
     </div>
   );
 
   return (
-    // FULLSCREEN NO MOBILE COM Z-INDEX ALTO
     <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/80 p-2 backdrop-blur-sm sm:items-center">
       <div
         ref={modalRef}
-        // H-[95vh] para ocupar quase toda a tela, com bordas arredondadas no topo
         className="relative flex h-[98vh] w-full flex-col overflow-hidden rounded-md bg-white shadow-2xl sm:h-auto sm:max-h-[90vh] sm:w-[90vw] sm:rounded-2xl"
       >
         {/* HEADER FIXO */}
@@ -263,7 +317,6 @@ export default function ResultModalMobile({
         <div className="flex-1 overflow-y-auto px-5 py-6">
           {step === "results" && (
             <div className="results-content flex flex-col gap-6">
-              {/* ÁREA DE PRINT */}
               <div ref={printRef} className="rounded-xl bg-white">
                 <div className="mb-6 text-center">
                   <div className="font-clash-display text-3xl font-light text-gray-800">
@@ -272,10 +325,20 @@ export default function ResultModalMobile({
                       /mês
                     </span>
                   </div>
-                  <p className="mt-1 text-xs text-gray-500">
-                    Baseado na sua conta de luz
-                  </p>
-                  <div className="mx-auto mt-3 h-1 w-12 rounded-full bg-emerald-500"></div>
+
+                  {/* AVISO DE ESTIMATIVA MOBILE */}
+                  <div className="mt-4 flex items-start gap-2 rounded-lg border border-amber-100 bg-amber-50 p-3 text-left">
+                    <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-600" />
+                    <p className="text-[10px] leading-tight text-amber-900">
+                      <span className="font-bold">IMPORTANTE:</span> Valores
+                      baseados em médias. O valor real pode variar de 2% a 10%
+                      após análise técnica da localização, tipo de telhado, etc.
+                      Consulte um especialista da MS Brasil Energy para ter o
+                      seu orçamento real.
+                    </p>
+                  </div>
+
+                  <div className="mx-auto mt-4 h-1 w-12 rounded-full bg-emerald-500"></div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
@@ -293,7 +356,7 @@ export default function ResultModalMobile({
                     icon={CircleDollarSign}
                     label="Investimento"
                     value={
-                      <div className="flex flex-col text-xs">
+                      <div className="flex flex-col text-[11px] leading-tight">
                         <span>{formatCurrency(results.costMin)}</span>
                         <span>a {formatCurrency(results.costMax)}</span>
                       </div>
@@ -312,18 +375,18 @@ export default function ResultModalMobile({
                   <ResultCard
                     icon={CalendarCheck}
                     label="Payback"
-                    value={`${results.roiMin} - ${results.roiMax} anos`}
+                    value={`${results.roiMin}-${results.roiMax} anos`}
                   />
                 </div>
               </div>
 
-              {/* BOTÕES DE AÇÃO - FIXOS NO FINAL DO SCROLL */}
               <div className="pb-safe-area mt-2 flex flex-col gap-3">
                 <button
                   onClick={handleSwitchToForm}
-                  className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 text-base font-bold text-white shadow-lg active:scale-[0.98]"
+                  className="group flex h-[52px] w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-emerald-500 px-8 text-lg font-bold text-white shadow-lg duration-300 hover:scale-[1.03] hover:bg-emerald-500 hover:shadow-xl active:scale-[0.98] md:w-auto"
                 >
-                  Quero esse projeto <ChevronRight className="h-4 w-4" />
+                  Falar com um especialista{" "}
+                  <ChevronsRight className="h-5 w-5 duration-300 group-hover:translate-x-1" />
                 </button>
 
                 <button
@@ -334,89 +397,125 @@ export default function ResultModalMobile({
                   <ImageDown className="h-4 w-4" /> Baixar Resultado
                 </button>
 
-                <p className="px-4 text-center text-[10px] text-gray-400">
-                  *Valores estimados. Necessária análise técnica detalhada.
+                <p className="px-4 text-center text-[9px] text-gray-400">
+                  *Cálculos estimados pela MS Brasil Energy. Proposta oficial
+                  depende de visita técnica.
                 </p>
               </div>
             </div>
           )}
 
           {step === "form" && (
-            <div className="form-content flex flex-col gap-6 pt-4">
-              <div className="text-center">
-                <h2 className="text-xl font-semibold text-gray-800">
-                  Solicitar Orçamento
-                </h2>
-                <p className="mt-2 text-xs text-gray-500">
-                  Preencha seus dados para receber o contato de um especialista.
-                </p>
-              </div>
-
-              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                <div className="space-y-1">
-                  <label className="ml-1 text-xs font-medium text-gray-500">
-                    Nome Completo
-                  </label>
-                  <input
-                    type="text"
-                    name="nome"
-                    required
-                    value={formData.nome}
-                    onChange={handleInputChange}
-                    className="w-full rounded-lg border border-gray-300 p-3 text-sm outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
-                    placeholder="Seu nome"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="ml-1 text-xs font-medium text-gray-500">
-                    E-mail
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    required
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className="w-full rounded-lg border border-gray-300 p-3 text-sm outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
-                    placeholder="seu@email.com"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="ml-1 text-xs font-medium text-gray-500">
-                    Celular / WhatsApp
-                  </label>
-                  <input
-                    type="tel"
-                    name="celular"
-                    required
-                    value={formData.celular}
-                    onChange={handleInputChange}
-                    maxLength={15}
-                    className="w-full rounded-lg border border-gray-300 p-3 text-sm outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
-                    placeholder="(00) 00000-0000"
-                  />
-                </div>
-
-                <div className="mt-2">
-                  <p className="text-center text-[10px] text-gray-500">
-                    Ao enviar, você concorda com nossos{" "}
-                    <Link
-                      href="/politica-de-privacidade"
-                      className="text-emerald-600 underline"
-                    >
-                      Termos de Privacidade
-                    </Link>
-                    .
+            <div className="form-content flex h-full w-full flex-col items-center justify-center pb-18 opacity-0">
+              <div className="w-full max-w-xl px-2">
+                <div className="mb-6 text-center">
+                  <h2 className="font-clash-display mb-2 text-2xl font-normal text-gray-800">
+                    Solicitar Orçamento Final
+                  </h2>
+                  <p className="mb-4 text-xs text-gray-500">
+                    Preencha os dados abaixo para receber o contato de um
+                    especialista.
                   </p>
                 </div>
 
-                <button
-                  type="submit"
-                  className="mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 text-base font-bold text-white shadow-lg active:scale-[0.98]"
-                >
-                  <MessageCircle className="h-5 w-5" /> Enviar Solicitação
-                </button>
-              </form>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* NOME COMPLETO */}
+                  <div className="flex flex-col gap-1">
+                    <label className="ml-1 text-[10px] font-bold tracking-wider text-gray-400 uppercase">
+                      Nome completo
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        name="nome"
+                        required
+                        placeholder="Seu nome completo"
+                        value={formData.nome}
+                        onChange={handleInputChange}
+                        className={`w-full rounded-xl border p-4 text-sm text-gray-700 shadow-sm transition-all outline-none ${
+                          isValidName(formData.nome)
+                            ? "border-[#00D68F] ring-1 ring-[#00D68F]/30"
+                            : "border-gray-200 focus:border-[#00D68F]"
+                        }`}
+                      />
+                      {isValidName(formData.nome) && (
+                        <Check className="absolute top-1/2 right-4 h-5 w-5 -translate-y-1/2 text-[#00D68F]" />
+                      )}
+                    </div>
+                  </div>
+
+                  {/* E-MAIL */}
+                  <div className="flex flex-col gap-1">
+                    <label className="ml-1 text-[10px] font-bold tracking-wider text-gray-400 uppercase">
+                      E-mail
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="email"
+                        name="email"
+                        required
+                        placeholder="seu@email.com"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className={`w-full rounded-xl border p-4 text-sm text-gray-700 shadow-sm transition-all outline-none ${
+                          isValidEmail(formData.email)
+                            ? "border-[#00D68F] ring-1 ring-[#00D68F]/30"
+                            : "border-gray-200 focus:border-[#00D68F]"
+                        }`}
+                      />
+                      {isValidEmail(formData.email) && (
+                        <Check className="absolute top-1/2 right-4 h-5 w-5 -translate-y-1/2 text-[#00D68F]" />
+                      )}
+                    </div>
+                  </div>
+
+                  {/* WHATSAPP */}
+                  <div className="flex flex-col gap-1">
+                    <label className="ml-1 text-[10px] font-bold tracking-wider text-gray-400 uppercase">
+                      WhatsApp
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="tel"
+                        name="celular"
+                        required
+                        placeholder="(00) 00000-0000"
+                        value={formData.celular}
+                        onChange={handleInputChange}
+                        maxLength={15}
+                        className={`w-full rounded-xl border p-4 text-sm text-gray-700 shadow-sm transition-all outline-none ${
+                          formData.celular.length >= 14
+                            ? "border-[#00D68F] ring-1 ring-[#00D68F]/30"
+                            : "border-gray-200 focus:border-[#00D68F]"
+                        }`}
+                      />
+                      {formData.celular.length >= 14 && (
+                        <Check className="absolute top-1/2 right-4 h-5 w-5 -translate-y-1/2 text-[#00D68F]" />
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="pt-2">
+                    <p className="text-center text-[10px] leading-relaxed text-gray-400">
+                      Ao clicar em enviar, você aceita nossa <br />
+                      <Link
+                        href="/politica-de-privacidade"
+                        className="text-emerald-600 underline"
+                      >
+                        Política de Privacidade
+                      </Link>
+                      .
+                    </p>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 py-4 text-base font-bold text-white shadow-lg shadow-emerald-500/20 transition-transform active:scale-[0.98]"
+                  >
+                    <MessageCircle size={20} /> Enviar para Consultor
+                  </button>
+                </form>
+              </div>
             </div>
           )}
         </div>

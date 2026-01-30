@@ -18,6 +18,8 @@ interface SimulatorDesktopProps {
     isValid: boolean,
   ) => void;
   setBillValue: (val: number) => void;
+  setLocationType: (val: string) => void; // Nova prop vinda do pai
+  setAddress: (val: string) => void; // Nova prop vinda do pai
   openModal: () => void;
   isFormValid: boolean;
 }
@@ -25,6 +27,8 @@ interface SimulatorDesktopProps {
 export default function SimulatorDesktop({
   handleValidation,
   setBillValue,
+  setLocationType,
+  setAddress,
   openModal,
   isFormValid,
 }: SimulatorDesktopProps) {
@@ -34,7 +38,7 @@ export default function SimulatorDesktop({
   const subTextRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
 
-  // Handlers otimizados
+  // --- Handlers Otimizados ---
   const onValidateCard1 = useCallback(
     (isValid: boolean) => handleValidation("card1", isValid),
     [handleValidation],
@@ -50,6 +54,7 @@ export default function SimulatorDesktop({
     [handleValidation],
   );
 
+  // --- Animações GSAP (Mantidas conforme original) ---
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       const triggerConfig = {
@@ -128,17 +133,23 @@ export default function SimulatorDesktop({
         ref={cardsRef}
         className="absolute inset-0 z-50 mb-6 flex w-full items-center justify-center gap-30 px-4"
       >
-        {/* GRUPO 01 - Esquerda */}
+        {/* GRUPO 01 - Tipo de Local */}
         <div className="translate-y-[-50px]">
           <div className="card-anim-target flex flex-col items-center gap-6">
-            <IntegrationCard onValidate={onValidateCard1} />
+            <IntegrationCard
+              onValidate={onValidateCard1}
+              onValueChange={setLocationType} // Passando a função de valor
+            />
           </div>
         </div>
 
-        {/* GRUPO 02 - Meio */}
+        {/* GRUPO 02 - Endereço e Botão */}
         <div className="translate-y-[-25px]">
           <div className="card-anim-target flex flex-col items-center gap-6">
-            <IntegrationCard2 onValidate={onValidateCard2} />
+            <IntegrationCard2
+              onValidate={onValidateCard2}
+              onValueChange={setAddress} // Passando a função de valor
+            />
 
             <button
               disabled={!isFormValid}
@@ -159,7 +170,7 @@ export default function SimulatorDesktop({
           </div>
         </div>
 
-        {/* GRUPO 03 - Direita */}
+        {/* GRUPO 03 - Conta de Luz */}
         <div className="translate-y-[-50px]">
           <div className="card-anim-target flex flex-col items-center gap-6">
             <IntegrationCard3

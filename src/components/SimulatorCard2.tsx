@@ -6,18 +6,31 @@ import { useState } from "react";
 interface SimulatorCard2Props {
   className?: string;
   onValidate?: (isValid: boolean) => void;
+  // Esta função envia o endereço final (Rua, Cidade, etc.) para o componente pai
+  onValueChange?: (value: string) => void;
 }
 
-const SimulatorCard2 = ({ className, onValidate }: SimulatorCard2Props) => {
+const SimulatorCard2 = ({
+  className,
+  onValidate,
+  onValueChange,
+}: SimulatorCard2Props) => {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   // Helper para validar e notificar o pai imediatamente
   const updateValueAndValidate = (newValue: string) => {
     setInputValue(newValue);
+
+    // 1. Validação: considera válido se tiver pelo menos 8 caracteres
+    const isValid = newValue.length >= 8;
     if (onValidate) {
-      // Consideramos válido se tiver pelo menos 8 caracteres (tamanho de um CEP ou nome de cidade curto)
-      onValidate(newValue.length >= 8);
+      onValidate(isValid);
+    }
+
+    // 2. Envia o valor atualizado para o pai para salvar no estado de endereço
+    if (onValueChange) {
+      onValueChange(newValue);
     }
   };
 
@@ -108,23 +121,18 @@ const SimulatorCard2 = ({ className, onValidate }: SimulatorCard2Props) => {
         }
       `}</style>
 
-      {/* WRAPPER: Responsivo */}
       <div className="relative flex cursor-default items-center justify-center pt-0 lg:pt-[270px]">
-        {/* CARD: Responsivo */}
         <div
           className={`relative flex min-h-[400px] w-full shrink-0 cursor-default flex-col items-center overflow-hidden rounded-3xl border-2 border-transparent bg-black/10 p-6 shadow-lg backdrop-blur-2xl lg:h-[560px] lg:w-[413px] lg:p-8 ${className}`}
         >
           <div className="relative z-10 flex h-full w-full flex-col items-center justify-center pt-4 lg:pt-10">
-            {/* TÍTULO */}
             <h2 className="font-clash-display text-center text-xl leading-tight font-semibold text-white drop-shadow-md lg:text-2xl">
               Onde pretende <br />
               <span className="text-emerald-500">realizar</span> a instalação?
             </h2>
 
-            {/* SEPARATOR */}
             <div className="my-8 h-[2px] w-[80%] rounded-full bg-white shadow-sm lg:my-10"></div>
 
-            {/* INPUT E BOTÃO */}
             <div className="flex w-full flex-col items-center gap-6 px-2">
               <input
                 type="text"
