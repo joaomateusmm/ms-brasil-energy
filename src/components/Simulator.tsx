@@ -43,9 +43,6 @@ export default function Simulator() {
 
   return (
     <>
-      {/* AQUI ESTÁ A LÓGICA DE TROCA DE MODAL:
-        Renderizamos os dois, mas usamos CSS para mostrar apenas um por vez.
-      */}
 
       {/* 1. Modal e Simulador DESKTOP (Visível apenas em telas grandes lg:block) */}
       <div className="hidden lg:block">
