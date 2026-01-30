@@ -1,7 +1,6 @@
 "use client";
 
-import gsap from "gsap";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 
 interface SimulatorCard3Props {
@@ -20,62 +19,6 @@ const SimulatorCard3 = ({
   const wrapperRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-
-  // --- ANIMAÇÃO GSAP ---
-  useEffect(() => {
-    if (!wrapperRef.current || !cardRef.current || !contentRef.current) return;
-    const wrapper = wrapperRef.current;
-    const card = cardRef.current;
-    const content = contentRef.current;
-
-    gsap.set(card, {
-      transformPerspective: 1000,
-      transformStyle: "preserve-3d",
-    });
-    const xTo = gsap.quickTo(card, "rotationY", {
-      duration: 1,
-      ease: "power3",
-    });
-    const yTo = gsap.quickTo(card, "rotationX", {
-      duration: 1,
-      ease: "power3",
-    });
-    const xInnerTo = gsap.quickTo(content, "x", {
-      duration: 1,
-      ease: "power3",
-    });
-    const yInnerTo = gsap.quickTo(content, "y", {
-      duration: 1,
-      ease: "power3",
-    });
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = wrapper.getBoundingClientRect();
-      const width = rect.width;
-      const height = rect.height;
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-      const xPct = (mouseX / width - 0.5) * 2;
-      const yPct = (mouseY / height - 0.5) * 2;
-      xTo(xPct * 1);
-      yTo(-yPct * 1);
-      xInnerTo(xPct * 1);
-      yInnerTo(yPct * 1);
-    };
-    const handleMouseLeave = () => {
-      xTo(0);
-      yTo(0);
-      xInnerTo(0);
-      yInnerTo(0);
-    };
-
-    wrapper.addEventListener("mousemove", handleMouseMove);
-    wrapper.addEventListener("mouseleave", handleMouseLeave);
-    return () => {
-      wrapper.removeEventListener("mousemove", handleMouseMove);
-      wrapper.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, []);
 
   // --- LÓGICA PRINCIPAL CORRIGIDA ---
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
