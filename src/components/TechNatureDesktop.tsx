@@ -116,12 +116,6 @@ export default function TechNatureDesktop() {
               Utilizamos tecnologia de ponta do<br></br> mercado, a mais
               avançada até agora.
             </p>
-            <button
-              type="button"
-              className="textos group z-50 flex h-[80px] w-[80px] cursor-pointer items-center justify-center rounded-2xl bg-emerald-500 shadow-md duration-300 hover:scale-105 hover:shadow-lg active:scale-95"
-            >
-              <ChevronsLeft className="h-8 w-8 stroke-2 text-white duration-300 group-hover:-rotate-90" />
-            </button>
 
             <Image
               src="/assets/page3/lado-tecnologia.png"
@@ -148,12 +142,6 @@ export default function TechNatureDesktop() {
               Nossa empresa está totalmente<br></br> comprometida com a causa
               ambiental.
             </p>
-            <button
-              type="button"
-              className="textos group z-50 flex h-[80px] w-[80px] cursor-pointer items-center justify-center rounded-2xl bg-emerald-500 shadow-md duration-300 hover:shadow-lg active:scale-95"
-            >
-              <ChevronsRight className="h-8 w-8 stroke-2 text-white duration-300 group-hover:rotate-90" />
-            </button>
 
             <Image
               src="/assets/page3/lado-natureza.png"

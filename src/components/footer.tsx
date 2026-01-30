@@ -137,7 +137,7 @@ export default function Footer() {
       {/* --- Parte Inferior: Copyright --- */}
       <div className="footer-item mt-8 flex flex-col items-start gap-4 text-xs text-neutral-600 md:mt-12 md:flex-row md:items-center md:justify-between md:text-sm">
         <p>
-          &copy; {new Date().getFullYear()} Solar Energy. Todos os direitos
+          &copy; {new Date().getFullYear()} MS Brasil Energy. Todos os direitos
           reservados.
         </p>
 

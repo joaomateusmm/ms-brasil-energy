@@ -221,13 +221,13 @@ export default function ResultModal({
       alert("Por favor, preencha todos os campos corretamente.");
       return;
     }
-    const NUMERO_DO_DONO = "5585996506991";
+    const NUMERO_DO_DONO = "556799125299";
     const mensagem = `Dados do cliente:
 Nome - ${formData.nome}
 Email - ${formData.email}
 Telefone - ${formData.celular}
 
-Olá, gostaria de dar continuidade no meu projeto da Solar Energy!`;
+Olá, gostaria de dar continuidade no meu projeto da MS Brasil Energy!`;
     const mensagemCodificada = encodeURIComponent(mensagem);
     const whatsappUrl = `https://wa.me/${NUMERO_DO_DONO}?text=${mensagemCodificada}`;
     window.open(whatsappUrl, "_blank");

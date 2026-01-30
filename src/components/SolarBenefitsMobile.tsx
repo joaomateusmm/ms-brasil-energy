@@ -160,7 +160,7 @@ export default function SolarBenefitsMobile() {
           <div className="relative h-32 w-32 overflow-hidden">
             <Image
               src="/assets/page2/logo-preto.webp"
-              alt="Logo Solar Energy"
+              alt="Logo MS Brasil Energy"
               width={180}
               height={180}
               className="mt-5"

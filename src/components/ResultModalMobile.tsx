@@ -204,8 +204,8 @@ export default function ResultModalMobile({
       alert("Por favor, preencha todos os campos corretamente.");
       return;
     }
-    const NUMERO_DO_DONO = "5585996506991";
-    const mensagem = `Dados do cliente:\nNome - ${formData.nome}\nEmail - ${formData.email}\nTelefone - ${formData.celular}\n\nOlá, gostaria de dar continuidade no meu projeto da Solar Energy!`;
+    const NUMERO_DO_DONO = "556799125299";
+    const mensagem = `Dados do cliente:\nNome - ${formData.nome}\nEmail - ${formData.email}\nTelefone - ${formData.celular}\n\nOlá, gostaria de dar continuidade no meu projeto da MS Brasil Energy!`;
     const whatsappUrl = `https://wa.me/${NUMERO_DO_DONO}?text=${encodeURIComponent(mensagem)}`;
     window.open(whatsappUrl, "_blank");
     onClose();

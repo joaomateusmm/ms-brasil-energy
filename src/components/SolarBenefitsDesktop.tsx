@@ -279,7 +279,7 @@ export default function SolarBenefitsSection() {
               </p>
               <Image
                 src="/assets/page2/logo-preto.webp"
-                alt="Logo Solar Energy"
+                alt="Logo MS Brasil Energy"
                 width={180}
                 height={180}
                 className="mt-5"

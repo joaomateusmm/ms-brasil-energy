@@ -24,7 +24,7 @@ export default async function HeroSection5() {
           Nossas Instalações
         </h2>
         <p className="text-lg text-white/60 md:text-xl">
-          Confira os projetos realizados pela Solar Energy. Qualidade e economia
+          Confira os projetos realizados pela MS Brasil Energy. Qualidade e economia
           que transformam a vida dos nossos clientes.
         </p>
       </div>
