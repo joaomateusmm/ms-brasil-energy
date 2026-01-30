@@ -2,7 +2,6 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ChevronsLeft, ChevronsRight } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useLayoutEffect, useRef } from "react";
 

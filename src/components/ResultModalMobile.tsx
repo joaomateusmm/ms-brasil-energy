@@ -5,7 +5,6 @@ import { toPng } from "html-to-image";
 import {
   Banknote,
   CalendarCheck,
-  Check,
   ChevronLeft,
   ChevronRight,
   CircleDollarSign,
@@ -18,12 +17,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 interface ResultModalProps {
   isOpen: boolean;

@@ -16,7 +16,6 @@ import {
   Copy,
   Loader2,
   PhoneCall,
-  ShieldCheck,
   User,
 } from "lucide-react"; // Adicionei Check e Copy
 import Image from "next/image";
