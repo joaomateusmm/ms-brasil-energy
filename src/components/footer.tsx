@@ -65,31 +65,7 @@ export default function Footer() {
                   href="#"
                   className="transition-colors hover:text-emerald-500"
                 >
-                  Início
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#simulacao"
-                  className="transition-colors hover:text-emerald-500"
-                >
-                  Simulador de Energia
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#solar"
-                  className="transition-colors hover:text-emerald-500"
-                >
-                  Benefícios
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#projetos"
-                  className="transition-colors hover:text-emerald-500"
-                >
-                  Serviços
+                  Home
                 </a>
               </li>
               <li>
@@ -98,6 +74,30 @@ export default function Footer() {
                   className="transition-colors hover:text-emerald-500"
                 >
                   Sobre Nós
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#projetos"
+                  className="transition-colors hover:text-emerald-500"
+                >
+                  Projetos
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#simulacao"
+                  className="transition-colors hover:text-emerald-500"
+                >
+                  Calculadora Solar
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/tipos-de-sistemas"
+                  className="transition-colors hover:text-emerald-500"
+                >
+                  Tipos de Sistemas
                 </a>
               </li>
             </ul>
