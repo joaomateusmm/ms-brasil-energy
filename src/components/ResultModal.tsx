@@ -124,7 +124,7 @@ export default function ResultModal({
 
           setPricingTable(newTable);
         }
-      } catch (error) {
+      } catch {
         console.error("Erro ao buscar preços atualizados, usando padrão.");
       }
     };
