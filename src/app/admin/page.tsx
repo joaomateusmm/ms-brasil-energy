@@ -1,33 +1,55 @@
-import { currentUser } from "@clerk/nextjs/server"; // <--- MUDEI AQUI
-import { desc } from "drizzle-orm";
+import { currentUser } from "@clerk/nextjs/server";
+import { desc, eq } from "drizzle-orm";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { AdminProjectCard } from "@/components/AdminProjectCard"; // <--- Importe o novo componente
+import { AdminPricingTable } from "@/components/AdminPricingTable";
+import { AdminProjectCard } from "@/components/AdminProjectCard";
 import { db } from "@/db";
-import { type Project, projects } from "@/db/schema";
+import { pricingConfig, type Project, projects } from "@/db/schema";
+
+// Força a página a não fazer cache, garantindo dados frescos do banco
+export const dynamic = "force-dynamic";
 
 export default async function AdminDashboard() {
-  // 1. SEGURANÇA (Agora usando currentUser para garantir acesso aos metadados)
   const user = await currentUser();
 
-  // Verifica se o usuário existe e se a role é admin
-  // Nota: No currentUser, o campo se chama 'publicMetadata'
   if (!user || user.publicMetadata?.role !== "admin") {
-    redirect("/"); // Chuta para fora se não for admin
+    redirect("/");
   }
 
-  // 2. BUSCAR DADOS DO BANCO
   const allProjects = await db
     .select()
     .from(projects)
     .orderBy(desc(projects.createdAt));
 
+  // --- LÓGICA DE PREÇOS CORRIGIDA ---
+  let pricingData = null;
+
+  // 1. Tenta buscar
+  const configResult = await db
+    .select()
+    .from(pricingConfig)
+    .where(eq(pricingConfig.id, 1))
+    .limit(1);
+
+  if (configResult.length > 0) {
+    pricingData = configResult[0];
+  } else {
+    // 2. SE NÃO EXISTIR, CRIA AGORA (Auto-seed)
+    // Isso garante que o banco nunca fique vazio e a tabela funcione
+    const newConfig = await db
+      .insert(pricingConfig)
+      .values({ id: 1 }) // Cria com valores default (zeros ou definidos no schema)
+      .returning();
+
+    pricingData = newConfig[0];
+  }
+
   return (
     <main className="min-h-screen w-full bg-[#191919] p-6 text-white md:p-12">
       <div className="mx-auto max-w-7xl">
-        {/* --- CABEÇALHO --- */}
         <div className="mb-12 flex flex-col items-start justify-between gap-6 border-b border-white/10 pb-8 md:flex-row md:items-center">
           <div>
             <Link href="/">
@@ -39,7 +61,7 @@ export default async function AdminDashboard() {
               Painel Administrativo
             </h1>
             <p className="text-white/60">
-              Gerencie as instalações e projetos do portfólio.
+              Gerencie as instalações e a tabela de preços do simulador.
             </p>
           </div>
 
@@ -52,27 +74,41 @@ export default async function AdminDashboard() {
           </Link>
         </div>
 
-        {/* --- GRID --- */}
-        {allProjects.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-white/10 bg-white/5 py-20">
-            <div className="mb-4 rounded-full bg-white/10 p-4">
-              <Plus className="h-8 w-8 text-white/40" />
+        <section className="mb-16">
+          <div className="mb-6 flex items-center gap-3">
+            <div className="h-8 w-1 rounded-full bg-emerald-500"></div>
+            <h2 className="text-2xl font-bold">Projetos Recentes</h2>
+          </div>
+
+          {allProjects.length === 0 ? (
+            <div className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-white/10 bg-white/5 py-20">
+              <div className="mb-4 rounded-full bg-white/10 p-4">
+                <Plus className="h-8 w-8 text-white/40" />
+              </div>
+              <h3 className="text-xl font-semibold text-white/80">
+                Nenhum projeto encontrado
+              </h3>
+              <p className="mt-2 max-w-xs text-center text-sm text-white/50">
+                Comece cadastrando sua primeira instalação.
+              </p>
             </div>
-            <h3 className="text-xl font-semibold text-white/80">
-              Nenhum projeto encontrado
-            </h3>
-            <p className="mt-2 max-w-xs text-center text-sm text-white/50">
-              Comece cadastrando sua primeira instalação.
-            </p>
+          ) : (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {allProjects.map((project: Project) => (
+                <AdminProjectCard key={project.id} project={project} />
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section>
+          <div className="mb-6 flex items-center gap-3">
+            <div className="h-8 w-1 rounded-full bg-emerald-500"></div>
+            <h2 className="text-2xl font-bold">Configuração do Simulador</h2>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {/* Agora usamos o componente Client Side para cada projeto */}
-            {allProjects.map((project: Project) => (
-              <AdminProjectCard key={project.id} project={project} />
-            ))}
-          </div>
-        )}
+
+          <AdminPricingTable initialData={pricingData} />
+        </section>
       </div>
     </main>
   );

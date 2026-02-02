@@ -26,6 +26,22 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+// Interface do objeto que vem do banco de dados (API)
+interface PricingConfigDB {
+  price300: number;
+  price400: number;
+  price500: number;
+  price600: number;
+  price700: number;
+  price800: number;
+  price900: number;
+  price1000: number;
+  price1500: number;
+  price2000: number;
+  price2500: number;
+  price3000: number;
+}
+
 interface ResultModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -63,7 +79,58 @@ export default function ResultModal({
     roiMax: 0,
   });
 
+  // ESTADO DA TABELA DE PREÇOS (Começa com padrão, atualiza com DB)
+  const [pricingTable, setPricingTable] = useState([
+    { kwh: 300, price: 6890 },
+    { kwh: 400, price: 9990 },
+    { kwh: 500, price: 10790 },
+    { kwh: 600, price: 11990 },
+    { kwh: 700, price: 13490 },
+    { kwh: 800, price: 15690 },
+    { kwh: 900, price: 17490 },
+    { kwh: 1000, price: 18390 },
+    { kwh: 1500, price: 23990 },
+    { kwh: 2000, price: 35890 },
+    { kwh: 2500, price: 41977 },
+    { kwh: 3000, price: 49982 },
+  ]);
+
   const [isPrinting, setIsPrinting] = useState(false);
+
+  // --- BUSCAR DADOS DO BANCO ---
+  useEffect(() => {
+    const fetchPricing = async () => {
+      try {
+        const res = await fetch("/api/pricing");
+        if (res.ok) {
+          const data: PricingConfigDB = await res.json();
+
+          // Transforma o objeto plano do banco no array necessário para o cálculo
+          // Se o valor vier 0 ou null do banco, mantemos um fallback seguro
+          const newTable = [
+            { kwh: 300, price: data.price300 || 6890 },
+            { kwh: 400, price: data.price400 || 9990 },
+            { kwh: 500, price: data.price500 || 10790 },
+            { kwh: 600, price: data.price600 || 11990 },
+            { kwh: 700, price: data.price700 || 13490 },
+            { kwh: 800, price: data.price800 || 15690 },
+            { kwh: 900, price: data.price900 || 17490 },
+            { kwh: 1000, price: data.price1000 || 18390 },
+            { kwh: 1500, price: data.price1500 || 23990 },
+            { kwh: 2000, price: data.price2000 || 35890 },
+            { kwh: 2500, price: data.price2500 || 41977 },
+            { kwh: 3000, price: data.price3000 || 49982 },
+          ];
+
+          setPricingTable(newTable);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar preços atualizados, usando padrão.");
+      }
+    };
+
+    fetchPricing();
+  }, []);
 
   // --- FUNÇÕES DE VALIDAÇÃO ---
   const isValidEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
@@ -152,30 +219,29 @@ export default function ResultModal({
     });
   };
 
+  // --- CÁLCULO (Agora depende de monthlyBill E pricingTable) ---
   useEffect(() => {
     if (monthlyBill > 0) {
       const kwhPrice = 1.05;
       const irradiation = 4.8;
       const monthlyConsumptionKwh = monthlyBill / kwhPrice;
 
-      const pricingTable = [
-        { kwh: 300, price: 6890 },
-        { kwh: 400, price: 9990 },
-        { kwh: 500, price: 10790 },
-        { kwh: 600, price: 11990 },
-        { kwh: 700, price: 13490 },
-        { kwh: 800, price: 15690 },
-        { kwh: 900, price: 17490 },
-        { kwh: 1000, price: 18390 },
-        { kwh: 1500, price: 23990 },
-        { kwh: 2000, price: 35890 },
-        { kwh: 2500, price: 41977 },
-        { kwh: 3000, price: 49982 },
-      ];
-
+      // Função de Interpolação usando a tabela dinâmica
       const calculateInterpolatedPrice = (kwh: number) => {
-        if (kwh <= 300) return 6890;
-        if (kwh >= 3000) return 49982 + (kwh - 3000) * 16;
+        // Menor que o mínimo
+        if (kwh <= pricingTable[0].kwh) return pricingTable[0].price;
+
+        const last = pricingTable[pricingTable.length - 1];
+        const secondLast = pricingTable[pricingTable.length - 2];
+
+        // Maior que o máximo (Extrapolação Linear)
+        if (kwh >= last.kwh) {
+          const slope =
+            (last.price - secondLast.price) / (last.kwh - secondLast.kwh);
+          return last.price + (kwh - last.kwh) * slope;
+        }
+
+        // Interpolação entre faixas
         for (let i = 0; i < pricingTable.length - 1; i++) {
           const lower = pricingTable[i];
           const upper = pricingTable[i + 1];
@@ -184,13 +250,16 @@ export default function ResultModal({
             return lower.price + ratio * (upper.price - lower.price);
           }
         }
-        return 6890;
+        return pricingTable[0].price; // Fallback
       };
 
       const basePrice = calculateInterpolatedPrice(monthlyConsumptionKwh);
       const systemPowerKwp = monthlyConsumptionKwh / (irradiation * 30 * 0.8);
-      const costMin = basePrice * 1.02;
-      const costMax = basePrice * 1.1;
+
+      // Margens fixas sobre o preço base do banco
+      const costMin = basePrice * 1.02; // +2%
+      const costMax = basePrice * 1.1; // +10%
+
       const economy = Math.max(0, (monthlyBill - 50) * 12);
 
       setResults({
@@ -206,7 +275,7 @@ export default function ResultModal({
         roiMax: parseFloat((costMax / economy).toFixed(1)),
       });
     }
-  }, [monthlyBill]);
+  }, [monthlyBill, pricingTable]); // <--- Atualiza quando a tabela muda!
 
   const formatCurrency = (val: number) =>
     val.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
