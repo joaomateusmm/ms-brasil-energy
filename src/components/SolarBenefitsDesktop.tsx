@@ -215,12 +215,12 @@ export default function SolarBenefitsSection() {
                   03.
                 </h1>
                 <h1 className="title m-0 text-end text-[1.8rem] font-bold text-gray-800 text-shadow-md">
-                  Retorno Superior à Poupança
+                  Retorno Superior a Outros Investimentos
                 </h1>
               </div>
               <p className="desc m-0 text-[14px] font-medium text-[#8b8b8b]">
-                O sistema se paga sozinho com a economia gerada (Payback médio
-                de 3 a 5 anos).
+                O sistema se paga sozinho com a economia gerada, com um Payback
+                médio de 18 meses a 2 anos.
               </p>
             </div>
           </div>

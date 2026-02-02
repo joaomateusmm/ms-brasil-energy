@@ -76,8 +76,8 @@ export default function SolarBenefitsMobile() {
     },
     {
       id: "03",
-      title: "Retorno Superior à Poupança",
-      desc: "O sistema se paga sozinho com a economia gerada (Payback médio de 3 a 5 anos).",
+      title: "Retorno Superior a Outros Investimentos",
+      desc: "O sistema se paga sozinho com a economia gerada, com um Payback médio de 18 meses a 2 anos.",
       img: "/assets/page2/img-3.webp",
     },
     {

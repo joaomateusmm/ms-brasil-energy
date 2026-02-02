@@ -380,12 +380,15 @@ Olá! Vi minha estimativa no site e quero um orçamento oficial!`;
 
                 <div className="mt-6 flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4 text-left md:items-center">
                   <AlertTriangle className="h-6 w-6 flex-shrink-0 text-amber-600" />
-                  <p className="text-xs leading-relaxed text-amber-900 md:text-sm">
-                    <span className="font-bold">IMPORTANTE:</span> Valores
-                    baseados em médias. O valor real pode variar de 2% a 10%
-                    após análise técnica da localização, tipo de telhado, etc.
-                    Consulte um especialista da MS Brasil Energy para ter o seu
-                    orçamento real.
+                  <p className="text-sm leading-tight text-amber-900">
+                    <span className="font-bold">IMPORTANTE:</span> Isso{" "}
+                    <span className="font-bold">NÃO</span> se trata de um
+                    orçamento real para um projeto, a MS Brasil{" "}
+                    <span className="font-bold">NÃO</span> usará nenhum desses
+                    valores para compor um projeto de fato. O valor real pode
+                    variar de 2% a 10% após análise técnica da localização, tipo
+                    de telhado, etc. Consulte um especialista da MS Brasil
+                    Energy para ter o seu orçamento real.
                   </p>
                 </div>
 
