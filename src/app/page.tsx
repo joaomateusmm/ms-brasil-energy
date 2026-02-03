@@ -1,11 +1,12 @@
 import React from "react";
 
 import FaqSection from "@/components/FaqSection";
-// Components
 import Footer from "@/components/footer";
 import HeroSection1 from "@/components/HeroSection1";
 import HeroSection5 from "@/components/HeroSection5";
 import ModelSection from "@/components/ModelSection";
+// Importe o novo Navbar Wrapper
+import Navbar from "@/components/Navbar";
 import PartnersSection from "@/components/PartnersSection";
 import Simulator from "@/components/Simulator";
 import SmoothScroll from "@/components/SmoothScroll";
@@ -17,6 +18,9 @@ export default function Home() {
   return (
     <SmoothScroll>
       <main className="w-full overflow-x-hidden">
+
+        <Navbar />
+
         <HeroSection1 />
 
         <section id="simulacao" className="bg-[#F4F4F4]">

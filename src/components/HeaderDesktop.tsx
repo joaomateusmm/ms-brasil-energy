@@ -134,7 +134,7 @@ export default function HeaderDesktop() {
     : baseNavItems;
 
   return (
-    <header className="absolute top-0 left-0 z-50 w-full border-b border-white/20 text-white backdrop-blur-sm">
+    <header className="relative w-full border-b border-white/20 text-white backdrop-blur-xs">
       <div className="mx-auto flex h-21 max-w-7xl items-center justify-between px-6">
         <Link href="/" className="flex items-center gap-3">
           <div className="relative h-14 w-18">

@@ -11,8 +11,7 @@ import React from "react";
 
 import FaqSection from "@/components/FaqSection";
 import Footer from "@/components/footer";
-import HeaderDesktop from "@/components/HeaderDesktop";
-import HeaderMobile from "@/components/HeaderMobile";
+import Navbar from "@/components/Navbar";
 import PartnersSection2 from "@/components/PartnersSection2"; // Certifique-se que o caminho está correto
 import SmoothScroll from "@/components/SmoothScroll";
 
@@ -22,14 +21,7 @@ export default function SobreNosPage() {
   return (
     <SmoothScroll>
       <main className="min-h-screen w-full bg-[#191919] text-white selection:bg-emerald-500/30">
-        <div className="relative z-50">
-          <div className="hidden lg:block">
-            <HeaderDesktop />
-          </div>
-          <div className="lg:hidden">
-            <HeaderMobile />
-          </div>
-        </div>
+        <Navbar />
 
         {/* --- HERO SECTION --- */}
         <section className="container mx-auto px-6 pt-32 pb-20 text-center md:pt-35 md:pb-32">

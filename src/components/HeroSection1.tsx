@@ -6,11 +6,6 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-import HeaderDesktop from "@/components/HeaderDesktop";
-import HeaderMobile from "@/components/HeaderMobile";
-
-// REMOVI A INTERFACE DE PROPS POIS NÃO PRECISAMOS MAIS DELA
-
 const newsData = [
   {
     title: "Energia solar cresce 31,4% em Janeiro.",
@@ -28,7 +23,7 @@ const newsData = [
     title: "Sol mais forte, atenção redobra.",
     desc: "O verão é marcado por sol intenso, dias mais longos e temperaturas elevadas. Para o setor de energia solar, esse período ...  Ler Mais.",
     image: "/assets/page2/img-2.webp",
-    link: "/blog/sustentabilidade",
+    link: "https://www.portalsolar.com.br/noticias/operacao-e-expansao/oem/sol-forte-atencao-redobrada",
   },
 ];
 
@@ -99,7 +94,7 @@ export default function HeroSection1() {
       <div className="absolute inset-0 z-0">
         <div className="block h-full w-full md:hidden">
           <Image
-            src="/assets/page1/bg-mobile.jpg"
+            src="/assets/page1/bg-mobile.webp"
             alt="Energia Renovável Mobile"
             fill
             className="object-cover opacity-60"
@@ -114,15 +109,6 @@ export default function HeroSection1() {
             className="object-cover opacity-60"
             priority
           />
-        </div>
-      </div>
-
-      <div className="relative z-50">
-        <div className="hidden lg:block">
-          <HeaderDesktop />
-        </div>
-        <div className="lg:hidden">
-          <HeaderMobile />
         </div>
       </div>
 

@@ -7,8 +7,7 @@ import React from "react";
 
 import FaqSection from "@/components/FaqSection";
 import Footer from "@/components/footer";
-import HeaderDesktop from "@/components/HeaderDesktop";
-import HeaderMobile from "@/components/HeaderMobile";
+import Navbar from "@/components/Navbar";
 import SmoothScroll from "@/components/SmoothScroll";
 
 export default function SystemTypesPage() {
@@ -16,14 +15,7 @@ export default function SystemTypesPage() {
     <SmoothScroll>
       <main className="min-h-screen w-full bg-[#f4f4f4] text-neutral-800">
         {/* --- HEADER --- */}
-        <div className="relative z-50">
-          <div className="hidden lg:block">
-            <HeaderDesktop />
-          </div>
-          <div className="lg:hidden">
-            <HeaderMobile />
-          </div>
-        </div>
+        <Navbar />
 
         {/* --- HERO SECTION --- */}
         <section className="relative flex h-[60vh] w-full items-center justify-center overflow-hidden bg-neutral-900 text-center text-white">
