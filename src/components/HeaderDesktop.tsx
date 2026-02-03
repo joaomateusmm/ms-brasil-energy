@@ -1,4 +1,3 @@
-// src/components/HeaderDesktop.tsx
 "use client";
 
 import {
@@ -17,26 +16,44 @@ import {
   Loader2,
   PhoneCall,
   User,
-} from "lucide-react"; // Adicionei Check e Copy
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation"; // Adicione useSearchParams (opcional, mas bom pra garantir re-render)
 import { useEffect, useState } from "react";
 
-// 1. Definindo a Interface para tipagem correta
 interface NavItem {
   name: string;
   href: string;
   subMenu: { title: string; href: string }[];
-  isAdminItem?: boolean; // Propriedade opcional
+  isAdminItem?: boolean;
 }
 
 export default function HeaderDesktop() {
   const { user } = useUser();
   const [isAdmin, setIsAdmin] = useState(false);
-  const [copied, setCopied] = useState(false); // Novo estado para controle da cópia
+  const [copied, setCopied] = useState(false);
+
+  const pathname = usePathname();
+  const router = useRouter();
+
+  // --- CORREÇÃO DO SCROLL ---
+  // Esse efeito roda sempre que a rota muda. Se tiver hash na URL (ex: /#projetos), ele faz o scroll.
+  useEffect(() => {
+    // Verifica se a URL tem hash
+    const hash = window.location.hash;
+    if (hash && pathname === "/") {
+      // Pequeno timeout para garantir que o DOM carregou
+      setTimeout(() => {
+        const element = document.querySelector(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 500); // 500ms é um tempo seguro para carregamento de assets iniciais
+    }
+  }, [pathname]); // Roda quando a rota muda
 
   useEffect(() => {
-    // Verificação segura de tipo para role
     const role = user?.publicMetadata?.role;
     if (role === "admin") {
       setIsAdmin(true);
@@ -45,13 +62,10 @@ export default function HeaderDesktop() {
     }
   }, [user]);
 
-  // Função para Copiar Email
   const handleCopyEmail = async () => {
     try {
       await navigator.clipboard.writeText("msbrasilenergy@gmail.com");
       setCopied(true);
-
-      // Reseta o estado após 2 segundos
       setTimeout(() => {
         setCopied(false);
       }, 2000);
@@ -60,7 +74,25 @@ export default function HeaderDesktop() {
     }
   };
 
-  // 2. Tipando a lista base
+  const handleNavigation = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+  ) => {
+    if (href.startsWith("#")) {
+      e.preventDefault();
+      const targetId = href.replace("#", "");
+
+      if (pathname === "/") {
+        const element = document.getElementById(targetId);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      } else {
+        router.push(`/${href}`); // O useEffect lá em cima vai pegar isso depois que carregar
+      }
+    }
+  };
+
   const baseNavItems: NavItem[] = [
     {
       name: "Home",
@@ -89,7 +121,6 @@ export default function HeaderDesktop() {
     },
   ];
 
-  // 3. Construindo a lista final
   const navItems: NavItem[] = isAdmin
     ? [
         ...baseNavItems,
@@ -105,7 +136,6 @@ export default function HeaderDesktop() {
   return (
     <header className="absolute top-0 left-0 z-50 w-full border-b border-white/20 text-white backdrop-blur-sm">
       <div className="mx-auto flex h-21 max-w-7xl items-center justify-between px-6">
-        {/* === 1. ESQUERDA: LOGO === */}
         <Link href="/" className="flex items-center gap-3">
           <div className="relative h-14 w-18">
             <Image
@@ -117,13 +147,13 @@ export default function HeaderDesktop() {
           </div>
         </Link>
 
-        {/* === 2. CENTRO: NAVEGAÇÃO === */}
         <nav className="-mr-8 hidden lg:block">
           <ul className="flex items-center gap-6 text-sm font-medium">
             {navItems.map((item) => (
               <li key={item.name} className="group relative py-6">
                 <Link
                   href={item.href}
+                  onClick={(e) => handleNavigation(e, item.href)}
                   className={`flex items-center gap-1 transition-colors ${
                     item.isAdminItem
                       ? "font-bold text-emerald-400 hover:text-emerald-300"
@@ -158,16 +188,13 @@ export default function HeaderDesktop() {
           </ul>
         </nav>
 
-        {/* === 3. DIREITA: AÇÕES === */}
         <div className="flex items-center gap-6">
-          {/* Telefone e Email */}
           <div className="hidden flex-col items-end xl:flex">
             <div className="flex items-center gap-2 text-xs font-semibold text-white/60">
               <PhoneCall className="h-3 w-3" /> Nosso Contato:
             </div>
 
             <div className="my-1 flex flex-col items-end gap-1">
-              {/* Link do WhatsApp */}
               <Link
                 className="cursor-pointer text-[13px] font-bold text-white duration-300 hover:text-emerald-400 hover:underline"
                 href="https://wa.link/lfkh22"
@@ -175,13 +202,11 @@ export default function HeaderDesktop() {
                 +55 67 9912-5299
               </Link>
 
-              {/* Ação de Copiar Email com Animação */}
               <button
                 onClick={handleCopyEmail}
                 className="group flex items-center gap-1.5 text-[13px] font-bold text-white transition-all duration-300 hover:text-emerald-400"
                 title="Clique para copiar"
               >
-                {/* Ícone que muda suavemente */}
                 <span className="relative h-3.5 w-3.5">
                   <Copy
                     className={`absolute inset-0 h-full w-full transition-all duration-300 ${
@@ -197,9 +222,7 @@ export default function HeaderDesktop() {
                 <span
                   className={`cursor-pointer transition-all duration-300 ${copied ? "text-emerald-400" : ""}`}
                 >
-                  {copied
-                    ? "msbrasilenergy@gmail.com"
-                    : "msbrasilenergy@gmail.com"}
+                  msbrasilenergy@gmail.com
                 </span>
               </button>
             </div>
@@ -210,6 +233,7 @@ export default function HeaderDesktop() {
           <div className="flex items-center gap-3">
             <Link
               href="#simulacao"
+              onClick={(e) => handleNavigation(e, "#simulacao")}
               className="hidden rounded-full bg-emerald-500 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-emerald-400 hover:shadow-emerald-500/40 active:scale-95 lg:block"
             >
               Fazer Simulação

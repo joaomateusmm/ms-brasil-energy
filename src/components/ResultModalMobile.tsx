@@ -20,6 +20,22 @@ import {
 import Link from "next/link";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 
+// Interface dos dados que vêm da API
+interface PricingConfigDB {
+  price300: number;
+  price400: number;
+  price500: number;
+  price600: number;
+  price700: number;
+  price800: number;
+  price900: number;
+  price1000: number;
+  price1500: number;
+  price2000: number;
+  price2500: number;
+  price3000: number;
+}
+
 interface ResultModalMobileProps {
   isOpen: boolean;
   onClose: () => void;
@@ -57,7 +73,57 @@ export default function ResultModalMobile({
     roiMax: 0,
   });
 
+  // ESTADO DA TABELA DE PREÇOS (Inicia com padrão, atualiza via API)
+  const [pricingTable, setPricingTable] = useState([
+    { kwh: 300, price: 6890 },
+    { kwh: 400, price: 9990 },
+    { kwh: 500, price: 10790 },
+    { kwh: 600, price: 11990 },
+    { kwh: 700, price: 13490 },
+    { kwh: 800, price: 15690 },
+    { kwh: 900, price: 17490 },
+    { kwh: 1000, price: 18390 },
+    { kwh: 1500, price: 23990 },
+    { kwh: 2000, price: 35890 },
+    { kwh: 2500, price: 41977 },
+    { kwh: 3000, price: 49982 },
+  ]);
+
   const [isPrinting, setIsPrinting] = useState(false);
+
+  // --- 1. BUSCAR DADOS DO BANCO ---
+  useEffect(() => {
+    const fetchPricing = async () => {
+      try {
+        const res = await fetch("/api/pricing");
+        if (res.ok) {
+          const data: PricingConfigDB = await res.json();
+
+          // Converte o objeto do banco para o formato de array ordenado
+          const newTable = [
+            { kwh: 300, price: data.price300 || 6890 },
+            { kwh: 400, price: data.price400 || 9990 },
+            { kwh: 500, price: data.price500 || 10790 },
+            { kwh: 600, price: data.price600 || 11990 },
+            { kwh: 700, price: data.price700 || 13490 },
+            { kwh: 800, price: data.price800 || 15690 },
+            { kwh: 900, price: data.price900 || 17490 },
+            { kwh: 1000, price: data.price1000 || 18390 },
+            { kwh: 1500, price: data.price1500 || 23990 },
+            { kwh: 2000, price: data.price2000 || 35890 },
+            { kwh: 2500, price: data.price2500 || 41977 },
+            { kwh: 3000, price: data.price3000 || 49982 },
+          ];
+
+          setPricingTable(newTable);
+        }
+      } catch {
+        console.error("Erro ao buscar preços (Mobile), usando padrão.");
+      }
+    };
+
+    fetchPricing();
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -141,37 +207,30 @@ export default function ResultModalMobile({
     });
   };
 
-  // --- LÓGICA DE CÁLCULO ATUALIZADA (MESMA DO DESKTOP) ---
+  // --- 2. LÓGICA DE CÁLCULO ATUALIZADA (DINÂMICA) ---
   useEffect(() => {
     if (monthlyBill > 0) {
       const kwhPrice = 1.05;
       const irradiation = 4.8;
       const monthlyConsumptionKwh = monthlyBill / kwhPrice;
 
-      const pricingTable = [
-        { kwh: 300, price: 6890 },
-        { kwh: 400, price: 9990 },
-        { kwh: 500, price: 10790 },
-        { kwh: 600, price: 11990 },
-        { kwh: 700, price: 13490 },
-        { kwh: 800, price: 15690 },
-        { kwh: 900, price: 17490 },
-        { kwh: 1000, price: 18390 },
-        { kwh: 1500, price: 23990 },
-        { kwh: 2000, price: 35890 },
-        { kwh: 2500, price: 41977 },
-        { kwh: 3000, price: 49982 },
-      ];
-
+      // Cálculo de Interpolação usando a tabela do estado (DB)
       const calculateInterpolatedPrice = (kwh: number) => {
-        if (kwh <= 300) return 6890;
-        if (kwh >= 3000) {
-          const last = pricingTable[pricingTable.length - 1];
-          const secondLast = pricingTable[pricingTable.length - 2];
+        // Se for menor que o mínimo da tabela
+        if (kwh <= pricingTable[0].kwh) return pricingTable[0].price;
+
+        const last = pricingTable[pricingTable.length - 1];
+        const secondLast = pricingTable[pricingTable.length - 2];
+
+        // Se for maior que o máximo (Extrapolação Dinâmica)
+        if (kwh >= last.kwh) {
+          // Calcula a inclinação baseada nos dois últimos pontos para projetar o preço
           const slope =
             (last.price - secondLast.price) / (last.kwh - secondLast.kwh);
           return last.price + (kwh - last.kwh) * slope;
         }
+
+        // Interpolação entre faixas
         for (let i = 0; i < pricingTable.length - 1; i++) {
           const lower = pricingTable[i];
           const upper = pricingTable[i + 1];
@@ -180,7 +239,7 @@ export default function ResultModalMobile({
             return lower.price + ratio * (upper.price - lower.price);
           }
         }
-        return 6890;
+        return pricingTable[0].price; // Fallback
       };
 
       const basePrice = calculateInterpolatedPrice(monthlyConsumptionKwh);
@@ -189,6 +248,7 @@ export default function ResultModalMobile({
       const production = systemPowerKwp * irradiation * 30;
       const economy = Math.max(0, (monthlyBill - 50) * 12);
 
+      // Margens fixas (solicitadas anteriormente)
       const costMin = basePrice * 1.02;
       const costMax = basePrice * 1.1;
 
@@ -206,7 +266,7 @@ export default function ResultModalMobile({
         roiMax: parseFloat(roiMaxCalc.toFixed(1)),
       });
     }
-  }, [monthlyBill]);
+  }, [monthlyBill, pricingTable]); // <--- Dependência crítica: Recalcula quando a tabela carrega
 
   if (!isOpen) return null;
 

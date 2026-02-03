@@ -8,7 +8,7 @@ import {
   SignedOut,
   SignInButton,
   UserButton,
-  useUser, // Adicionado hook
+  useUser,
 } from "@clerk/nextjs";
 import {
   ChevronDown,
@@ -16,11 +16,12 @@ import {
   Mail,
   Menu,
   PhoneCall,
-  ShieldCheck, // Adicionado ícone
+  ShieldCheck,
   X,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation"; // Hooks de navegação
 import { useEffect, useState } from "react";
 
 interface SubMenuItem {
@@ -28,7 +29,6 @@ interface SubMenuItem {
   href: string;
 }
 
-// Atualizada a interface para incluir a propriedade opcional
 interface NavItem {
   name: string;
   href: string;
@@ -39,6 +39,10 @@ interface NavItem {
 export default function HeaderMobile() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSubMenu, setActiveSubMenu] = useState<string | null>(null);
+
+  // Hooks de navegação
+  const pathname = usePathname();
+  const router = useRouter();
 
   // Lógica de Admin
   const { user } = useUser();
@@ -52,7 +56,6 @@ export default function HeaderMobile() {
     }
   }, [user]);
 
-  // Fecha o menu no resize
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
@@ -63,7 +66,6 @@ export default function HeaderMobile() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Bloqueia scroll
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -75,16 +77,43 @@ export default function HeaderMobile() {
     };
   }, [isOpen]);
 
-  // Lista Base
+  // --- FUNÇÃO DE NAVEGAÇÃO INTELIGENTE ---
+  const handleNavigation = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+  ) => {
+    // 1. Sempre fecha o menu ao clicar
+    setIsOpen(false);
+
+    // 2. Lógica de âncora
+    if (href.startsWith("#")) {
+      e.preventDefault();
+      const targetId = href.replace("#", "");
+
+      if (pathname === "/") {
+        // Se já está na Home, rola suavemente
+        setTimeout(() => {
+          const element = document.getElementById(targetId);
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }, 300); // Pequeno delay para garantir que o menu fechou
+      } else {
+        // Se está fora, redireciona
+        router.push(`/${href}`);
+      }
+    }
+    // Link normal segue o fluxo padrão do Next.js
+  };
+
   const baseNavItems: NavItem[] = [
     { name: "Home", href: "/", subMenu: [] },
     { name: "Sobre Nós", href: "/sobre-nos", subMenu: [] },
     { name: "Projetos", href: "#projetos", subMenu: [] },
     { name: "Simulação", href: "#simulacao", subMenu: [] },
-    { name: "Social :", href: "/", subMenu: [] },
+    { name: "Social", href: "#", subMenu: [] }, // Ajustei href para placeholder
   ];
 
-  // Lista Dinâmica (Com Admin)
   const navItems: NavItem[] = isAdmin
     ? [
         ...baseNavItems,
@@ -114,9 +143,7 @@ export default function HeaderMobile() {
           />
         </Link>
 
-        {/* Botão Hambúrguer e User Button lado a lado */}
         <div className="flex items-center gap-4">
-          {/* User Button visível na barra fechada se logado */}
           <ClerkLoaded>
             <SignedIn>
               <UserButton afterSignOutUrl="/" />
@@ -165,7 +192,7 @@ export default function HeaderMobile() {
 
           {/* Navegação */}
           <nav className="flex-1 px-6 py-8">
-            {/* LOGIN NO MOBILE (Topo da lista) */}
+            {/* LOGIN NO MOBILE */}
             <div className="mb-6 border-b border-white/10 pb-6">
               <ClerkLoading>
                 <div className="flex items-center gap-2 text-white/50">
@@ -200,7 +227,7 @@ export default function HeaderMobile() {
                     {item.subMenu.length === 0 ? (
                       <Link
                         href={item.href}
-                        onClick={() => setIsOpen(false)}
+                        onClick={(e) => handleNavigation(e, item.href)} // Adicionado o handler
                         className={`flex items-center gap-2 text-lg transition-colors ${
                           item.isAdminItem
                             ? "font-bold text-emerald-400 hover:text-emerald-300"
@@ -242,7 +269,7 @@ export default function HeaderMobile() {
                         <li key={index}>
                           <Link
                             href={subItem.href}
-                            onClick={() => setIsOpen(false)}
+                            onClick={() => setIsOpen(false)} // Fecha menu no submenu
                             className="block text-sm text-white/70 transition-all hover:translate-x-1 hover:text-emerald-400"
                           >
                             {subItem.title}

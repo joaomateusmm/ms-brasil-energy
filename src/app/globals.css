@@ -218,4 +218,6 @@ html {
 /* Esconde a scrollbar no Firefox */
 html {
   scrollbar-width: none;
+  scroll-behavior: smooth; /* Garante rolagem suave nativa */
+  scroll-padding-top: 100px; /* Compensa a altura do Header fixo */
 }

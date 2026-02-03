@@ -134,7 +134,7 @@ export default function ModelSection() {
         <div>
           <h2 className="font-clash-display mb-6 text-5xl leading-55 font-semibold text-shadow-2xs">
             <ScrollVelocity
-              texts={["Nossos Produtos", "Deslize para Baixo"]}
+              texts={["Nossos Projetos", "Deslize para Baixo"]}
               velocity={50}
               className="custom-scroll-text text-5xl text-white/8 md:text-[150px]"
             />
