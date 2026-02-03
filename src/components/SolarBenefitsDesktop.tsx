@@ -13,10 +13,18 @@ export default function SolarBenefitsSection() {
   const solarWrapperRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
+    // 1. BLINDAGEM PRINCIPAL:
+    // Se a div container ou o wrapper ainda não existem (são null), CANCELA TUDO.
+    // Isso impede que o GSAP tente buscar coisas dentro de "null".
+    if (!solarContainerRef.current || !solarWrapperRef.current) return;
+
+    // Registra o plugin aqui dentro ou fora, mas garanta que ele esteja registrado
+    gsap.registerPlugin(ScrollTrigger);
+
     const ctx = gsap.context(() => {
       const q = gsap.utils.selector(solarContainerRef);
       const cards = q(".card");
-      const wrapper = solarWrapperRef.current;
+      const wrapper = solarWrapperRef.current; // Já checamos lá em cima, mas o TS gosta de garantir
 
       if (!wrapper) return;
 
@@ -36,88 +44,99 @@ export default function SolarBenefitsSection() {
         ".intro-text .overline, .intro-text .main-title, .intro-text .sub-text, .intro-text .scroll-hint",
       );
 
-      const introTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: solarContainerRef.current,
-          start: "top 60%",
-          end: "top top",
-          toggleActions: "play none none reverse",
-        },
-      });
+      // 2. BLINDAGEM DA INTRO:
+      // Só cria a timeline se o texto de intro foi encontrado pelo seletor 'q'
+      if (introSection.length > 0 && introElements.length > 0) {
+        const introTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: solarContainerRef.current,
+            start: "top 60%",
+            end: "top top",
+            toggleActions: "play none none reverse",
+          },
+        });
 
-      introTl.set(introSection, { autoAlpha: 1 });
-      introTl.from(introElements, {
-        y: 50,
-        opacity: 0,
-        duration: 1,
-        stagger: 0.15,
-        ease: "power3.out",
-      });
+        introTl.set(introSection, { autoAlpha: 1 });
+        introTl.from(introElements, {
+          y: 50,
+          opacity: 0,
+          duration: 1,
+          stagger: 0.15,
+          ease: "power3.out",
+        });
+      }
 
       // --- CARDS ---
-      (cards as HTMLElement[]).forEach((card, index) => {
-        const img = card.querySelector(".img");
-        const texts = card.querySelector(".texts");
-        const textChildren = texts ? texts.children : [];
+      // O forEach não quebra se o array for vazio, mas é bom saber que ele roda seguro
+      if (cards.length > 0) {
+        (cards as HTMLElement[]).forEach((card, index) => {
+          const img = card.querySelector(".img");
+          const texts = card.querySelector(".texts");
+          const textChildren = texts ? texts.children : [];
 
-        const triggerConfig: ScrollTrigger.Vars = {
-          trigger: index === 0 ? solarContainerRef.current : card,
-          start: index === 0 ? "top center" : "left 80%",
-          end: "center center",
-          scrub: 0.5,
-        };
+          // Se não achar a imagem, pula esse card (evita erro no gsap.fromTo(img...))
+          if (!img) return;
 
-        if (index !== 0) {
-          triggerConfig.containerAnimation = tween;
-        }
+          const triggerConfig: ScrollTrigger.Vars = {
+            trigger: index === 0 ? solarContainerRef.current : card,
+            start: index === 0 ? "top center" : "left 80%",
+            end: "center center",
+            scrub: 0.5,
+          };
 
-        const tl = gsap.timeline({ scrollTrigger: triggerConfig });
+          if (index !== 0) {
+            triggerConfig.containerAnimation = tween;
+          }
 
-        tl.to(card, { autoAlpha: 1, duration: 0.1 });
+          const tl = gsap.timeline({ scrollTrigger: triggerConfig });
 
-        tl.fromTo(
-          img,
-          { opacity: 0 },
-          { opacity: 1, duration: 1, ease: "power2.out" },
-          "<",
-        );
+          tl.to(card, { autoAlpha: 1, duration: 0.1 });
 
-        if (texts) {
           tl.fromTo(
-            texts,
+            img,
             { opacity: 0 },
-            { opacity: 1, duration: 0.1 },
-            "-=0.8",
+            { opacity: 1, duration: 1, ease: "power2.out" },
+            "<",
           );
-        }
 
-        if (textChildren.length > 0) {
-          tl.fromTo(
-            textChildren,
-            { y: 50, opacity: 0 },
-            {
-              y: 0,
-              opacity: 1,
-              duration: 0.8,
-              stagger: 0.1,
-              ease: "back.out(1.2)",
-            },
-            "-=0.8",
-          );
-        }
-      });
+          if (texts) {
+            tl.fromTo(
+              texts,
+              { opacity: 0 },
+              { opacity: 1, duration: 0.1 },
+              "-=0.8",
+            );
+          }
 
-      // --- PINNING ---
-      ScrollTrigger.create({
-        trigger: solarContainerRef.current,
-        start: "top top",
-        end: () => `+=${wrapper.scrollWidth - window.innerWidth + 100}`,
-        pin: true,
-        animation: tween,
-        scrub: 0.5,
-        invalidateOnRefresh: true,
-        anticipatePin: 1,
-      });
+          if (textChildren.length > 0) {
+            tl.fromTo(
+              textChildren,
+              { y: 50, opacity: 0 },
+              {
+                y: 0,
+                opacity: 1,
+                duration: 0.8,
+                stagger: 0.1,
+                ease: "back.out(1.2)",
+              },
+              "-=0.8",
+            );
+          }
+        });
+      }
+
+      if (solarContainerRef.current) {
+        ScrollTrigger.create({
+          trigger: solarContainerRef.current,
+          start: "top top",
+          end: () => `+=${wrapper.scrollWidth - window.innerWidth + 100}`,
+          pin: true,
+          animation: tween,
+          scrub: 0.5,
+          invalidateOnRefresh: true,
+          anticipatePin: 1,
+        });
+      }
     }, solarContainerRef);
 
     return () => ctx.revert();

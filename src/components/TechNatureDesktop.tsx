@@ -11,6 +11,9 @@ export default function TechNatureDesktop() {
   const hero3ContainerRef = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
+    // BLINDAGEM: Verifica se o elemento existe
+    if (!hero3ContainerRef.current) return;
+
     const ctx = gsap.context(() => {
       // --- ANIMAÇÃO LADO TECNOLOGIA ---
       gsap.from(".tech-img", {
@@ -91,14 +94,19 @@ export default function TechNatureDesktop() {
     >
       <div className="pointer-events-auto flex h-screen items-center justify-center">
         <main className="flex flex-row gap-32">
-          <Image
-            src="/assets/page3/Aliados.png"
-            alt="Tecnologias de energia solar"
-            width={220}
-            height={400}
-            className="textos absolute translate-x-[440px] -translate-y-[110px] will-change-transform"
-            style={{ width: "auto", height: "auto" }}
-          />
+          {/* Logo Central */}
+          <div className="textos absolute translate-x-[440px] -translate-y-[110px] will-change-transform">
+            {/* CORREÇÃO: Wrapper com dimensões relativas e Image com fill */}
+            <div className="relative h-[400px] w-[220px]">
+              <Image
+                src="/assets/page3/Aliados.png"
+                alt="Tecnologias de energia solar"
+                fill
+                sizes="220px"
+                className="object-contain"
+              />
+            </div>
+          </div>
 
           {/* Lado tecnologia */}
           <div className="flex flex-col items-end">
@@ -116,14 +124,18 @@ export default function TechNatureDesktop() {
               avançada até agora.
             </p>
 
-            <Image
-              src="/assets/page3/lado-tecnologia.png"
-              alt="Tecnologias"
-              width={1200}
-              height={400}
-              className="tech-img absolute translate-x-[30px] translate-y-[80px] will-change-transform"
-              style={{ width: "auto", height: "auto" }}
-            />
+            <div className="tech-img absolute translate-x-[30px] translate-y-[80px] will-change-transform">
+              {/* CORREÇÃO: Wrapper com dimensões relativas e Image com fill */}
+              <div className="relative h-[400px] w-[1200px]">
+                <Image
+                  src="/assets/page3/lado-tecnologia.png"
+                  alt="Tecnologias"
+                  fill
+                  sizes="100vw"
+                  className="object-contain object-right" // object-right alinha melhor aqui
+                />
+              </div>
+            </div>
           </div>
 
           {/* Lado natureza */}
@@ -142,14 +154,18 @@ export default function TechNatureDesktop() {
               ambiental.
             </p>
 
-            <Image
-              src="/assets/page3/lado-natureza.png"
-              alt="Tecnologias de energia solar"
-              width={1000}
-              height={400}
-              className="nature-img absolute -translate-x-[40px] translate-y-[108px] will-change-transform"
-              style={{ width: "auto", height: "auto" }}
-            />
+            <div className="nature-img absolute -translate-x-[40px] translate-y-[108px] will-change-transform">
+              {/* CORREÇÃO: Wrapper com dimensões relativas e Image com fill */}
+              <div className="relative h-[400px] w-[1000px]">
+                <Image
+                  src="/assets/page3/lado-natureza.png"
+                  alt="Tecnologias de energia solar"
+                  fill
+                  sizes="100vw"
+                  className="object-contain object-left" // object-left alinha melhor aqui
+                />
+              </div>
+            </div>
           </div>
         </main>
       </div>

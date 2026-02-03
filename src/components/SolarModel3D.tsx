@@ -92,14 +92,12 @@ export default function SolarModel3D() {
         <Environment preset="city" />
         <Track mouseX={mouseX} mouseY={mouseY} />
         <OrbitControls
+          makeDefault
           enableZoom={false}
           enablePan={false}
           target={modelPosition}
           enableDamping={true}
           dampingFactor={0.01}
-          // --- BLOQUEIO DE ROTAÇÃO VERTICAL ---
-          // Ao definir min e max para o mesmo valor (PI/2),
-          // a câmara fica presa no horizonte (90 graus).
           minPolarAngle={Math.PI / 2}
           maxPolarAngle={Math.PI / 2}
         />

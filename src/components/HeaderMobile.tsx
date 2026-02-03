@@ -354,6 +354,7 @@ export default function HeaderMobile() {
               src="/assets/page1/logo.svg"
               alt="Logo"
               fill
+              priority
               className="object-contain"
             />
           </Link>

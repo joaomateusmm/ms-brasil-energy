@@ -67,9 +67,14 @@ export default function HeroSection1() {
   }, []);
 
   useLayoutEffect(() => {
+    // 1. BLINDAGEM GSAP
     if (!heroVisible || !heroContainerRef.current) return;
+
+    // Verifica se os elementos realmente existem antes de animar
+    const elements = heroContainerRef.current.querySelectorAll(".hero-anim");
+    if (elements.length === 0) return;
+
     const ctx = gsap.context(() => {
-      const elements = gsap.utils.toArray(".hero-anim");
       gsap.fromTo(
         elements,
         { y: 50, opacity: 0 },
@@ -91,23 +96,31 @@ export default function HeroSection1() {
       ref={heroSectionRef}
       className="relative min-h-screen w-full overflow-hidden bg-gray-900 pb-20 lg:pb-0"
     >
+      {/* BACKGROUNDS (LCP - Priority True) */}
       <div className="absolute inset-0 z-0">
-        <div className="block h-full w-full md:hidden">
+        {/* MOBILE BACKGROUND */}
+        <div className="relative h-full w-full lg:hidden">
           <Image
             src="/assets/page1/bg-mobile.webp"
-            alt="Energia Renovável Mobile"
+            alt="Hero Mobile"
             fill
-            className="object-cover opacity-60"
-            priority
+            priority={true}
+            // CORREÇÃO: Dizemos que até 1024px é 100vw, acima disso é insignificante (1px)
+            sizes="(max-width: 1024px) 100vw, 1px"
+            className="object-cover opacity-65"
           />
         </div>
-        <div className="hidden h-full w-full md:block">
+
+        {/* DESKTOP BACKGROUND */}
+        <div className="relative hidden h-full w-full lg:block">
           <Image
             src="/assets/page1/bg-pc.jpg"
-            alt="Energia Renovável Desktop"
+            alt="Hero Desktop"
             fill
-            className="object-cover opacity-60"
-            priority
+            priority={true}
+            // CORREÇÃO: Dizemos que a partir de 1024px é 100vw, abaixo disso é insignificante
+            sizes="(min-width: 1024px) 100vw, 1px"
+            className="object-cover opacity-80"
           />
         </div>
       </div>
@@ -141,16 +154,19 @@ export default function HeroSection1() {
               <p className="font-montserrat mt-2 mb-1 text-xs font-medium text-neutral-300">
                 Últimas Notícias - Clique para ler:
               </p>
+
               {/* CARD 1: NOTÍCIAS */}
               <Link
                 href={currentNews.link}
                 className="animate-in fade-in flex h-[160px] w-full cursor-pointer items-center gap-5 rounded-2xl border border-white/10 bg-white/10 p-6 backdrop-blur-md transition-all duration-300 hover:bg-white/20 md:w-96 md:pr-8"
               >
+                {/* CONTAINER DA IMAGEM RELATIVO */}
                 <div className="relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white/20">
                   <Image
                     src={currentNews.image}
                     alt="Notícia"
                     fill
+                    sizes="(max-width: 768px) 80px, 80px" // Tamanho pequeno e fixo
                     className={`object-cover transition-opacity duration-300 ${fadeClass}`}
                   />
                 </div>
@@ -173,7 +189,7 @@ export default function HeroSection1() {
 
             {/* CARD 2: INSTAGRAM */}
             <Link
-              href="https://www.instagram.com/seuperfil"
+              href="https://www.instagram.com/msbrasilenergy/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex h-[160px] w-full cursor-pointer items-center gap-5 rounded-2xl border border-white/10 bg-white/10 p-6 backdrop-blur-md transition-all duration-500 hover:bg-white/20 md:mt-6 md:w-96 md:pr-8"
@@ -182,14 +198,15 @@ export default function HeroSection1() {
                 {[1, 2, 3].map((i) => (
                   <div
                     key={i}
-                    className="h-10 w-10 overflow-hidden rounded-full border-2 border-white/20 bg-gray-500"
+                    className="relative h-10 w-10 overflow-hidden rounded-full border-2 border-white/20 bg-gray-500"
                   >
+                    {/* AVATARES PEQUENOS */}
                     <Image
                       src={`/assets/page1/avatar-${i}.webp`}
                       alt="Avatar"
-                      width={40}
-                      height={40}
-                      className="h-full w-full object-cover"
+                      fill
+                      sizes="40px" // Tamanho fixo muito pequeno
+                      className="object-cover"
                     />
                   </div>
                 ))}

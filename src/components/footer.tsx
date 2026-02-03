@@ -14,6 +14,7 @@ export default function Footer() {
 
   useLayoutEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
+    if (!footerRef.current) return;
 
     const ctx = gsap.context(() => {
       const items = gsap.utils.toArray(".footer-item");

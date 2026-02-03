@@ -9,6 +9,7 @@ import {
   useRef,
 } from "react";
 
+// Hook mantido igual
 function useAnimationFrame(callback: () => void) {
   useEffect(() => {
     let frameId: number;
@@ -21,16 +22,33 @@ function useAnimationFrame(callback: () => void) {
   }, [callback]);
 }
 
+// Hook otimizado para não calcular getBoundingClientRect a cada movimento do mouse
 function useMousePositionRef(
   containerRef: MutableRefObject<HTMLElement | null>,
 ) {
   const positionRef = useRef({ x: 0, y: 0 });
+  // Cache do rect do container para não recalcular no mousemove
+  const containerRectRef = useRef<DOMRect | null>(null);
 
   useEffect(() => {
-    const updatePosition = (x: number, y: number) => {
+    const updateContainerRect = () => {
       if (containerRef?.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        positionRef.current = { x: x - rect.left, y: y - rect.top };
+        containerRectRef.current = containerRef.current.getBoundingClientRect();
+      }
+    };
+
+    // Atualiza o rect inicial e no resize/scroll
+    updateContainerRect();
+    window.addEventListener("resize", updateContainerRect);
+    window.addEventListener("scroll", updateContainerRect);
+
+    const updatePosition = (x: number, y: number) => {
+      if (containerRectRef.current) {
+        // Usa o valor cacheado
+        positionRef.current = {
+          x: x - containerRectRef.current.left,
+          y: y - containerRectRef.current.top,
+        };
       } else {
         positionRef.current = { x, y };
       }
@@ -45,9 +63,12 @@ function useMousePositionRef(
 
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("touchmove", handleTouchMove);
+
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("resize", updateContainerRect);
+      window.removeEventListener("scroll", updateContainerRect);
     };
   }, [containerRef]);
 
@@ -82,6 +103,8 @@ const VariableProximity = forwardRef<HTMLSpanElement, VariableProximityProps>(
     } = props;
 
     const letterRefs = useRef<(HTMLSpanElement | null)[]>([]);
+    // Novo REF para guardar as posições calculadas
+    const letterPositions = useRef<{ x: number; y: number }[]>([]);
     const interpolatedSettingsRef = useRef<string[]>([]);
     const mousePositionRef = useMousePositionRef(containerRef);
     const lastPositionRef = useRef<{ x: number | null; y: number | null }>({
@@ -111,6 +134,34 @@ const VariableProximity = forwardRef<HTMLSpanElement, VariableProximityProps>(
       }));
     }, [fromFontVariationSettings, toFontVariationSettings]);
 
+    // Função para pré-calcular posições das letras
+    const measureLetters = () => {
+      if (!containerRef?.current || letterRefs.current.length === 0) return;
+
+      const containerRect = containerRef.current.getBoundingClientRect();
+
+      letterPositions.current = letterRefs.current.map((letterRef) => {
+        if (!letterRef) return { x: 0, y: 0 };
+        const rect = letterRef.getBoundingClientRect();
+        return {
+          x: rect.left + rect.width / 2 - containerRect.left,
+          y: rect.top + rect.height / 2 - containerRect.top,
+        };
+      });
+    };
+
+    // Calcula posições no mount e no resize
+    useEffect(() => {
+      measureLetters();
+      window.addEventListener("resize", measureLetters);
+      // Opcional: Adicionar um pequeno delay para garantir que a fonte carregou
+      const timer = setTimeout(measureLetters, 100);
+      return () => {
+        window.removeEventListener("resize", measureLetters);
+        clearTimeout(timer);
+      };
+    }); // Recalcula se o texto mudar
+
     const calculateDistance = (
       x1: number,
       y1: number,
@@ -132,30 +183,34 @@ const VariableProximity = forwardRef<HTMLSpanElement, VariableProximityProps>(
     };
 
     useAnimationFrame(() => {
-      if (!containerRef?.current) return;
+      // Se não temos posições cacheadas, não faz nada
+      if (!containerRef?.current || letterPositions.current.length === 0)
+        return;
+
       const { x, y } = mousePositionRef.current;
+
+      // Otimização: Se o mouse não mexeu, não recalcula
       if (lastPositionRef.current.x === x && lastPositionRef.current.y === y) {
         return;
       }
       lastPositionRef.current = { x, y };
-      const containerRect = containerRef.current.getBoundingClientRect();
 
       letterRefs.current.forEach((letterRef, index) => {
         if (!letterRef) return;
 
-        const rect = letterRef.getBoundingClientRect();
-        const letterCenterX = rect.left + rect.width / 2 - containerRect.left;
-        const letterCenterY = rect.top + rect.height / 2 - containerRect.top;
+        // OTIMIZAÇÃO CRÍTICA: Lemos do cache, não do DOM
+        const position = letterPositions.current[index];
+        if (!position) return;
 
-        const distance = calculateDistance(
-          mousePositionRef.current.x,
-          mousePositionRef.current.y,
-          letterCenterX,
-          letterCenterY,
-        );
+        const distance = calculateDistance(x, y, position.x, position.y);
 
         if (distance >= radius) {
-          letterRef.style.fontVariationSettings = fromFontVariationSettings;
+          // Pequena otimização para evitar setar a mesma string repetidamente
+          if (
+            letterRef.style.fontVariationSettings !== fromFontVariationSettings
+          ) {
+            letterRef.style.fontVariationSettings = fromFontVariationSettings;
+          }
           return;
         }
 

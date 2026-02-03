@@ -142,6 +142,7 @@ export default function HeaderDesktop() {
               src="/assets/page1/logo.svg"
               alt="Logo"
               fill
+              priority
               className="object-cover duration-300 hover:scale-105"
             />
           </div>

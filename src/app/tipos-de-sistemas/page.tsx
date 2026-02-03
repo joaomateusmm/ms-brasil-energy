@@ -19,14 +19,15 @@ export default function SystemTypesPage() {
 
         {/* --- HERO SECTION --- */}
         <section className="relative flex h-[60vh] w-full items-center justify-center overflow-hidden bg-neutral-900 text-center text-white">
-          {/* Background Image Overlay */}
-          <div className="absolute inset-0 z-0">
+          <div className="relative hidden h-full w-full lg:block">
+            {" "}
             <Image
               src="/assets/page1/bg-pc.jpg"
-              alt="Telhado Solar"
+              alt="Hero Desktop"
               fill
-              className="object-cover opacity-40"
               priority
+              sizes="100vw"
+              className="object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-transparent"></div>
           </div>
