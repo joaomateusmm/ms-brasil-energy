@@ -11,14 +11,13 @@ import PartnersSection from "@/components/PartnersSection";
 import Simulator from "@/components/Simulator";
 import SmoothScroll from "@/components/SmoothScroll";
 import SolarBenefitsSection from "@/components/SolarBenefitsSection";
-import TechNatureSection from "@/components/TechNatureSection";
+import TechNatureDesktop from "@/components/TechNatureDesktop";
 import VideoSection from "@/components/VideoSection";
 
 export default function Home() {
   return (
     <SmoothScroll>
       <main className="w-full overflow-x-hidden">
-
         <Navbar />
 
         <HeroSection1 />
@@ -29,7 +28,7 @@ export default function Home() {
 
         <SolarBenefitsSection />
 
-        <TechNatureSection />
+        <TechNatureDesktop />
 
         <VideoSection />
 

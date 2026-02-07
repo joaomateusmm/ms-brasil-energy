@@ -2,34 +2,39 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import React, { useEffect, useLayoutEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function VideoSection() {
   const containerRef = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    if (!containerRef.current) return;
 
     const ctx = gsap.context(() => {
-      const element = containerRef.current;
-
-      // Mantive a tua animação, mas ajustei o 'y'
-      // Como ela já vem de baixo pelo scroll natural,
-      // uma animação pequena (50px) fica elegante.
+      // Efeito de "Revelação": O vídeo sobe como uma tampa
       gsap.fromTo(
-        element,
+        containerRef.current,
         {
-          y: 50,
+          clipPath: "inset(100% 0% 0% 0%)", // Começa 100% escondido (cortado embaixo)
         },
         {
-          y: 0,
-          duration: 1,
-          ease: "power3.out",
+          clipPath: "inset(0% 0% 0% 0%)", // Revela 100%
+          ease: "none", // Mantém linear para o scroll controlar a velocidade
           scrollTrigger: {
-            trigger: element,
-            // Ajustei o trigger para disparar assim que a secção começa a cobrir
-            start: "top 100%",
-            toggleActions: "play none none reverse",
+            trigger: containerRef.current,
+            start: "top bottom", // Começa quando o topo do vídeo entra na parte de baixo da tela
+
+            // --- AQUI ESTÁ O AJUSTE DE VELOCIDADE ---
+            // "top 25%" significa: A animação termina quando o topo do vídeo estiver a 25% do topo da tela.
+            // Quanto MAIOR a porcentagem (ex: 50%), MENOS você precisa scrollar (mais rápido).
+            // Quanto MENOR a porcentagem (ex: 0% ou "top"), MAIS você precisa scrollar (mais lento).
+            end: "top 75%",
+
+            // Troquei 'true' por '1'. Isso adiciona 1 segundo de "delay" suave
+            // para a animação não ficar travada friamente no scroll.
+            scrub: 2,
           },
         },
       );
@@ -38,56 +43,24 @@ export default function VideoSection() {
     return () => ctx.revert();
   }, []);
 
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el || typeof window === "undefined") return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            document.documentElement.classList.add("video-active");
-          } else {
-            document.documentElement.classList.remove("video-active");
-          }
-        });
-      },
-      { threshold: 0.15 },
-    );
-
-    observer.observe(el);
-
-    return () => {
-      observer.disconnect();
-      document.documentElement.classList.remove("video-active");
-    };
-  }, []);
-
   return (
     <section
       ref={containerRef}
-      // z-50: Garante que passa POR CIMA da HeroSection3 (que é z-0)
-      // relative: Necessário para o scroll funcionar
-      // bg-[#f4f4f4]: Fundo sólido para não deixar ver o que está atrás
-      className="page-4 relative z-50 flex h-screen w-full items-center justify-center overflow-hidden bg-[#f4f4f4]"
+      // O z-50 é vital para ficar ACIMA da TechNature
+      className="relative z-50 flex h-screen w-full items-center justify-center overflow-hidden bg-black"
     >
       <video
         className="absolute inset-0 h-full w-full object-cover"
-        // src="/assets/video/video-bg.mp4"
-        src="/assets/video/video-bg.mp4" // Confirmei o caminho baseado no teu histórico
+        src="/assets/video/video-bg.mp4"
         autoPlay
         muted
         loop
         playsInline
       />
 
-      <div className="absolute inset-0 bg-black/20" />
+      <div className="absolute inset-0 bg-black/40" />
 
-      {/* Texto de exemplo para visualizar o efeito */}
-      <h1 className="font-clash-display relative z-10 hidden text-6xl font-bold text-white/20 md:flex">
-        O Futuro é Agora
-      </h1>
-      <h1 className="font-clash-display relative z-10 flex text-center text-4xl font-bold text-white/20 md:hidden">
+      <h1 className="font-clash-display relative z-10 text-center text-6xl font-bold text-white">
         O Futuro é Agora
       </h1>
     </section>

@@ -30,6 +30,7 @@ export default function SolarBenefitsSection() {
 
       const getScrollAmount = () => {
         const wrapperWidth = wrapper.scrollWidth;
+        // Adicionamos uma pequena folga para garantir que o último card estacione bem
         return -(wrapperWidth - window.innerWidth);
       };
 
@@ -74,12 +75,10 @@ export default function SolarBenefitsSection() {
           const texts = card.querySelector(".texts");
           const textChildren = texts ? texts.children : [];
 
-          // Se não achar a imagem, pula esse card (evita erro no gsap.fromTo(img...))
-          if (!img) return;
-
           const triggerConfig: ScrollTrigger.Vars = {
             trigger: index === 0 ? solarContainerRef.current : card,
-            start: index === 0 ? "top center" : "left 80%",
+            // Ajuste no start para o último card não demorar a aparecer
+            start: index === 0 ? "top center" : "left 95%",
             end: "center center",
             scrub: 0.5,
           };
@@ -90,21 +89,26 @@ export default function SolarBenefitsSection() {
 
           const tl = gsap.timeline({ scrollTrigger: triggerConfig });
 
-          tl.to(card, { autoAlpha: 1, duration: 0.1 });
+          // 1. TORNA O CARD VISÍVEL (Independente de ter imagem ou não)
+          tl.to(card, { autoAlpha: 1, duration: 0.5 });
 
-          tl.fromTo(
-            img,
-            { opacity: 0 },
-            { opacity: 1, duration: 1, ease: "power2.out" },
-            "<",
-          );
+          // 2. ANIMA A IMAGEM (Apenas se ela existir)
+          if (img) {
+            tl.fromTo(
+              img,
+              { opacity: 0, scale: 0.9 },
+              { opacity: 1, scale: 1, duration: 1, ease: "power2.out" },
+              "<",
+            );
+          }
 
+          // 3. ANIMA OS TEXTOS
           if (texts) {
             tl.fromTo(
               texts,
-              { opacity: 0 },
-              { opacity: 1, duration: 0.1 },
-              "-=0.8",
+              { opacity: 0, y: 30 },
+              { opacity: 1, y: 0, duration: 0.5 },
+              "-=0.4",
             );
           }
 
@@ -129,12 +133,12 @@ export default function SolarBenefitsSection() {
         ScrollTrigger.create({
           trigger: solarContainerRef.current,
           start: "top top",
-          end: () => `+=${wrapper.scrollWidth - window.innerWidth + 100}`,
+          // O final do scroll deve ser exatamente o tamanho que o wrapper corre
+          end: () => `+=${wrapper.scrollWidth - window.innerWidth}`,
           pin: true,
           animation: tween,
           scrub: 0.5,
           invalidateOnRefresh: true,
-          anticipatePin: 1,
         });
       }
     }, solarContainerRef);
