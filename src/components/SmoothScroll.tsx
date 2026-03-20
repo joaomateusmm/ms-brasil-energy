@@ -17,7 +17,7 @@ export default function SmoothScroll({
   const lenisRef = useRef<Lenis | null>(null);
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 0.8,
+      duration: 0.55,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",
       gestureOrientation: "vertical",
