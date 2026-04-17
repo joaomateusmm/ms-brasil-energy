@@ -14,23 +14,19 @@ export default function SolarBenefitsSection() {
 
   useLayoutEffect(() => {
     // 1. BLINDAGEM PRINCIPAL:
-    // Se a div container ou o wrapper ainda não existem (são null), CANCELA TUDO.
-    // Isso impede que o GSAP tente buscar coisas dentro de "null".
     if (!solarContainerRef.current || !solarWrapperRef.current) return;
 
-    // Registra o plugin aqui dentro ou fora, mas garanta que ele esteja registrado
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
       const q = gsap.utils.selector(solarContainerRef);
       const cards = q(".card");
-      const wrapper = solarWrapperRef.current; // Já checamos lá em cima, mas o TS gosta de garantir
+      const wrapper = solarWrapperRef.current;
 
       if (!wrapper) return;
 
       const getScrollAmount = () => {
         const wrapperWidth = wrapper.scrollWidth;
-        // Adicionamos uma pequena folga para garantir que o último card estacione bem
         return -(wrapperWidth - window.innerWidth);
       };
 
@@ -46,7 +42,6 @@ export default function SolarBenefitsSection() {
       );
 
       // 2. BLINDAGEM DA INTRO:
-      // Só cria a timeline se o texto de intro foi encontrado pelo seletor 'q'
       if (introSection.length > 0 && introElements.length > 0) {
         const introTl = gsap.timeline({
           scrollTrigger: {
@@ -68,7 +63,6 @@ export default function SolarBenefitsSection() {
       }
 
       // --- CARDS ---
-      // O forEach não quebra se o array for vazio, mas é bom saber que ele roda seguro
       if (cards.length > 0) {
         (cards as HTMLElement[]).forEach((card, index) => {
           const img = card.querySelector(".img");
@@ -80,7 +74,7 @@ export default function SolarBenefitsSection() {
             // Ajuste no start para o último card não demorar a aparecer
             start: index === 0 ? "top center" : "left 95%",
             end: "center center",
-            scrub: 0.5,
+            scrub: 1.5,
           };
 
           if (index !== 0) {
@@ -89,10 +83,8 @@ export default function SolarBenefitsSection() {
 
           const tl = gsap.timeline({ scrollTrigger: triggerConfig });
 
-          // 1. TORNA O CARD VISÍVEL (Independente de ter imagem ou não)
           tl.to(card, { autoAlpha: 1, duration: 0.5 });
 
-          // 2. ANIMA A IMAGEM (Apenas se ela existir)
           if (img) {
             tl.fromTo(
               img,
@@ -102,7 +94,6 @@ export default function SolarBenefitsSection() {
             );
           }
 
-          // 3. ANIMA OS TEXTOS
           if (texts) {
             tl.fromTo(
               texts,
@@ -133,8 +124,10 @@ export default function SolarBenefitsSection() {
         ScrollTrigger.create({
           trigger: solarContainerRef.current,
           start: "top top",
-          // O final do scroll deve ser exatamente o tamanho que o wrapper corre
-          end: () => `+=${wrapper.scrollWidth - window.innerWidth}`,
+          // SOLUÇÃO: Multipliquei o valor de scroll por 0.6.
+          // O usuário precisará rolar 40% MENOS para ver todo o conteúdo.
+          // Quanto menor o número (ex: 0.4), mais rápido será a rolagem.
+          end: () => `+=${(wrapper.scrollWidth - window.innerWidth) * 0.35}`,
           pin: true,
           animation: tween,
           scrub: 0.5,

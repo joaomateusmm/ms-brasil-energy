@@ -16,8 +16,8 @@ import VideoSection from "@/components/VideoSection";
 
 export default function Home() {
   return (
-    <SmoothScroll>
-      <main className="w-full overflow-x-hidden">
+    <main className="w-full overflow-x-hidden">
+      <SmoothScroll>
         <Navbar />
 
         <HeroSection1 />
@@ -43,7 +43,7 @@ export default function Home() {
         <PartnersSection />
 
         <Footer />
-      </main>
-    </SmoothScroll>
+      </SmoothScroll>
+    </main>
   );
 }
