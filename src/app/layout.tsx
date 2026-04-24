@@ -1,6 +1,7 @@
-import "./globals.css";
+import "@/app/globals.css";
 
 import { ClerkProvider } from "@clerk/nextjs";
+import { GoogleTagManager } from "@next/third-parties/google"; // Importação do GTM adicionada aqui
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import localFont from "next/font/local";
@@ -39,8 +40,11 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="pt-br">
+        {/* Componente do GTM inserido aqui com o ID do seu cliente */}
+        <GoogleTagManager gtmId="GTM-NZDSPQSC" />
+
         <body
-          className={`${montserrat.variable} ${clash.variable} overflow-x-hidden scroll-smooth antialiased`}
+          className={`${montserrat.variable} ${clash.variable} overflow-x-hidden antialiased`}
         >
           <FloatingScrollbar />
           {children}
