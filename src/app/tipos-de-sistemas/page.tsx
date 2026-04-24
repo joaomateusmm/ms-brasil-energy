@@ -20,7 +20,6 @@ export default function SystemTypesPage() {
         {/* --- HERO SECTION --- */}
         <section className="relative flex h-[60vh] w-full items-center justify-center overflow-hidden bg-neutral-900 text-center text-white">
           <div className="relative hidden h-full w-full lg:block">
-            {" "}
             <Image
               src="/assets/page1/bg-pc.jpg"
               alt="Hero Desktop"
@@ -29,18 +28,20 @@ export default function SystemTypesPage() {
               sizes="100vw"
               className="object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-l from-neutral-900 via-neutral-900/60 to-transparent"></div>
           </div>
 
-          <div className="relative z-10 container mx-auto px-6 pt-20">
-            <span className="mb-4 block text-sm font-bold tracking-[0.2em] text-emerald-400 uppercase">
+          <div className="relative z-20 container mx-auto px-6 pt-20">
+            <span className="mb-4 block text-sm font-bold tracking-[0.2em] text-emerald-400 uppercase overline">
               Conhecimento
             </span>
-            <h1 className="font-clash-display mb-6 text-4xl leading-tight font-bold md:text-6xl">
+            <h1 className="font-clash-display mb-6 text-4xl leading-tight font-bold text-shadow-lg md:text-6xl">
               Tipos de Sistemas <br />
-              <span className="text-emerald-500">Fotovoltaicos</span>
+              <span className="highlight text-emerald-500 italic">
+                Fotovoltaicos
+              </span>
             </h1>
-            <p className="mx-auto max-w-2xl text-lg text-white/80 md:text-xl">
+            <p className="mx-auto max-w-2xl text-lg text-white/95 text-shadow-sm md:text-xl">
               Entenda a diferença entre as tecnologias e descubra qual é a ideal
               para a sua necessidade em Mato Grosso do Sul.
             </p>
@@ -56,13 +57,15 @@ export default function SystemTypesPage() {
               <div className="w-full md:w-1/2">
                 <div className="mb-2 flex items-center gap-2 text-emerald-600">
                   <Zap className="h-6 w-6" />
-                  <span className="font-bold tracking-wider uppercase">
+                  <span className="font-bold tracking-wider uppercase overline">
                     Conectado à Rede
                   </span>
                 </div>
-                <h2 className="font-clash-display mb-6 text-4xl font-bold text-neutral-900">
+                <h2 className="font-clash-display mb-6 text-4xl font-bold text-neutral-900 text-shadow-md">
                   Sistema Solar{" "}
-                  <span className="text-emerald-500">On-Grid</span>
+                  <span className="highlight text-emerald-500 italic">
+                    On-Grid
+                  </span>
                 </h2>
                 <p className="mb-6 text-lg leading-relaxed text-neutral-600">
                   O foco aqui é a economia máxima com o menor investimento
@@ -72,7 +75,7 @@ export default function SystemTypesPage() {
                 </p>
 
                 <ul className="mb-8 space-y-4">
-                  <li className="font-montserrat flex cursor-default items-center justify-start gap-3 rounded-xl border border-neutral-100 bg-white p-4 shadow-sm duration-300 hover:-translate-y-1">
+                  <li className="font-montserrat flex cursor-default items-center justify-start gap-3 rounded-xl border border-neutral-100 bg-white p-4 shadow-sm transition-transform duration-300 hover:-translate-y-1">
                     <div className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-neutral-800 text-emerald-500 shadow-md">
                       <CheckCircle2 className="h-5 w-5" />
                     </div>
@@ -85,7 +88,7 @@ export default function SystemTypesPage() {
                       </span>
                     </div>
                   </li>
-                  <li className="font-montserrat flex cursor-default items-center justify-start gap-3 rounded-xl border border-neutral-100 bg-white p-4 shadow-sm duration-300 hover:-translate-y-1">
+                  <li className="font-montserrat flex cursor-default items-center justify-start gap-3 rounded-xl border border-neutral-100 bg-white p-4 shadow-sm transition-transform duration-300 hover:-translate-y-1">
                     <div className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-neutral-800 text-emerald-500 shadow-md">
                       <ShieldCheck className="h-5 w-5" />
                     </div>
@@ -118,6 +121,7 @@ export default function SystemTypesPage() {
                   src="/assets/page3/sistema-on-grid.webp"
                   alt="Esquema Sistema On-Grid"
                   fill
+                  sizes="450px"
                   className="object-contain" // ou object-cover se preferir preencher tudo
                 />
               </div>
@@ -132,6 +136,7 @@ export default function SystemTypesPage() {
                   src="/assets/page3/sistema-off-grid.webp"
                   alt="Esquema Sistema Off-Grid"
                   fill
+                  sizes="450px"
                   className="object-contain"
                 />
               </div>
@@ -140,12 +145,15 @@ export default function SystemTypesPage() {
               <div className="w-full md:w-1/2">
                 <div className="mb-2 flex items-center gap-2 text-blue-600">
                   <ZapOff className="h-6 w-6" />
-                  <span className="font-bold tracking-wider uppercase">
+                  <span className="font-bold tracking-wider uppercase overline">
                     Isolado da Rede
                   </span>
                 </div>
-                <h2 className="font-clash-display mb-6 text-4xl font-bold text-neutral-900">
-                  Sistema Solar <span className="text-blue-500">Off-Grid</span>
+                <h2 className="font-clash-display mb-6 text-4xl font-bold text-neutral-900 text-shadow-md">
+                  Sistema Solar{" "}
+                  <span className="highlight text-blue-500 italic">
+                    Off-Grid
+                  </span>
                 </h2>
                 <p className="mb-6 text-lg leading-relaxed text-neutral-600">
                   A solução definitiva para áreas rurais e locais sem acesso à
@@ -155,7 +163,7 @@ export default function SystemTypesPage() {
                 </p>
 
                 <ul className="mb-8 space-y-4">
-                  <li className="font-montserrat flex cursor-default items-center justify-start gap-3 rounded-xl border border-neutral-100 bg-white p-4 shadow-sm duration-300 hover:-translate-y-1">
+                  <li className="font-montserrat flex cursor-default items-center justify-start gap-3 rounded-xl border border-neutral-100 bg-white p-4 shadow-sm transition-transform duration-300 hover:-translate-y-1">
                     <div className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-neutral-800 text-blue-500 shadow-md">
                       <CheckCircle2 className="h-5 w-5" />
                     </div>
@@ -169,7 +177,7 @@ export default function SystemTypesPage() {
                       </span>
                     </div>
                   </li>
-                  <li className="font-montserrat flex cursor-default items-center justify-start gap-3 rounded-xl border border-neutral-100 bg-white p-4 shadow-sm duration-300 hover:-translate-y-1">
+                  <li className="font-montserrat flex cursor-default items-center justify-start gap-3 rounded-xl border border-neutral-100 bg-white p-4 shadow-sm transition-transform duration-300 hover:-translate-y-1">
                     <div className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-neutral-800 text-blue-500 shadow-md">
                       <ShieldCheck className="h-5 w-5" />
                     </div>
@@ -199,12 +207,15 @@ export default function SystemTypesPage() {
               <div className="w-full md:w-1/2">
                 <div className="mb-2 flex items-center gap-2 text-purple-600">
                   <Atom className="h-6 w-6" />
-                  <span className="font-bold tracking-wider uppercase">
+                  <span className="font-bold tracking-wider uppercase overline">
                     O Melhor dos Dois Mundos
                   </span>
                 </div>
-                <h2 className="font-clash-display mb-6 text-4xl font-bold text-neutral-900">
-                  Sistema Solar <span className="text-purple-500">Híbrido</span>
+                <h2 className="font-clash-display mb-6 text-4xl font-bold text-neutral-900 text-shadow-md">
+                  Sistema Solar{" "}
+                  <span className="highlight text-purple-500 italic">
+                    Híbrido
+                  </span>
                 </h2>
                 <p className="mb-6 text-lg leading-relaxed text-neutral-600">
                   Tecnologia de ponta para quem não pode ficar sem energia.
@@ -214,7 +225,7 @@ export default function SystemTypesPage() {
                 </p>
 
                 <ul className="mb-8 space-y-4">
-                  <li className="font-montserrat flex cursor-default items-center justify-start gap-3 rounded-xl border border-neutral-100 bg-white p-4 shadow-sm duration-300 hover:-translate-y-1">
+                  <li className="font-montserrat flex cursor-default items-center justify-start gap-3 rounded-xl border border-neutral-100 bg-white p-4 shadow-sm transition-transform duration-300 hover:-translate-y-1">
                     <div className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-neutral-800 text-purple-500 shadow-md">
                       <CheckCircle2 className="h-5 w-5" />
                     </div>
@@ -227,7 +238,7 @@ export default function SystemTypesPage() {
                       </span>
                     </div>
                   </li>
-                  <li className="font-montserrat flex cursor-default items-center justify-start gap-3 rounded-xl border border-neutral-100 bg-white p-4 shadow-sm duration-300 hover:-translate-y-1">
+                  <li className="font-montserrat flex cursor-default items-center justify-start gap-3 rounded-xl border border-neutral-100 bg-white p-4 shadow-sm transition-transform duration-300 hover:-translate-y-1">
                     <div className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-neutral-800 text-purple-500 shadow-md">
                       <ShieldCheck className="h-5 w-5" />
                     </div>
@@ -258,6 +269,7 @@ export default function SystemTypesPage() {
                   src="/assets/page3/sistema-hibrido.webp"
                   alt="Esquema Sistema Híbrido"
                   fill
+                  sizes="450px"
                   className="object-contain"
                 />
               </div>
@@ -269,7 +281,7 @@ export default function SystemTypesPage() {
         <section className="bg-[#191919] py-20 text-white">
           <div className="container mx-auto px-6">
             <div className="mb-16 text-center">
-              <h2 className="font-clash-display mb-4 text-3xl font-bold md:text-5xl">
+              <h2 className="font-clash-display mb-4 text-3xl font-bold text-shadow-md md:text-5xl">
                 Por que escolher a <br />
                 <span className="text-emerald-500">MS Brasil Energy?</span>
               </h2>
@@ -300,13 +312,13 @@ export default function SystemTypesPage() {
               ].map((item, index) => (
                 <div
                   key={index}
-                  className="flex items-start gap-4 rounded-2xl border border-white/10 bg-[#222] p-8 transition-colors hover:border-emerald-500/50"
+                  className="flex items-start gap-4 rounded-2xl border border-white/10 bg-[#222] p-8 transition-colors duration-300 hover:border-emerald-500/50"
                 >
-                  <div className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white">
+                  <div className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white shadow-md">
                     <CheckCircle2 className="h-4 w-4" />
                   </div>
                   <div>
-                    <h3 className="mb-2 text-xl font-bold text-white">
+                    <h3 className="mb-2 text-xl font-bold text-white text-shadow-sm">
                       {item.title}
                     </h3>
                     <p className="text-sm leading-relaxed text-white/60">
@@ -322,16 +334,16 @@ export default function SystemTypesPage() {
         {/* --- CTA FINAL --- */}
         <section className="container mx-auto bg-[#f4f4f4] px-6 py-24 text-center">
           <div className="rounded-3xl bg-emerald-600 px-6 py-16 shadow-2xl shadow-emerald-500/20 md:px-12">
-            <h2 className="font-clash-display mb-6 text-3xl font-bold text-white md:text-5xl">
+            <h2 className="font-clash-display mb-6 text-3xl font-bold text-white text-shadow-md md:text-5xl">
               Cansado dos aumentos <br /> da conta de luz?
             </h2>
-            <p className="mx-auto mb-10 max-w-2xl text-lg text-emerald-100">
+            <p className="mx-auto mb-10 max-w-2xl text-lg text-emerald-100 text-shadow-sm">
               O sol de Campo Grande é a solução! Envie uma foto da sua fatura de
               energia e nós calculamos o seu projeto em poucos minutos.
             </p>
             <Link
               href="https://wa.link/lfkh22"
-              className="inline-flex h-14 items-center justify-center rounded-full bg-white px-8 text-lg font-bold text-emerald-600 shadow-lg transition-transform hover:scale-105 active:scale-95"
+              className="inline-flex h-14 items-center justify-center rounded-full bg-white px-8 text-lg font-bold text-emerald-600 shadow-lg transition-transform duration-300 hover:scale-105 active:scale-95"
             >
               Solicitar Orçamento Grátis
             </Link>
